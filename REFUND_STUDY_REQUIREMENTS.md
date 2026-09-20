@@ -523,3 +523,25 @@ Before finalizing the refund:
 - Flag unexpected rate changes, unexplained tax-rate mismatches, missing county assignment, or ambiguous tax labels.
 - Do not silently infer a county or historical rate when the service jurisdiction is uncertain.
 - Reconcile the final state-tax refund, county/local refund totals, and total refund back to the state filing form.
+
+
+### Combined-tax bill allocation example rule
+
+A utility bill may contain multiple service descriptions, accounts, meters, or operating areas on the same invoice. NEC Ledger must calculate the refund only from the tax associated with the service/meter that is tied to the studied equipment. It must not use the total tax from unrelated service sections on the same bill.
+
+When the included service shows one combined TAX amount rather than separate state and local amounts, and the applicable historical rates are known, allocate the actual billed tax by the relative rates rather than recalculating tax from unrelated bill totals.
+
+Example method:
+- If the applicable historical rate is 6% state plus 1% local, the combined billed tax is a 7% tax amount.
+- State tax component = Combined billed tax x 6/7.
+- Local tax component = Combined billed tax x 1/7.
+- The allocated components must sum back to the original combined billed tax after normal currency rounding.
+- If the historical rate structure changes, use the rate structure applicable to that specific bill period rather than assuming 6/1 for the entire claim.
+
+NEC Ledger should then aggregate the reconstructed bill-level state and local components into the reporting periods used by NEC's breakout sheets (for example, monthly, partial-quarter, or quarterly periods) while preserving the underlying bill-level detail.
+
+The energy-study non-exempt percentage is applied independently to each reconstructed state and local tax subtotal:
+- Corrected / non-refundable tax = Original tax x non-exempt percentage.
+- Refundable tax = Original tax - corrected tax.
+
+The study percentage should be based on the modeled exempt and non-exempt equipment usage used by NEC. Actual meter usage is a reconciliation/validation input; it does not automatically replace the modeled exempt/non-exempt denominator. The study must display the comparison between modeled total usage and actual billed/metered usage and flag material variance for review.
