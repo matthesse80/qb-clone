@@ -811,3 +811,103 @@ The selected 12-bill study sequence must be reviewed for service-period continui
 - Prefer obtaining the missing bill before finalizing the study.
 - If NEC intentionally uses a different continuous 12-bill sequence, record the selected sequence and reason.
 - If Matt explicitly proceeds with an incomplete usage sequence, flag the study as requiring manual approval and do not represent the +/-5% comparison as fully validated without that approval.
+
+
+## Bill-date fallback continuity, editable Excel studies, and fuel-specific filing periods
+
+### Bill-date fallback when service dates are absent
+
+Some municipal utilities do not state explicit service-period start/end dates. In those cases, NEC Ledger may use the sequence of bill ISSUE DATES as the fallback continuity evidence.
+
+Rules:
+- Explicit service-period or meter-read coverage remains the preferred source.
+- When no reliable service dates are shown, treat the period between consecutive bill dates as the best available proxy for coverage.
+- Conceptually, the coverage interval is inferred from the prior billing date through the day before the subsequent bill issuance.
+- Preserve the fact that this is an inferred period, not a provider-stated service period.
+- Review the normal billing cadence for that provider/account before deciding that a bill is missing.
+- If the bill-date sequence shows an apparent skipped billing cycle, unusually long gap, or missing calendar-period pattern compared with surrounding bills, flag a possible missing bill.
+- A month with no bill issue date is not automatically an error if the provider commonly shifts issue dates; use the surrounding sequence and provider cadence.
+- If there is any uncertainty about whether the bill set is complete, NEC Ledger must surface the uncertainty to Matt before final calculation, filing-form generation, or final rendering.
+- Do not silently assume continuity when the evidence is ambiguous.
+
+### Energy studies must be delivered as editable Excel workbooks
+
+NEC's working energy study is an editable Excel workbook, even when the historical filing package contains only a scanned PDF version.
+
+For every new or updated energy study, NEC Ledger should create an editable .xlsx working file that preserves formulas and allows Matt to change:
+- Equipment list
+- Quantity
+- Nameplate / rated input
+- Units
+- Load factor
+- Exempt hours/day
+- Non-exempt hours/day
+- Days/year
+- Exempt/non-exempt classification
+- Study-period usage inputs
+- Electric/gas study start and end dates
+- Any site-specific assumptions
+
+The Excel workbook is the operational working document. A PDF may be generated later for a filing package, but the PDF must not replace the editable Excel source.
+
+Derived usage values must remain formula-driven in the workbook. Changes to hours, days, quantity, load factor, or rated input should automatically recalculate modeled annual usage and the +/-5% comparison.
+
+### Electric and gas refund history must be tracked separately
+
+NEC Ledger must track the last filed refund period independently for electric and gas.
+
+For each fuel, retain:
+- Last filed claim start
+- Last filed claim end
+- Date filed
+- Utility provider/account/meter used
+- Refund amount
+- Whether the filing was part of a combined electric+gas claim or a fuel-specific claim
+
+Do not assume that the most recent electric and gas filing periods are identical.
+
+When preparing a new refund request, the next eligible period for each fuel begins after that fuel's own last filed end date.
+
+### Fuel-specific source periods versus filing-form claim period
+
+The electric and gas source-bill periods may differ.
+
+Before generating IA 843 or power-of-attorney filing documents, compare:
+- Earliest included electric bill
+- Latest included electric bill
+- Earliest included gas bill
+- Latest included gas bill
+
+The overall filing-form claim period must be decided only after that comparison.
+
+Possible filing strategies include:
+1. Combined filing using one overall claim period that spans the included electric and gas records.
+2. Separate electric and gas claims so each fuel can preserve its own available end date and any missing later period can be claimed separately.
+3. Aligning the fuel periods to a common end date by intentionally excluding one or more later bills from the longer fuel history.
+
+NEC Ledger must NOT choose among these strategies automatically when electric and gas periods differ.
+
+If there is a variance between electric and gas beginning/end dates, NEC Ledger must stop before completing the IA 843 and POA forms and ask Matt how the filing should be handled.
+
+### Common one-month variance
+
+NEC commonly files electric and gas together when their available records differ by only about one month, but this is a business judgment rather than an automatic rule.
+
+Factors that may affect the choice include:
+- Size of the operation
+- Estimated tax/refund value of the unmatched month
+- Whether the missing utility records are expected soon
+- Whether preserving a future fuel-specific claim is worthwhile
+- Whether parity between the two fuel periods is preferable for the filing package
+
+For a large operation, NEC may choose to exclude the most recent bill from the longer fuel history so that electric and gas end on the same period.
+
+The selected strategy, excluded bills (if any), and Matt's decision must be preserved in the audit trail.
+
+### Filing-form period construction
+
+Once Matt approves the filing strategy:
+- For a combined claim, the IA 843 / POA claim period begins with the earliest included bill period and ends with the latest included bill period across the fuel records included in that filing.
+- For separate claims, each filing uses the beginning and ending period supported by the bills included in that fuel-specific claim.
+- If a later bill is intentionally excluded for parity, that bill must remain available for a future claim and must not be marked as already refunded.
+- Never silently discard an unmatched bill or mark its period as claimed unless it was actually included in the filed claim.
