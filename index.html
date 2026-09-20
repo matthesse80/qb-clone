@@ -1,92 +1,60 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>NEC Ledger</title>
 <style>
-:root{--bg:#f4f6f8;--panel:#fff;--ink:#1f2937;--muted:#6b7280;--line:#dfe3e8;--accent:#155eef;--danger:#b42318}
+:root{--navy:#17388f;--navy2:#0f245e;--green:#8cc63e;--green2:#69a82d;--bg:#f3f6f8;--panel:#fff;--ink:#1f2a44;--muted:#697386;--line:#dbe2e8;--gold:#caa132}
 *{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
-header{background:#101828;color:#fff;padding:16px 22px;display:flex;align-items:center;justify-content:space-between}
-header h1{margin:0;font-size:22px}header small{color:#cbd5e1}
-nav{background:#fff;border-bottom:1px solid var(--line);padding:10px 20px;display:flex;gap:10px;flex-wrap:wrap}
-button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 12px;font-weight:600;cursor:pointer}
-button.primary{background:var(--accent);border-color:var(--accent);color:#fff}.danger{color:var(--danger)}
-main{max-width:1200px;margin:24px auto;padding:0 18px}.toolbar{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:0 1px 2px rgba(16,24,40,.04)}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-label{display:block;font-size:12px;font-weight:700;color:#475467;margin-bottom:5px}input,select,textarea{width:100%;padding:9px 10px;border:1px solid #cfd4dc;border-radius:8px;font:inherit;background:#fff}textarea{min-height:82px}
-table{width:100%;border-collapse:collapse;background:#fff}th,td{text-align:left;padding:11px;border-bottom:1px solid var(--line);font-size:14px}th{color:#475467;background:#f9fafb}
-.muted{color:var(--muted)}.pill{display:inline-block;padding:3px 8px;border-radius:999px;background:#eef4ff;color:#3538cd;font-size:12px;font-weight:700}
-.hidden{display:none}.section-title{font-size:15px;margin:18px 0 10px}.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
-.phone-row{display:grid;grid-template-columns:160px 1fr 1.3fr;gap:8px;margin-bottom:8px}.notice{padding:10px 12px;background:#fffaeb;border:1px solid #fedf89;border-radius:8px;font-size:13px;color:#7a2e0e}
-@media(max-width:800px){.grid,.grid-3,.phone-row{grid-template-columns:1fr}}
-</style>
-</head>
-<body>
-<header><div><h1>NEC Ledger</h1><small>National Energy Consultants</small></div><span class="pill">Functional prototype</span></header>
-<nav><button>Customers</button><button onclick="location.href='checking.html'">Checking ledger</button><button disabled>Refund cases</button><button disabled>Invoices</button><button disabled>Payments</button><button disabled>A/R</button><button disabled>Write checks</button><button disabled>Reports</button></nav>
+.shell{min-height:100vh;display:grid;grid-template-columns:240px 1fr}
+.side{background:linear-gradient(180deg,#0c1d4e,#152c66 62%,#0c1d4e);color:#fff;padding:22px 16px;display:flex;flex-direction:column}
+.logo{padding:0 8px 22px}.logo-nec{font-weight:900;font-style:italic;font-size:41px;letter-spacing:1px;color:var(--green);text-shadow:3px 3px 0 #243486}.logo-nec span{color:#fff;text-shadow:none;font-size:13px;display:block;letter-spacing:1.5px;margin-top:2px;font-style:normal;font-weight:700}.ledger{font-size:18px;letter-spacing:6px;margin-top:8px;color:#dce6ff}
+.nav a{display:block;color:#eef3ff;text-decoration:none;padding:11px 12px;border-radius:8px;margin:3px 0}.nav a:hover,.nav .active{background:rgba(140,198,62,.2);border-left:3px solid var(--green)}
+.sep{height:1px;background:#3d5282;margin:12px 4px}.sidefoot{margin-top:auto;padding:12px 10px;color:#cbd5e1;font-family:Georgia,serif;font-style:italic;line-height:1.45}
+main{padding:26px 30px}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:18px}.top h1{margin:0;font-size:34px;color:var(--navy2);font-family:Georgia,serif}.sub{color:var(--muted);margin-top:4px}.badge{font-size:12px;padding:7px 11px;border-radius:999px;background:#eef6df;color:#517a20;border:1px solid #cfe5af}
+.hero{position:relative;overflow:hidden;background:linear-gradient(125deg,#0f245e 0%,#17388f 55%,#2d4fa3 100%);color:#fff;border-radius:16px;padding:25px 28px;margin-bottom:19px;box-shadow:0 5px 16px rgba(15,36,94,.15)}
+.hero:after{content:"";position:absolute;width:320px;height:320px;border-radius:50%;right:-90px;top:-170px;background:radial-gradient(circle,#a5d85c 0%,#8cc63e 25%,rgba(140,198,62,.1) 60%,transparent 70%)}
+.hero h2{margin:0;font-size:25px;position:relative;z-index:1}.hero p{margin:6px 0 15px;color:#dbe7ff;position:relative;z-index:1}.actions{display:flex;gap:9px;flex-wrap:wrap;position:relative;z-index:1}.btn{display:inline-block;text-decoration:none;padding:10px 13px;border-radius:8px;font-weight:700;background:#fff;color:var(--navy2)}.btn.green{background:var(--green);color:#132b60}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:19px}.metric{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.04)}.metric .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}.metric .v{font-size:27px;font-weight:800;color:var(--navy2);margin-top:6px}.metric .s{font-size:12px;color:var(--muted);margin-top:4px}
+.content{display:grid;grid-template-columns:1.35fr .85fr;gap:16px}.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:17px;box-shadow:0 1px 3px rgba(0,0,0,.04)}.card h3{margin:0 0 13px;color:var(--navy2)}
+table{width:100%;border-collapse:collapse}th,td{padding:10px 8px;border-bottom:1px solid #edf0f3;text-align:left;font-size:13px}th{text-transform:uppercase;font-size:11px;color:var(--muted);letter-spacing:.5px}
+.status{display:inline-block;padding:4px 7px;border-radius:999px;font-size:11px;font-weight:700}.ready{background:#edf8df;color:#4a771d}.review{background:#fff5d9;color:#8d6c13}.await{background:#eaf1ff;color:#315db1}.docs{background:#f1ecff;color:#6547a0}
+.progress{height:10px;border-radius:999px;background:#e8edf3;overflow:hidden;margin:9px 0}.progress span{display:block;height:100%;width:39%;background:linear-gradient(90deg,var(--green),#b3dc75)}
+.task{border:1px solid var(--line);border-radius:10px;padding:12px;margin:9px 0}.task b{display:block}.task span{font-size:12px;color:var(--muted)}
+.footer{margin-top:17px;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@media(max-width:1000px){.shell{grid-template-columns:1fr}.side{display:none}.metrics{grid-template-columns:1fr 1fr}.content{grid-template-columns:1fr}}@media(max-width:600px){.metrics{grid-template-columns:1fr}main{padding:18px}}
+</style></head>
+<body><div class="shell">
+<aside class="side">
+<div class="logo"><div class="logo-nec">NEC<span>NATIONAL ENERGY CONSULTANTS</span></div><div class="ledger">LEDGER</div></div>
+<nav class="nav">
+<a class="active" href="index.html">⌂ &nbsp; Home</a>
+<a href="customers.html">Customers</a>
+<a href="#">Refund Cases</a><a href="#">Invoices</a><a href="#">Payments</a><a href="#">A/R</a>
+<a href="checking.html">Checking Ledger</a><a href="#">Reports</a><a href="#">My Company</a><a href="#">Backup & Restore</a>
+<div class="sep"></div><a href="#">Settings</a>
+</nav>
+<div class="sidefoot">Records. Refunds. Results.<br><br>Same work.<br>Better tools.<br>Greater impact.</div>
+</aside>
 <main>
-<section id="customersView">
-<div class="toolbar"><div><h2 style="margin:0">Customers</h2><div class="muted">One record per physical operating location</div></div><button class="primary" id="addCustomerBtn">+ Add Customer</button></div>
-<div class="card">
-<div class="toolbar"><input id="searchBox" placeholder="Search customer name, city, company, or parent organization" style="max-width:520px"><span id="customerCount" class="muted"></span></div>
-<div style="overflow:auto"><table><thead><tr><th>Account</th><th>Customer</th><th>City</th><th>Parent organization</th><th>Fee</th><th>Status</th><th></th></tr></thead><tbody id="customerRows"></tbody></table></div>
+<div class="top"><div><h1>Welcome to NEC Ledger</h1><div class="sub">National Energy Consultants • operating overview</div></div><div class="badge">Sample data mode</div></div>
+<section class="hero"><h2>Refund work, fees, cash, and books—together.</h2><p>A cleaner operating system for the work National Energy Consultants already does.</p><div class="actions"><a class="btn green" href="customers.html#new">+ Add Customer</a><a class="btn" href="checking.html">Open Checking Ledger</a></div></section>
+<section class="metrics">
+<div class="metric"><div class="k">Refunds recovered</div><div class="v">$111,970</div><div class="s">Four active matters</div></div>
+<div class="metric"><div class="k">Unbilled fees</div><div class="v">$29,438</div><div class="s">Two ready to invoice</div></div>
+<div class="metric"><div class="k">Open receivables</div><div class="v">$20,820</div><div class="s">$3,936 overdue</div></div>
+<div class="metric"><div class="k">Collected this month</div><div class="v">$9,275</div><div class="s">One payment</div></div>
+</section>
+<section class="content">
+<div class="card"><h3>Active refund cases</h3><table><thead><tr><th>Customer</th><th>Status</th><th>Recovered</th><th>NEC fee</th></tr></thead><tbody>
+<tr><td>Northline Markets<br><small>IA • Updated Sep 3</small></td><td><span class="status ready">Ready to invoice</span></td><td>$48,240</td><td>$16,884</td></tr>
+<tr><td>Harbor Fuel Group<br><small>MN • Updated Sep 1</small></td><td><span class="status review">State review</span></td><td>$31,780</td><td>$9,534</td></tr>
+<tr><td>Prairie Stop & Shop<br><small>IA • Updated Aug 28</small></td><td><span class="status await">Awaiting check</span></td><td>$19,650</td><td>$6,878</td></tr>
+<tr><td>Cedar Valley Foods<br><small>WI • Updated Aug 25</small></td><td><span class="status docs">Documents needed</span></td><td>$12,300</td><td>$3,936</td></tr>
+</tbody></table></div>
+<div>
+<div class="card"><h3>September collection goal</h3><div style="font-size:27px;font-weight:800;color:var(--navy2)">$9,275 <span style="font-size:14px;color:var(--muted);font-weight:400">of $24,000</span></div><div class="progress"><span></span></div><div style="font-size:12px;color:var(--muted)">39% collected</div></div>
+<div class="card" style="margin-top:16px"><h3>Quick actions</h3><div class="task"><b>Invoice recovered refunds</b><span>2 cases are ready</span></div><div class="task"><b>Complete customer records</b><span>1 record needs a contact</span></div><div class="task"><b>Reconcile checking</b><span>Open checking register</span></div></div>
 </div>
 </section>
-<section id="formView" class="hidden">
-<div class="toolbar"><div><h2 id="formTitle" style="margin:0">Add Customer</h2><div class="muted">Synthetic/sample data only for this prototype.</div></div><button id="backBtn">← Back to Customers</button></div>
-<form id="customerForm" class="card">
-<input type="hidden" id="customerId">
-<div class="notice">Do not enter real FEIN, SSN, utility account numbers, or other sensitive client identifiers in this prototype.</div>
-<h3 class="section-title">Customer identity</h3>
-<div class="grid">
-<div><label>Customer name *</label><input id="customerName" maxlength="300" required></div>
-<div><label>City *</label><input id="city" required></div>
-<div><label>Company / legal name</label><input id="companyName"></div>
-<div><label>Parent organization</label><input id="parentOrg" placeholder="Optional operator/group"></div>
-<div><label>Primary contact</label><input id="primaryContact"></div>
-<div><label>Status</label><select id="active"><option value="true">Active</option><option value="false">Inactive</option></select></div>
-</div>
-<h3 class="section-title">Phone numbers</h3><div id="phones"></div>
-<h3 class="section-title">Email</h3><div class="grid"><div><label>Main Email</label><input id="mainEmail" type="email"></div><div><label>CC Email</label><input id="ccEmail" type="email"></div></div>
-<h3 class="section-title">Invoice mailing address</h3>
-<div class="grid-3">
-<div><label>Address type</label><select id="mailType"><option>Business</option><option>Owner home</option><option>Other</option></select></div>
-<div><label>Recipient / addressee</label><input id="mailRecipient"></div><div><label>Attention / contact</label><input id="mailAttention"></div>
-<div><label>Street</label><input id="mailStreet"></div><div><label>City</label><input id="mailCity"></div><div><label>State</label><input id="mailState" maxlength="2"></div>
-<div><label>ZIP</label><input id="mailZip"></div><div style="grid-column:span 2"><label>Delivery note</label><input id="mailNote"></div>
-</div>
-<h3 class="section-title">Physical location</h3>
-<div class="grid-3"><div><label>Street</label><input id="physStreet"></div><div><label>City</label><input id="physCity"></div><div><label>State</label><input id="physState" maxlength="2"></div><div><label>ZIP</label><input id="physZip"></div></div>
-<h3 class="section-title">Payment settings</h3>
-<div class="grid"><div><label>Payment terms</label><select id="terms"><option>Due on receipt</option><option>Net 15</option><option>Net 30</option><option>Net 60</option><option>Net 90</option></select></div><div><label>Default NEC fee %</label><select id="feePct"><option value="50">50%</option><option value="40">40%</option></select></div><div><label>Representative</label><input id="rep"></div></div>
-<h3 class="section-title">Filing / utility fields (sample only)</h3>
-<div class="grid">
-<div><label>FEIN</label><input id="fein" maxlength="25"></div><div><label>Owner name</label><input id="ownerName"></div>
-<div><label>SSN</label><input id="ssn"></div><div><label>Sales tax ID</label><input id="salesTaxId" maxlength="20"></div>
-<div><label>Electric provider</label><input id="electricProvider"></div><div><label>Electric account number(s)</label><input id="electricAccounts" maxlength="30"></div>
-<div><label>Gas provider</label><input id="gasProvider"></div><div><label>Gas account number(s)</label><input id="gasAccounts" maxlength="30"></div>
-<div><label>Confirmation date</label><input id="confirmationDate" type="date"></div><div><label>Confirmed organization name</label><input id="confirmedOrgName"></div>
-</div>
-<h3 class="section-title">Notes</h3><textarea id="notes" placeholder="Communications, filing dates, utility records, collections notes, etc."></textarea>
-<div class="actions"><button type="button" id="deleteBtn" class="danger hidden">Delete</button><button type="button" id="cancelBtn">Cancel</button><button type="submit" class="primary">Save Customer</button></div>
-</form>
-</section>
-</main>
-<script>
-const KEY='necLedgerCustomersV1',phoneTypes=['Business Phone','Cell Phone','Home Phone','Fax','Other'],$=id=>document.getElementById(id);let customers=load();
-function seed(){return[{id:'CUST-0001',customerName:'Northside Fuel Express',city:'Waterloo',companyName:'Midwest Fuel Group LLC',parentOrg:'Midwest Fuel Group',primaryContact:'Alex Morgan',active:true,terms:'Due on receipt',feePct:50,phones:[],mainEmail:'',ccEmail:'',notes:'Synthetic sample record.'},{id:'CUST-0002',customerName:'Southside Motor Mart',city:'Cedar Falls',companyName:'Midwest Fuel Group LLC',parentOrg:'Midwest Fuel Group',primaryContact:'Jamie Lee',active:true,terms:'Net 30',feePct:50,phones:[],mainEmail:'',ccEmail:'',notes:'Synthetic sample record.'}]}
-function load(){try{const v=JSON.parse(localStorage.getItem(KEY));return Array.isArray(v)&&v.length?v:seed()}catch(e){return seed()}}function save(){localStorage.setItem(KEY,JSON.stringify(customers));render()}
-function nextId(){const n=customers.reduce((m,c)=>Math.max(m,Number((c.id||'').split('-')[1])||0),0)+1;return'CUST-'+String(n).padStart(4,'0')}
-function phoneEditor(values=[]){$('phones').innerHTML='';for(let i=0;i<4;i++){const v=values[i]||{},row=document.createElement('div');row.className='phone-row';row.innerHTML='<select class="phoneType">'+phoneTypes.map(t=>'<option'+(v.type===t?' selected':'')+'>'+t+'</option>').join('')+'</select><input class="phoneNumber" placeholder="Phone number" value="'+esc(v.number||'')+'"><input class="phoneDetails" placeholder="Belongs to / Ask for / Details" value="'+esc(v.details||'')+'">';$('phones').appendChild(row)}}
-function render(){const q=$('searchBox').value.trim().toLowerCase(),filtered=customers.filter(c=>[c.customerName,c.city,c.companyName,c.parentOrg].join(' ').toLowerCase().includes(q));$('customerCount').textContent=filtered.length+' customer'+(filtered.length===1?'':'s');$('customerRows').innerHTML=filtered.map(c=>'<tr><td>'+esc(c.id)+'</td><td><strong>'+esc(c.customerName)+'</strong></td><td>'+esc(c.city)+'</td><td>'+esc(c.parentOrg||'—')+'</td><td>'+Number(c.feePct||50)+'%</td><td>'+(c.active!==false?'Active':'Inactive')+'</td><td><button onclick="openCustomer(\''+c.id+'\')">Open</button></td></tr>').join('')}
-function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function showList(){$('formView').classList.add('hidden');$('customersView').classList.remove('hidden');render()}function showForm(){$('customersView').classList.add('hidden');$('formView').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'})}
-function clearForm(){$('customerForm').reset();$('customerId').value='';$('active').value='true';$('terms').value='Due on receipt';$('feePct').value='50';phoneEditor([]);$('deleteBtn').classList.add('hidden')}
-function openNew(){clearForm();$('formTitle').textContent='Add Customer';showForm()}
-window.openCustomer=function(id){const c=customers.find(x=>x.id===id);if(!c)return;clearForm();$('formTitle').textContent=c.customerName+' — '+c.city;$('customerId').value=c.id;['customerName','city','companyName','parentOrg','primaryContact','mainEmail','ccEmail','mailType','mailRecipient','mailAttention','mailStreet','mailCity','mailState','mailZip','mailNote','physStreet','physCity','physState','physZip','terms','rep','fein','ownerName','ssn','salesTaxId','electricProvider','electricAccounts','gasProvider','gasAccounts','confirmationDate','confirmedOrgName','notes'].forEach(f=>{if($(f))$(f).value=c[f]||''});$('active').value=String(c.active!==false);$('feePct').value=String(c.feePct||50);phoneEditor(c.phones||[]);$('deleteBtn').classList.remove('hidden');showForm()}
-$('customerForm').addEventListener('submit',e=>{e.preventDefault();const id=$('customerId').value||nextId(),phones=[...document.querySelectorAll('.phone-row')].map(r=>({type:r.querySelector('.phoneType').value,number:r.querySelector('.phoneNumber').value.trim(),details:r.querySelector('.phoneDetails').value.trim()})).filter(p=>p.number||p.details),c={id,phones};['customerName','city','companyName','parentOrg','primaryContact','mainEmail','ccEmail','mailType','mailRecipient','mailAttention','mailStreet','mailCity','mailState','mailZip','mailNote','physStreet','physCity','physState','physZip','terms','rep','fein','ownerName','ssn','salesTaxId','electricProvider','electricAccounts','gasProvider','gasAccounts','confirmationDate','confirmedOrgName','notes'].forEach(f=>c[f]=$(f).value.trim());c.active=$('active').value==='true';c.feePct=Number($('feePct').value);const i=customers.findIndex(x=>x.id===id);if(i>=0)customers[i]=c;else customers.push(c);save();showList()});
-$('deleteBtn').addEventListener('click',()=>{const id=$('customerId').value;if(id&&confirm('Delete this customer from the prototype?')){customers=customers.filter(c=>c.id!==id);save();showList()}});$('addCustomerBtn').addEventListener('click',openNew);$('backBtn').addEventListener('click',showList);$('cancelBtn').addEventListener('click',showList);$('searchBox').addEventListener('input',render);phoneEditor([]);render();
-</script>
-</body></html>
+<div class="footer"><span>Prototype • synthetic data only</span><span>Carbonite-ready backup architecture planned for production</span></div>
+</main></div></body></html>
