@@ -1027,3 +1027,74 @@ When a utility provider issues a corrected bill or correction table:
 - If a correction affects only selected service addresses, meters, or bill components, apply it only to those affected records.
 - Re-run tax-breakdown totals, 12-bill usage totals, and +/-5% study validation when corrected data changes an included study period.
 - Flag any correction whose relationship to the original bill is ambiguous for Matt's review before finalization.
+
+
+## Convenience-store and car-wash study observations
+
+### Service-account isolation at shared / adjacent locations
+
+A physical address, legal entity, or adjacent business complex can contain more than one utility account and more than one energy study.
+
+Rules:
+- Never merge utility usage, tax, equipment, or refund history merely because two operations share the same legal owner or street address.
+- The working study unit is the specific utility provider + account + meter/service + fuel tied to the equipment being studied.
+- A convenience store and an adjacent car wash may therefore require separate studies and separate refund calculations even when owned by the same company and located at the same address.
+- Store the doing-business-as / operating unit on the utility service record when useful to distinguish adjacent operations.
+- Bills, study periods, exempt percentages, non-exempt percentages, tax breakdowns, and prior-filed-through dates must remain linked to the correct account/service unit.
+- If multiple accounts are ultimately combined on one filing, preserve the account-level calculations underneath the combined filing totals.
+
+### Convenience-store load-factor observations
+
+Reviewed NEC convenience-store studies reinforce the distinction between actual run-time hours and open-hours/duty-cycle modeling.
+
+Working recurring observations:
+- Fuel/gas pump: about 0.07-0.08 when hours/day represent the broad store-open / available period. Treat this as a duty-cycle style factor, not as a universal fixed value.
+- Coffee maker, exempt brewing/processing: 0.90.
+- Coffee maker, non-exempt holding/availability: 0.25.
+- Cappuccino maker, exempt processing: 0.90.
+- Cappuccino maker, non-exempt availability/holding: 0.25.
+- Soda/pop fountain: 0.25.
+- Popcorn maker: 0.25.
+- Slushy maker: 0.40.
+- Ice cream maker: 0.40.
+- Ice maker: about 0.42.
+- Grill: 0.50.
+- Deep fryer: 0.50.
+- Commercial oven: 0.50.
+- Food warmer / hot holding equipment: 0.50 unless a more specific historical NEC factor applies.
+- Walk-in freezer: 0.40.
+- Walk-in cooler: 0.35.
+- Reach-in / open / branded beverage refrigerator: 0.50.
+- Lighting, canopy lighting, POS/cash register, ATM, computers, and most simple ventilation loads: 1.00 when hours represent energized time.
+- Water heater: historical convenience-store observations range about 0.15-0.20; keep editable and do not treat one value as universal.
+- A/C remains location/year/site-specific and should not be standardized from these examples.
+
+Additional historical observations that need more examples before becoming universal defaults:
+- Hot dog roller: 0.71 in one reviewed convenience-store study.
+- Creamer/chiller dispenser: 0.50 in one reviewed study.
+- Malt mixer / ice cream mixer: 1.00 where entered hours represent actual short run time.
+- Microwave: 1.00 where entered hours represent actual active use.
+- Hood vent: 1.00 where hours represent energized operation.
+
+### Car-wash observations
+
+A reviewed stand-alone car-wash account modeled:
+- Car-wash drive/pump equipment: load factor 1.00 with hours/day representing actual operating time.
+- Drying fan: load factor 1.00 with hours/day representing actual operating time.
+- Vacuum: load factor 1.00 with short actual run-time hours.
+- Interior/exterior lighting: load factor 1.00 with hours/day representing energized time.
+
+This supports the general NEC rule that direct-run motors can normally start at load factor 1.00 and represent intermittency through hours/day unless a duty-cycle convention is more appropriate.
+
+### Equipment can appear on both sides of the study
+
+Convenience-store studies frequently place the same appliance category on both the exempt and non-exempt sides with different hours and sometimes different load factors.
+
+Examples include:
+- Coffee makers
+- Cappuccino makers
+- Grills
+- Fryers
+- Ovens
+
+NEC Ledger should therefore support duplicate equipment instances or split-use rows rather than force each equipment item into only one tax classification.
