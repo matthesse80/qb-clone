@@ -10,7 +10,8 @@
 .fieldline{display:grid;grid-template-columns:190px 1fr;gap:8px;padding:8px 0;border-bottom:1px solid #edf0f3}.fieldline .key{color:var(--nec-muted);font-size:12px;text-transform:uppercase;letter-spacing:.4px}
 .doc-row{display:grid;grid-template-columns:1.5fr .8fr .8fr auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid #edf0f3}.activity{padding:10px 0;border-bottom:1px solid #edf0f3}.activity small{color:var(--nec-muted)}
 .calc-box{background:#f8fafc;border:1px solid var(--nec-line);border-radius:10px;padding:14px}.calc-total{font-size:28px;font-weight:800;color:var(--nec-blue-dark)}
-@media(max-width:900px){.case-layout{grid-template-columns:1fr}.case-list{max-height:none}}
+.utility-card{border:1px solid var(--nec-line);border-radius:12px;padding:14px;margin:12px 0;background:#fff}.utility-card h4{margin:0 0 4px;color:var(--nec-blue-dark)}.utility-meta{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.utility-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.checklist{margin:10px 0 0;padding:0;list-style:none}.checklist li{padding:5px 0}.check-ok{color:#2e6f2e}.check-bad{color:#a12626}.modal-wide{position:fixed;inset:4% 6%;z-index:70;overflow:auto;box-shadow:0 18px 50px rgba(0,0,0,.25)}.package-note{background:#f7f9fb;border:1px solid var(--nec-line);border-radius:10px;padding:10px 12px}
+@media(max-width:900px){.case-layout{grid-template-columns:1fr}.case-list{max-height:none}.utility-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body><div class="shell">
@@ -49,10 +50,11 @@
 
 <div class="card" style="margin-top:14px">
 <div class="tabs">
-<button class="tab active" data-tab="overview">Overview</button><button class="tab" data-tab="documents">Documents</button><button class="tab" data-tab="data">Data</button><button class="tab" data-tab="calculation">Calculation</button><button class="tab" data-tab="filing">Filing</button><button class="tab" data-tab="billing">Billing</button><button class="tab" data-tab="activity">Activity</button>
+<button class="tab active" data-tab="overview">Overview</button><button class="tab" data-tab="utilities">Utility Requests</button><button class="tab" data-tab="documents">Documents</button><button class="tab" data-tab="data">Data</button><button class="tab" data-tab="calculation">Calculation</button><button class="tab" data-tab="filing">Filing</button><button class="tab" data-tab="billing">Billing</button><button class="tab" data-tab="activity">Activity</button>
 </div>
 
 <div id="panel-overview" class="panel active"></div>
+<div id="panel-utilities" class="panel"></div>
 <div id="panel-documents" class="panel">
 <div class="toolbar"><div><b>Case documents</b><div class="muted">Original files stay attached to this refund cycle.</div></div><button id="addDocBtn" class="primary">+ Add Document</button></div>
 <div class="notice" style="margin:12px 0">Prototype document storage uses this browser's IndexedDB. Do not upload real client files until the production security and backup build is complete.</div>
@@ -95,6 +97,35 @@
 <div class="toolbar" style="justify-content:flex-end;margin-top:14px"><button id="deleteCaseBtn" class="danger hidden">Delete Draft Case</button><button id="saveCaseBtn" class="primary">Save Case</button></div>
 </div>
 
+<div id="utilityModal" class="hidden card modal-wide">
+<div class="toolbar"><div><h2 id="utilityFormTitle" style="margin:0">Utility Request</h2><div class="muted">Provider-specific records request and package controls</div></div><button id="closeUtilityModal">Close</button></div>
+<input type="hidden" id="utilityId">
+<div class="grid-3" style="margin-top:14px">
+<div><label>Utility provider *</label><input id="uProvider" placeholder="Sample Electric Cooperative"></div>
+<div><label>Energy type *</label><select id="uEnergy"><option value="Electric">Electric</option><option value="Gas">Gas</option><option value="Electric and Gas">Electric and Gas</option></select></div>
+<div><label>Account number *</label><input id="uAccount"></div>
+<div><label>Meter(s)</label><input id="uMeters" placeholder="Comma-separated meter IDs"></div>
+<div><label>Service address</label><input id="uServiceAddress"></div>
+<div><label>Authorization / signature source *</label><input id="uAuthSource" placeholder="Signed general utility release on file"></div>
+<div><label>Prior filed claim ends</label><input id="uPriorEnd" type="date"></div>
+<div><label>Requested history starts *</label><input id="uRequestStart" type="date"></div>
+<div><label>Requested history ends</label><input id="uRequestEnd" type="date"><div class="muted">Leave blank for Present</div></div>
+<div><label>Records requested date</label><input id="uRecordsRequested" type="date"></div>
+<div><label>Records received date</label><input id="uRecordsReceived" type="date"></div>
+<div><label>Signer name *</label><input id="uSignerName"></div>
+<div><label>Signer title</label><input id="uSignerTitle"></div>
+<div><label>Execution date</label><input id="uExecutionDate" type="date"><div class="muted">Utility releases only: weekday within prior 7 days.</div></div>
+<div><label>Prior package had cover letter?</label><select id="uHasCover"><option value="yes">Yes</option><option value="no">No</option></select></div>
+</div>
+<div style="margin-top:12px"><label>Prior cover-letter wording</label><textarea id="uCoverText" style="min-height:130px" placeholder="Paste/store the prior cover letter wording exactly. Do not add customer or account details unless they appeared on the prior cover."></textarea></div>
+<div class="grid-2" style="margin-top:12px">
+<div><label>Signature placement QA</label><select id="uSignatureQA"><option value="pending">Pending</option><option value="passed">Passed - full signature visible and aligned</option></select></div>
+<div><label>Notes</label><input id="uNotes"></div>
+</div>
+<div id="utilityValidation" class="notice" style="margin-top:14px"></div>
+<div class="toolbar" style="justify-content:flex-end;margin-top:14px"><button id="deleteUtilityBtn" class="danger hidden">Delete Request</button><button id="saveUtilityBtn" class="primary">Save Utility Request</button></div>
+</div>
+
 <div id="docModal" class="hidden card" style="position:fixed;inset:12% 18%;z-index:60;box-shadow:0 18px 50px rgba(0,0,0,.25)">
 <div class="toolbar"><h2 style="margin:0">Add Case Document</h2><button id="closeDocModal">Close</button></div>
 <div class="grid-2" style="margin-top:14px"><div><label>File</label><input id="docFile" type="file"></div><div><label>Document group</label><select id="docGroup"><option>Source Document</option><option>Working / Generated</option><option>Final Document</option></select></div></div>
@@ -123,6 +154,42 @@ function needsAttention(c){return !!(c.recordsRequested && !c.filedDate && diffD
 function nextId(){let n=cases.reduce((m,c)=>Math.max(m,Number((c.id||'').split('-')[1])||0),0)+1;return 'CASE-'+String(n).padStart(4,'0')}
 function customerName(id){const c=customers.find(x=>x.id===id);return c?c.customerName:'Unknown Customer'}
 function logEvent(caseId,text){activity[caseId]=activity[caseId]||[];activity[caseId].unshift({at:new Date().toISOString(),text});persist()}
+function isoNextDay(date){if(!date)return'';const d=new Date(date+'T12:00:00');d.setDate(d.getDate()+1);return d.toISOString().slice(0,10)}
+function recentWeekdayBeforeToday(){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-1);while(d.getDay()===0||d.getDay()===6)d.setDate(d.getDate()-1);return d.toISOString().slice(0,10)}
+function isWeekdayWithinPrior7(date){if(!date)return false;const d=new Date(date+'T12:00:00'),now=new Date();now.setHours(12,0,0,0);const age=(now-d)/86400000;return d.getDay()!==0&&d.getDay()!==6&&age>=1&&age<=7}
+function nextUtilityId(c){const n=(c.utilityRequests||[]).reduce((m,u)=>Math.max(m,Number((u.id||'').split('-')[1])||0),0)+1;return 'UTIL-'+String(n).padStart(3,'0')}
+function latestFiledEnd(c){let ends=cases.filter(x=>x.customerId===c.customerId&&x.id!==c.id&&x.filedDate&&x.periodEnd).map(x=>x.periodEnd);return ends.sort().pop()||''}
+function overlapsKnownFiledPeriod(c,u){if(!u.requestStart)return false;return cases.some(x=>x.customerId===c.customerId&&x.id!==c.id&&x.filedDate&&x.periodStart&&x.periodEnd&&u.requestStart<=x.periodEnd&&(u.requestEnd||'9999-12-31')>=x.periodStart)}
+function utilityChecks(c,u){
+ const checks=[];
+ const add=(ok,label)=>checks.push({ok,label});
+ add(!!u.provider,'Utility provider entered');
+ add(!!u.account,'Utility account number entered');
+ add(!!u.energy,'Energy type selected');
+ add(!!u.authSource,'Signed authorization / signature source identified');
+ add(!!u.signerName,'Signer identity entered');
+ add(!!u.requestStart,'Requested history start entered');
+ const prior=u.priorClaimEnd||latestFiledEnd(c);
+ add(!prior||!u.requestStart||u.requestStart>prior,'Requested history starts after the prior filed period');
+ add(!overlapsKnownFiledPeriod(c,u),'Requested period does not overlap another filed claim');
+ add(isWeekdayWithinPrior7(u.executionDate),'Utility release execution date is a weekday within the prior 7 days');
+ add(u.hasCover!=='yes'||!!u.coverText.trim(),'Prior cover-letter wording retained when a cover letter is required');
+ add(u.signatureQA==='passed','Signature placement QA passed');
+ add(true,'Package pages fixed to US Letter portrait');
+ return checks;
+}
+function renderUtilityRequests(c){
+ const us=c.utilityRequests||[];
+ const html='<div class="toolbar"><div><h3 style="margin:0">Utility Requests</h3><div class="muted">Provider-specific request history, non-overlap controls, package generation, and preflight.</div></div><button class="primary" onclick="openUtilityModal()">+ Add Utility Request</button></div>'+
+ (us.length?us.map(u=>{
+   const checks=utilityChecks(c,u),bad=checks.filter(x=>!x.ok).length;
+   return '<div class="utility-card"><div class="toolbar"><div><h4>'+esc(u.provider||'Unnamed utility')+'</h4><div class="muted">'+esc(u.energy||'')+' • Account '+esc(u.account||'—')+'</div></div><div><span class="pill '+(bad?'bad':'good')+'">'+(bad?bad+' preflight issue'+(bad===1?'':'s'):'Ready to generate')+'</span></div></div>'+
+   '<div class="utility-grid"><div class="fieldline"><div class="key">History requested</div><div>'+esc(u.requestStart||'—')+' to '+esc(u.requestEnd||'Present')+'</div></div><div class="fieldline"><div class="key">Prior claim end</div><div>'+esc(u.priorClaimEnd||latestFiledEnd(c)||'—')+'</div></div><div class="fieldline"><div class="key">Meters</div><div>'+esc(u.meters||'—')+'</div></div><div class="fieldline"><div class="key">Records requested</div><div>'+esc(u.recordsRequested||'Not sent')+'</div></div><div class="fieldline"><div class="key">Records received</div><div>'+esc(u.recordsReceived||'Not received')+'</div></div><div class="fieldline"><div class="key">Cover letter</div><div>'+(u.hasCover==='yes'?'Required from prior package':'Not used previously')+'</div></div></div>'+
+   '<ul class="checklist">'+checks.map(x=>'<li class="'+(x.ok?'check-ok':'check-bad')+'">'+(x.ok?'✓':'✕')+' '+esc(x.label)+'</li>').join('')+'</ul>'+
+   '<div class="toolbar" style="justify-content:flex-end;margin-top:12px"><button onclick="openUtilityModal(\''+u.id+'\')">Edit</button><button class="primary" onclick="generateUtilityPackage(\''+u.id+'\')">Generate Request Package</button></div></div>';
+ }).join(''):'<div class="package-note" style="margin-top:12px">No utility requests yet. Add one provider at a time. The system will suggest the first unclaimed date from prior filed cases and will block known overlaps.</div>');
+ $('panel-utilities').innerHTML=html;
+}
 function renderList(){
  const q=$('caseSearch').value.toLowerCase(), f=$('caseFilter').value;
  const filtered=cases.filter(c=>{
@@ -146,6 +213,7 @@ function renderWorkspace(){
  $('panel-calculation').innerHTML='<h3>Refund calculation</h3><div class="calc-box"><div>Combined refund: <b>'+money(total)+'</b></div><div>NEC fee: '+Number(c.feePct||0).toFixed(2)+'%</div><hr style="border:0;border-top:1px solid var(--nec-line)"><div class="calc-total">'+money(fee)+'</div><div class="muted">Projected NEC fee</div></div><p class="muted">The detailed refund algorithm will be added after the real NEC refund walkthrough.</p>';
  $('panel-filing').innerHTML='<h3>Filing</h3><div class="fieldline"><div class="key">Claim filed date</div><div>'+esc(c.filedDate||'Not filed')+'</div></div><div class="fieldline"><div class="key">State reference</div><div>'+esc(c.stateReference||'—')+'</div></div>'+(needsAttention(c)?'<div class="notice" style="margin-top:12px"><b>Follow-up exception:</b> More than 30 days have passed since utility records were requested and this claim has not been filed.</div>':'');
  $('panel-billing').innerHTML='<h3>Billing</h3><p>Projected invoice amount: <b>'+money(fee)+'</b></p><button class="primary" onclick="alert(\'Invoice creation will connect here in the Receivables build.\')">Create Invoice</button>';
+ renderUtilityRequests(c);
  const events=activity[c.id]||[];$('panel-activity').innerHTML='<div class="toolbar"><h3 style="margin:0">Case activity</h3><button onclick="addActivity()">+ Log Activity</button></div>'+(events.length?events.map(e=>'<div class="activity"><b>'+esc(e.text)+'</b><br><small>'+new Date(e.at).toLocaleString()+'</small></div>').join(''):'<p class="muted">No activity logged yet.</p>');
  renderDocs(c.id);
 }
@@ -156,8 +224,47 @@ $('caseSearch').oninput=renderList;$('caseFilter').onchange=renderList;
 function populateCustomers(){ $('caseCustomer').innerHTML=customers.map(c=>'<option value="'+c.id+'">'+esc(c.customerName)+' — '+esc(c.city||'')+'</option>').join('') }
 function openCaseModal(c){populateCustomers();$('caseFormTitle').textContent=c?'Edit Refund Case':'New Refund Case';$('caseId').value=c?.id||'';$('caseCustomer').value=c?.customerId||customers[0]?.id||'';$('cycleLabel').value=c?.cycleLabel||new Date().getFullYear()+' Iowa Utility Refund';$('jurisdiction').value=c?.jurisdiction||'Iowa';$('status').value=c?.status||'Pending';$('utilityProvider').value=c?.utilityProvider||'';$('assignedEmployee').value=c?.assignedEmployee||'Matt';$('periodStart').value=c?.periodStart||'';$('periodEnd').value=c?.periodEnd||'';$('recordsRequested').value=c?.recordsRequested||'';$('recordsReceived').value=c?.recordsReceived||'';$('filedDate').value=c?.filedDate||'';$('stateReference').value=c?.stateReference||'';$('electricRefund').value=c?.electricRefund||0;$('gasRefund').value=c?.gasRefund||0;$('otherRefund').value=c?.otherRefund||0;$('feePct').value=c?.feePct??50;$('nextAction').value=c?.nextAction||'';$('followupDate').value=c?.followupDate||'';$('caseNotes').value=c?.notes||'';$('deleteCaseBtn').classList.toggle('hidden',!c);$('caseModal').classList.remove('hidden')}
 $('newCaseBtn').onclick=()=>openCaseModal(null);$('editCaseBtn').onclick=()=>openCaseModal(cases.find(x=>x.id===selectedId));$('closeCaseModal').onclick=()=>$('caseModal').classList.add('hidden');
-$('saveCaseBtn').onclick=()=>{if(!$('caseCustomer').value||!$('cycleLabel').value.trim())return alert('Customer and cycle label are required.');const id=$('caseId').value||nextId(),old=cases.find(x=>x.id===id);const c={id,customerId:$('caseCustomer').value,customerName:customerName($('caseCustomer').value),cycleLabel:$('cycleLabel').value.trim(),jurisdiction:$('jurisdiction').value.trim(),status:$('status').value,utilityProvider:$('utilityProvider').value.trim(),assignedEmployee:$('assignedEmployee').value.trim(),periodStart:$('periodStart').value,periodEnd:$('periodEnd').value,recordsRequested:$('recordsRequested').value,recordsReceived:$('recordsReceived').value,filedDate:$('filedDate').value,stateReference:$('stateReference').value.trim(),electricRefund:Number($('electricRefund').value||0),gasRefund:Number($('gasRefund').value||0),otherRefund:Number($('otherRefund').value||0),feePct:Number($('feePct').value||0),nextAction:$('nextAction').value.trim(),followupDate:$('followupDate').value,notes:$('caseNotes').value.trim()};const i=cases.findIndex(x=>x.id===id);if(i>=0)cases[i]=c;else cases.push(c);selectedId=id;persist();logEvent(id,old?'Case updated':'Refund case created');$('caseModal').classList.add('hidden');renderAll()};
+$('saveCaseBtn').onclick=()=>{if(!$('caseCustomer').value||!$('cycleLabel').value.trim())return alert('Customer and cycle label are required.');const id=$('caseId').value||nextId(),old=cases.find(x=>x.id===id);const c={id,customerId:$('caseCustomer').value,customerName:customerName($('caseCustomer').value),cycleLabel:$('cycleLabel').value.trim(),jurisdiction:$('jurisdiction').value.trim(),status:$('status').value,utilityProvider:$('utilityProvider').value.trim(),assignedEmployee:$('assignedEmployee').value.trim(),periodStart:$('periodStart').value,periodEnd:$('periodEnd').value,recordsRequested:$('recordsRequested').value,recordsReceived:$('recordsReceived').value,filedDate:$('filedDate').value,stateReference:$('stateReference').value.trim(),electricRefund:Number($('electricRefund').value||0),gasRefund:Number($('gasRefund').value||0),otherRefund:Number($('otherRefund').value||0),feePct:Number($('feePct').value||0),nextAction:$('nextAction').value.trim(),followupDate:$('followupDate').value,notes:$('caseNotes').value.trim(),utilityRequests:old?.utilityRequests||[]};const i=cases.findIndex(x=>x.id===id);if(i>=0)cases[i]=c;else cases.push(c);selectedId=id;persist();logEvent(id,old?'Case updated':'Refund case created');$('caseModal').classList.add('hidden');renderAll()};
 $('deleteCaseBtn').onclick=()=>{if(confirm('Delete this prototype case?')){cases=cases.filter(c=>c.id!==$('caseId').value);selectedId=cases[0]?.id||null;persist();$('caseModal').classList.add('hidden');renderAll()}};
+
+window.openUtilityModal=(utilityId)=>{
+ const c=cases.find(x=>x.id===selectedId);if(!c)return;
+ const u=(c.utilityRequests||[]).find(x=>x.id===utilityId)||null;
+ const suggestedPrior=u?.priorClaimEnd||latestFiledEnd(c)||'';
+ $('utilityFormTitle').textContent=u?'Edit Utility Request':'New Utility Request';$('utilityId').value=u?.id||'';
+ $('uProvider').value=u?.provider||'';$('uEnergy').value=u?.energy||'Electric';$('uAccount').value=u?.account||'';$('uMeters').value=u?.meters||'';$('uServiceAddress').value=u?.serviceAddress||'';
+ $('uAuthSource').value=u?.authSource||'';$('uPriorEnd').value=suggestedPrior;$('uRequestStart').value=u?.requestStart||(suggestedPrior?isoNextDay(suggestedPrior):'');$('uRequestEnd').value=u?.requestEnd||'';
+ $('uRecordsRequested').value=u?.recordsRequested||'';$('uRecordsReceived').value=u?.recordsReceived||'';$('uSignerName').value=u?.signerName||'';$('uSignerTitle').value=u?.signerTitle||'';
+ $('uExecutionDate').value=u?.executionDate||recentWeekdayBeforeToday();$('uHasCover').value=u?.hasCover||'yes';$('uCoverText').value=u?.coverText||'';
+ $('uSignatureQA').value=u?.signatureQA||'pending';$('uNotes').value=u?.notes||'';$('deleteUtilityBtn').classList.toggle('hidden',!u);
+ $('utilityValidation').innerHTML='The system will hard-block a known claim-period overlap. Package generation also requires signature QA and the utility-release execution-date rule.';
+ $('utilityModal').classList.remove('hidden');
+};
+$('closeUtilityModal').onclick=()=>$('utilityModal').classList.add('hidden');
+$('uPriorEnd').onchange=()=>{if(!$('utilityId').value&&$('uPriorEnd').value)$('uRequestStart').value=isoNextDay($('uPriorEnd').value)};
+$('saveUtilityBtn').onclick=()=>{
+ const c=cases.find(x=>x.id===selectedId);if(!c)return;
+ const id=$('utilityId').value||nextUtilityId(c);
+ const u={id,provider:$('uProvider').value.trim(),energy:$('uEnergy').value,account:$('uAccount').value.trim(),meters:$('uMeters').value.trim(),serviceAddress:$('uServiceAddress').value.trim(),authSource:$('uAuthSource').value.trim(),priorClaimEnd:$('uPriorEnd').value,requestStart:$('uRequestStart').value,requestEnd:$('uRequestEnd').value,recordsRequested:$('uRecordsRequested').value,recordsReceived:$('uRecordsReceived').value,signerName:$('uSignerName').value.trim(),signerTitle:$('uSignerTitle').value.trim(),executionDate:$('uExecutionDate').value,hasCover:$('uHasCover').value,coverText:$('uCoverText').value,signatureQA:$('uSignatureQA').value,notes:$('uNotes').value.trim()};
+ if(!u.provider||!u.account||!u.authSource||!u.signerName||!u.requestStart)return alert('Provider, account number, authorization source, signer name, and requested-history start are required.');
+ const prior=u.priorClaimEnd||latestFiledEnd(c);if(prior&&u.requestStart<=prior)return alert('Blocked: requested history overlaps or begins inside the prior filed period. Start after '+prior+'.');
+ if(overlapsKnownFiledPeriod(c,u))return alert('Blocked: this requested period overlaps another filed refund period for this customer.');
+ c.utilityRequests=c.utilityRequests||[];const i=c.utilityRequests.findIndex(x=>x.id===id);if(i>=0)c.utilityRequests[i]=u;else c.utilityRequests.push(u);
+ c.utilityProvider=[...new Set(c.utilityRequests.map(x=>x.provider).filter(Boolean))].join('; ');
+ if(u.recordsRequested&&!c.recordsRequested)c.recordsRequested=u.recordsRequested;
+ persist();logEvent(c.id,(i>=0?'Utility request updated: ':'Utility request created: ')+u.provider);$('utilityModal').classList.add('hidden');renderAll();
+};
+$('deleteUtilityBtn').onclick=()=>{const c=cases.find(x=>x.id===selectedId);if(!c||!confirm('Delete this utility request?'))return;c.utilityRequests=(c.utilityRequests||[]).filter(x=>x.id!==$('utilityId').value);c.utilityProvider=[...new Set(c.utilityRequests.map(x=>x.provider).filter(Boolean))].join('; ');persist();logEvent(c.id,'Utility request deleted');$('utilityModal').classList.add('hidden');renderAll()};
+window.generateUtilityPackage=(utilityId)=>{
+ const c=cases.find(x=>x.id===selectedId),u=(c?.utilityRequests||[]).find(x=>x.id===utilityId);if(!c||!u)return;
+ const checks=utilityChecks(c,u),bad=checks.filter(x=>!x.ok);if(bad.length)return alert('Package blocked by preflight:\n\n'+bad.map(x=>'• '+x.label).join('\n'));
+ const cover=u.hasCover==='yes'?'<section class="page"><img class="logo" src="assets/nec-ledger-logo.jpg"><div class="letter">'+u.coverText.split(/\n+/).map(p=>'<p>'+esc(p)+'</p>').join('')+'</div></section>':'';
+ const energy=u.energy==='Electric and Gas'?'electric and gas':u.energy.toLowerCase();
+ const release='<section class="page release"><h2>LETTER OF AUTHORIZATION &amp; UTILITY BILLING RELEASE</h2><p>I, <b>'+esc(u.signerName)+'</b>, title <b>'+esc(u.signerTitle||'')+'</b></p><p>Do hereby authorize and appoint:</p><p><b>National Energy Consultants</b><br>P.O. Box 562 Cedar Falls, IA 50613<br>Phone (319) 231-0857<br>Fax (877) 553-0187<br>matt@nationalenergyconsultants.com</p><p>To request and receive confidential <b>'+esc(energy)+'</b> billing data for the accounts listed below from the records of <b>'+esc(u.provider)+'</b>.</p><p>This history must show the amount of state and local tax (if applicable) paid on the accounts on a monthly or quarterly basis. If the history does not show the amount of tax paid, then it must be accompanied by a signed document from the utility provider stating the amount of tax paid on the account(s) on a monthly or quarterly basis.</p><p>The named appointee is authorized to receive utility billing information for a period of sixty (60) days from the signed date below.</p><p>I understand that <b>'+esc(u.provider)+'</b> may add charges to my utility account for costs incurred in providing this information.</p><p>EXECUTED this <b>'+esc(u.executionDate)+'</b></p><div class="sigline">'+esc(u.signerName)+'<span>Customer signature</span></div><p>Historic information for the period of <b>'+esc(u.requestStart)+'</b> to <b>'+esc(u.requestEnd||'Present')+'</b></p><p>Account Name: ______________________________</p><p>Service Address: '+esc(u.serviceAddress||'______________________________')+'</p><p>Account Numbers: <b>'+esc(u.account)+'</b></p><p>Meter(s): '+esc(u.meters||'—')+'</p></section>';
+ const w=window.open('','_blank');if(!w)return alert('Allow pop-ups to generate the package.');
+ w.document.write('<!doctype html><html><head><title>'+esc(c.customerName)+' - '+esc(u.provider)+' Utility Request</title><style>@page{size:Letter portrait;margin:0}.page{width:8.5in;height:11in;box-sizing:border-box;padding:.7in .75in;font-family:Georgia,serif;font-size:12pt;page-break-after:always;overflow:hidden}.page:last-child{page-break-after:auto}.logo{display:block;width:3.2in;max-height:1.3in;object-fit:contain;margin:0 auto .65in}.letter{margin-top:.2in}.letter p{margin:0 0 .22in;line-height:1.32}.release h2{text-align:center;font-size:14pt;margin:.25in 0}.release p{line-height:1.25;margin:.14in 0}.sigline{margin:.3in 0 .12in;border-bottom:1px solid #111;width:3.3in;font-family:cursive;font-size:18pt;line-height:1.1}.sigline span{display:block;font-family:Georgia,serif;font-size:9pt;margin-top:2px}.controls{position:fixed;right:12px;top:12px}@media print{.controls{display:none}}</style></head><body><button class="controls" onclick="window.print()">Print / Save as PDF</button>'+cover+release+'</body></html>');w.document.close();
+ logEvent(c.id,'Utility request package generated for '+u.provider);
+};
 
 // IndexedDB document store
 let dbp=new Promise((resolve,reject)=>{const req=indexedDB.open('necLedgerDocs',1);req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains('docs'))db.createObjectStore('docs',{keyPath:'id'})};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)});
