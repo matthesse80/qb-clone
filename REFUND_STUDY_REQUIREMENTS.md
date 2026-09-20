@@ -1098,3 +1098,68 @@ Examples include:
 - Ovens
 
 NEC Ledger should therefore support duplicate equipment instances or split-use rows rather than force each equipment item into only one tax classification.
+
+
+## Grain, fertilizer, and agricultural-facility study observations
+
+The reviewed 21st Century Cooperative locations reinforce that one legal entity can have multiple physical locations with very different business functions, utility accounts, meters, study periods, and exempt-use percentages. Each physical location / utility service must remain a separate customer-location and study unit even when the FEIN/legal entity is shared.
+
+### Fertilizer production
+
+A reviewed fertilizer-production location used a highly seasonal / as-needed operating pattern rather than normal weekly business hours.
+
+Historical NEC observations from that study:
+- Fertilizer mixer motors: load factor 1.00, with intermittency represented through actual hours/day and days/year.
+- Elevator/leg motor: 1.00.
+- Pit auger: 1.00.
+- Facility lighting, office lighting, garage-door motor, computer, printer, and exterior lights: generally 1.00 when entered hours represent energized/run time.
+- Mini-split HVAC: study-specific historical factor only; do not standardize.
+- Refrigerator: 0.50.
+
+The modeled total in that reviewed study was within the NEC +/-5% validation range of the selected 12-bill actual usage.
+
+### Grain dryer - gas
+
+A reviewed stand-alone grain-dryer gas study treated the dryer gas usage as 100% exempt processing use.
+
+Historical observation:
+- Sukup TC245 grain dryer: 100 CCF/hour rating, load factor 0.18, 24 hours/day, 18 days/year in that specific study.
+
+This 0.18 factor is a historical observation, not yet a universal grain-dryer default. Grain-dryer duty can vary materially with crop moisture, harvest conditions, weather, dryer design, throughput, and study year.
+
+Gas grain-drying studies may legitimately have 0% non-exempt usage when the metered gas account serves only qualifying drying/processing equipment.
+
+### Grain elevator / office
+
+A reviewed grain-elevator study showed:
+- Corn drying bin fans: 15 HP each, historical load factor 0.80, with seasonal hours/days.
+- Grain-elevator leg motors: 1.00 where hours/day reflect actual run time.
+- Drag motors: 1.00 where hours/day reflect actual run time.
+- Office computer, microwave, printer, lighting: 1.00 when hours represent actual energized/use time.
+- Refrigerator: 0.50.
+- Coffee maker: 0.90 in the reviewed study.
+- A/C: site/year-specific historical value only; do not standardize.
+
+The corn-bin fan 0.80 observation should remain provisional until additional grain-operation studies establish whether it is a repeatable NEC default.
+
+### Seasonal agricultural-operation rule
+
+Grain, fertilizer, and similar agricultural operations may not have meaningful fixed "business open" hours.
+
+NEC Ledger must support:
+- "As needed" or seasonal operation.
+- Equipment-specific hours/day and days/year that differ substantially from office/open hours.
+- Crop/harvest-year notes.
+- Seasonal equipment that may run 24 hours/day for a limited number of days.
+- Direct-run motors at load factor 1.00 when actual run-time hours are known.
+- Duty-cycle factors where hours represent a broader operating window.
+
+Do not force agricultural facilities into a standard 5-day/52-week retail schedule.
+
+### Shared legal entity, different operating locations
+
+When one legal entity operates fertilizer plants, grain dryers, grain elevators, convenience stores, or other facilities:
+- Keep each physical location as its own customer/location record.
+- Link locations to the same parent/legal entity when useful.
+- Keep utility accounts, meters, filing history, study periods, equipment, and refund calculations at the location/account level.
+- Never carry one location's load factors, exempt percentage, or filed-through date into another location merely because the FEIN or owner is the same.
