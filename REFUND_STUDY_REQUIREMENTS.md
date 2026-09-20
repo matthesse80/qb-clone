@@ -315,3 +315,17 @@ Before finalizing a document:
 - Render the completed page at full size and visually inspect the entire signature region before delivery.
 - If the signature is close to an image boundary or form line, use extra crop margin and reposition rather than trimming the source.
 - A utility-request package should not be considered complete until the signature is fully visible in the final rendered PDF.
+
+
+## Multi-page utility package page-size and content-retention rule
+
+All pages in a combined utility-record request package must use the same finished page size and orientation. For standard NEC utility requests, use US Letter portrait (8.5 x 11 inches) for every page unless the source document or NEC explicitly requires another size.
+
+Required QA:
+- Never combine pages with different PDF MediaBox / page dimensions in the same outgoing package.
+- Scale pages proportionally to fit the common page size; do not crop page edges to force a fit.
+- Retain all source wording, labels, lines, signatures, account fields, and other visible form content.
+- No text may extend beyond the printable/page boundary or be cut off at the left, right, top, or bottom.
+- Preserve blank continuation lines and other form elements that appear on the source form when recreating the page.
+- Render every page of the final combined PDF after assembly and visually inspect the full page before delivery.
+- The final email/fax deliverable must remain one true multi-page PDF, not a single tall combined image.
