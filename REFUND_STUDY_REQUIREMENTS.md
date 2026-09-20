@@ -616,3 +616,96 @@ The automated workflow should populate a copy of the approved calculation-workbo
 The workbook should function as an independent control against NEC Ledger's internal calculation. The final refund should not be considered ready until the workbook and NEC Ledger totals reconcile.
 
 Any fixed tax-split helper in a workbook template (for example 6/7 state and 1/7 local) is only a convenience for periods where that historical rate structure actually applies. NEC Ledger must determine the applicable historical rate first and must not blindly apply a fixed split across all providers or periods.
+
+
+## Multi-premise bills, fuel-specific study periods, and load-factor library
+
+### Multi-premise / multi-service utility bills
+
+A single utility invoice may contain multiple premises, accounts, meters, or service types. NEC Ledger must not assume that every electric, gas, tax, or usage value appearing on the invoice belongs to the refund study.
+
+For each refund:
+- Identify the exact studied service address / premise, utility account, meter, and fuel.
+- Link each study to the corresponding meter(s).
+- Extract usage and tax only from the service sections tied to the studied location and equipment.
+- Exclude unrelated residential premises, other business premises, water, internet/telecom, lighting-only accounts, or other utility services unless NEC has explicitly included them in the study.
+- Preserve the source invoice and source page plus the specific service-section identity used.
+- If one invoice contains both included and excluded services, keep the invoice as one source document but maintain separate service-section records so the audit trail shows exactly what was used and what was ignored.
+
+A filing-package cover note may be required when the customer is served by multiple accounts/meters and the study covers only a specific premise or subset.
+
+### Electric and gas study periods may differ
+
+The 12-bill reconciliation period is selected independently for each fuel/meter.
+
+- Electric and gas do not need identical start/end dates.
+- Each fuel must have its own 12 consecutive source-bill sequence, actual usage total, modeled usage total, and +/-5% validation.
+- The refund claim period may be longer than the 12-bill energy-study period. The approved study percentage can then be applied to the tax paid during the eligible claim period according to NEC's methodology.
+- Store both the claim period and each fuel's study period explicitly; never infer one from the other.
+
+### Standard load-factor library
+
+NEC Ledger should support an editable NEC load-factor library used to prepopulate initial energy-study rows.
+
+A load factor is the fraction of the equipment's nameplate/rated energy draw expected during the modeled operating hours. It is not the exempt-use percentage.
+
+The energy calculation remains:
+- Electric: quantity x rated kW (or calculated kW) x load factor x modeled hours/day x days/year.
+- Gas: quantity x rated CCF/hour x load factor x modeled hours/day x days/year.
+- When gas nameplate data is in BTU/hour, preserve the source rating and conversion method used to obtain CCF/hour.
+
+The library should store:
+- Canonical equipment category
+- Fuel / energy type
+- Optional equipment subtype or operating mode
+- Default load factor
+- Observed range, when NEC has multiple historical examples
+- Source/provenance (prior NEC study, manufacturer data, field observation, or other support)
+- Number of prior NEC studies supporting the default
+- Confidence / review status
+- Notes explaining why the factor is used
+- Date last reviewed
+- Whether the value is a suggested default or a locked rule
+
+Load-factor defaults must always be editable at the study level.
+
+### Load factor versus hours and tax classification
+
+Do not encode exempt/non-exempt status into the load factor itself.
+
+The same equipment can appear on both the exempt and non-exempt sides of a study with the same load factor but different modeled hours. This is the preferred representation when one appliance performs both processing and non-processing functions.
+
+Likewise, a load factor of 1.00 does not mean an appliance runs all business hours. It may mean that the entered hours already represent actual energized/run time and the equipment is assumed to draw at rated load during those hours.
+
+Therefore NEC Ledger should treat these as independent inputs:
+1. Nameplate / rated energy draw
+2. Load factor
+3. Hours per day
+4. Days per year
+5. Exempt versus non-exempt activity allocation
+
+### Working NEC load-factor observations from reviewed restaurant studies
+
+These are historical NEC working observations, not universal engineering constants, and should initially be stored as suggested defaults subject to review:
+
+- Deep fryer: 0.50
+- Convection / commercial oven: 0.50
+- Gas griddle: 0.50
+- Food warmer: 0.50
+- Fry warmer: 0.50
+- Steam table: 0.45
+- Prep table / refrigerated prep table: 0.30
+- Coffee maker: 0.90 when modeled as exempt brewing/processing; 0.25 observed for non-exempt use
+- Soda fountain / soda charger: 0.25
+- Ice maker: about 0.42
+- Dishwasher: 0.75
+- Reach-in / standard refrigerator or freezer: about 0.50
+- Walk-in cooler: about 0.35
+- Walk-in freezer: about 0.40
+- Air conditioning: about 0.33 in a reviewed restaurant study
+- Gas furnace: about 0.22-0.23 in reviewed restaurant studies
+- Gas water heater: about 0.15 in a reviewed restaurant study
+- Lighting / signs / TV / POS / hand dryer / many fans: 1.00 when modeled hours represent the energized period
+- Microwave / toaster / open burner: 1.00 in reviewed studies where entered hours represent active use
+
+These defaults should gain or lose confidence as additional NEC studies are reviewed.
