@@ -123,3 +123,77 @@ Possible reasons for a valid variance include:
 - Equipment that is rarely encountered
 
 Confirmed outliers may be stored as case-specific exceptions without replacing the standard library value.
+
+
+## Client intake documents and completion rules
+
+NEC commonly begins a refund case with three client-provided document types:
+
+### 1. Contract
+The NEC contract is generally completed in full when the client is new.
+
+For an existing client, NEC may only require a new signature rather than re-completing every field on the contract.
+
+NEC Ledger should therefore distinguish:
+- New-client contract
+- Existing-client signature-only renewal / reauthorization
+
+The signed source contract must be preserved as originally received. Any later completed version should be stored as a separate derivative document.
+
+### 2. "Blanks" package
+The document package NEC calls "blanks" is returned by the client with only the required signatures and initials completed.
+
+The following are intentionally left blank at the time the client signs and are completed later by NEC from the customer/refund database:
+- Printed name
+- Date
+- Customer / taxpayer identifying information
+- Address and contact information
+- Filing / refund period
+- Other customer-specific form fields required for the filing
+
+Fields relating to National Energy Consultants and Matthew Hesse may already be pre-populated in the blank source form.
+
+NEC Ledger should:
+- Preserve the original signed/initialed blank form as immutable source evidence.
+- Populate the remaining authorized fields later from verified database information.
+- Create a separate completed derivative PDF.
+- Never recreate, redraw, or fabricate a signature or initials.
+- Preserve the location and appearance of the original client signature / initials when producing the completed derivative.
+
+### 3. General Utility Release
+NEC's "general utility release" is a broadly usable signed authorization for obtaining utility billing records.
+
+At client intake, the client generally signs the release. NEC completes the provider-specific and account-specific information later as needed.
+
+One signed general utility release may support separate record requests to different utility providers, including one provider for electricity and another provider for natural gas, when the signed authorization permits both.
+
+For each resulting utility-record request, NEC Ledger should create a provider-specific derivative while preserving the original signed release.
+
+Provider-specific request data may include:
+- Utility provider
+- Electric and/or gas selection
+- Customer / account name
+- Service address
+- Utility account number(s)
+- Meter number(s), if known and relevant
+- Requested historical period
+- Provider-specific instructions or contact information
+- NEC cover letter
+
+Each generated request should remain linked back to:
+- The original signed general utility release
+- The customer
+- The refund case
+- The applicable utility account and meter(s)
+- The date the records were requested
+
+### Source-versus-derivative rule
+Signed client documents are source documents and must never be overwritten.
+
+Any form completed later by NEC Ledger is a derivative document linked to its source. The audit history should show:
+- Source document
+- Date received
+- Fields added later
+- Data source for those fields
+- Date derivative was generated
+- User who approved / generated it
