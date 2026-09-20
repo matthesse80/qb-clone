@@ -240,3 +240,38 @@ For a general utility release whose execution/date field is completed by NEC aft
 - If NEC provides a specific utility release execution date, use that date only if it satisfies the rule or NEC explicitly overrides the rule for that case.
 
 Example: if a utility release is created on Sunday, September 20, 2026, the default execution date is Friday, September 18, 2026.
+
+
+## Iowa state filing form masters and quarterly version control
+
+NEC's current Iowa filing masters are:
+
+### IA 843 Refund Return
+- Page 1: form 22-009a, revision date 07/01/2025
+- Page 2: form 22-009b, revision date 07/17/2025
+- Current master packet length: 2 pages
+
+### IA 2848 Iowa Department of Revenue Power of Attorney
+- Pages 1-4: forms 14-101a through 14-101d
+- Revision date: 06/18/2026
+- Current master packet length: 4 pages
+
+NEC Ledger must check the official Iowa Department of Revenue source every three months to verify that these forms, page counts, form numbers, and revision dates are still current. If Iowa publishes a newer version, the NEC master must be replaced before new filing packets are assembled.
+
+### Client signature-page assembly rule
+
+Clients may return only the signature page(s), rather than the complete state form packet.
+
+When NEC receives only a signed portion:
+- Preserve the signed page exactly as the source document.
+- Identify the form and revision from the footer / form number on the signed page.
+- Confirm the signed page belongs to the same current form revision as the NEC master.
+- Add the missing current blank/master pages needed to reconstruct the complete filing packet.
+- Populate the authorized case-specific fields on the completed packet as part of NEC's normal filing workflow.
+- Do not combine a signed page from an older revision with blank pages from a newer revision without NEC review.
+
+For the current masters:
+- IA 843: if the client supplies only signed page 2, add current page 1 to complete the 2-page packet.
+- IA 2848: if the client supplies only signed page 4, add current pages 1-3 to complete the 4-page packet.
+
+The completed derivative filing packet must retain a link to the original client-supplied signed page(s) in the case history.
