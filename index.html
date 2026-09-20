@@ -22,15 +22,12 @@ table{width:100%;border-collapse:collapse}th,td{padding:10px 8px;border-bottom:1
 .task{border:1px solid var(--line);border-radius:10px;padding:12px;margin:9px 0}.task b{display:block}.task span{font-size:12px;color:var(--muted)}
 .footer{margin-top:17px;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 @media(max-width:1000px){.shell{grid-template-columns:1fr}.side{display:none}.metrics{grid-template-columns:1fr 1fr}.content{grid-template-columns:1fr}}@media(max-width:600px){.metrics{grid-template-columns:1fr}main{padding:18px}}
-</style></head>
+</style><link rel="stylesheet" href="assets/app-shell.css">
+</head>
 <body><div class="shell">
 <aside class="side">
 <img class="brand-art" src="assets/nec-ledger-logo.jpg" alt="NEC Ledger"><nav class="nav">
-<a class="active" href="index.html">⌂ &nbsp; Home</a>
-<a href="customers.html">Customers</a>
-<a href="#">Refund Cases</a><a href="#">Invoices</a><a href="#">Payments</a><a href="#">A/R</a>
-<a href="checking.html">Checking Ledger</a><a href="#">Reports</a><a href="#">My Company</a><a href="#">Backup & Restore</a>
-<div class="sep"></div><a href="#">Settings</a>
+<a class="active" href="index.html">⌂ &nbsp; Home</a><a href="customers.html">Customers</a><a href="refunds.html">Refunds</a><a href="receivables.html">Receivables</a><a href="checking.html">Banking</a><a href="reports.html">Reports</a><a href="company.html">Company & Admin</a>
 </nav>
 <div class="sidefoot">Records. Refunds. Results.<br><br>Same work.<br>Better tools.<br>Greater impact.</div>
 </aside>
@@ -52,8 +49,17 @@ table{width:100%;border-collapse:collapse}th,td{padding:10px 8px;border-bottom:1
 </tbody></table></div>
 <div>
 <div class="card"><h3>September collection goal</h3><div style="font-size:27px;font-weight:800;color:var(--navy2)">$9,275 <span style="font-size:14px;color:var(--muted);font-weight:400">of $24,000</span></div><div class="progress"><span></span></div><div style="font-size:12px;color:var(--muted)">39% collected</div></div>
-<div class="card" style="margin-top:16px"><h3>Quick actions</h3><div class="task"><b>Invoice recovered refunds</b><span>2 cases are ready</span></div><div class="task"><b>Complete customer records</b><span>1 record needs a contact</span></div><div class="task"><b>Reconcile checking</b><span>Open checking register</span></div></div>
+<div class="card" style="margin-top:16px"><h3>Needs attention</h3><div id="attentionList"></div></div>
+<div class="card" style="margin-top:16px"><h3>Quick actions</h3><div class="task"><b><a href="refunds.html" style="color:inherit;text-decoration:none">Open Refund Center</a></b><span>Cases, files, filing and calculations</span></div><div class="task"><b><a href="customers.html#new" style="color:inherit;text-decoration:none">Add Customer</a></b><span>Create a physical-location customer</span></div><div class="task"><b><a href="checking.html" style="color:inherit;text-decoration:none">Reconcile checking</a></b><span>Open banking register</span></div></div>
 </div>
 </section>
 <div class="footer"><span>Prototype • synthetic data only</span><span>Carbonite-ready backup architecture planned for production</span></div>
-</main></div></body></html>
+</main></div><script>
+(function(){
+ const K='necLedgerRefundCasesV1';let cases=[];try{cases=JSON.parse(localStorage.getItem(K))||[]}catch(e){}
+ const days=d=>d?Math.floor((new Date()-new Date(d+'T00:00:00'))/86400000):0;
+ const over=cases.filter(c=>c.recordsRequested&&!c.filedDate&&days(c.recordsRequested)>30&&c.status!=='None').sort((a,b)=>a.recordsRequested.localeCompare(b.recordsRequested));
+ const el=document.getElementById('attentionList');if(!el)return;
+ el.innerHTML=over.length?over.slice(0,6).map(c=>'<div class="task"><b><a href="refunds.html" style="color:inherit;text-decoration:none">'+c.customerName+'</a></b><span>Claim not filed • '+days(c.recordsRequested)+' days since records requested</span></div>').join(''):'<div class="task"><b>No claim-filing exceptions</b><span>No active case is over the 30-day threshold.</span></div>';
+})();
+</script></body></html>
