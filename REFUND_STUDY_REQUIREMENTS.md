@@ -693,19 +693,41 @@ These are historical NEC working observations, not universal engineering constan
 - Gas griddle: 0.50
 - Food warmer: 0.50
 - Fry warmer: 0.50
-- Steam table: 0.45
+- Steam table: 0.45 (standard NEC default)
 - Prep table / refrigerated prep table: 0.30
 - Coffee maker: 0.90 when modeled as exempt brewing/processing; 0.25 observed for non-exempt use
 - Soda fountain / soda charger: 0.25
 - Ice maker: about 0.42
+- Slushy maker: 0.40 (standard NEC default)
+- Ice cream maker: 0.40 (standard NEC default)
 - Dishwasher: 0.75
 - Reach-in / standard refrigerator or freezer: about 0.50
 - Walk-in cooler: about 0.35
 - Walk-in freezer: about 0.40
-- Air conditioning: about 0.33 in a reviewed restaurant study
-- Gas furnace: about 0.22-0.23 in reviewed restaurant studies
+- Air conditioning: variable by location, climate, building, and study year; do not use a fixed NEC standard without study-specific support
+- Gas furnace: variable by location, climate, building, and study year; do not use a fixed NEC standard without study-specific support
 - Gas water heater: about 0.15 in a reviewed restaurant study
 - Lighting / signs / TV / POS / hand dryer / many fans: 1.00 when modeled hours represent the energized period
 - Microwave / toaster / open burner: 1.00 in reviewed studies where entered hours represent active use
 
 These defaults should gain or lose confidence as additional NEC studies are reviewed.
+
+
+### Climate-dependent HVAC load factors
+
+Furnace and air-conditioning load factors are not fixed NEC standards.
+
+Their load factors may vary based on:
+- Geographic location and climate
+- Study year and weather conditions
+- Building envelope and insulation
+- Equipment age and efficiency
+- Thermostat settings
+- Occupancy and operating schedule
+- Other site-specific heating/cooling characteristics
+
+NEC Ledger should therefore:
+- Never auto-apply one permanent furnace or A/C load factor across all clients.
+- Treat prior HVAC values only as historical observations.
+- Require a study-specific HVAC load factor or explicit NEC approval before finalizing the study.
+- Allow location/year-specific defaults to be developed later if NEC establishes enough historical support.
