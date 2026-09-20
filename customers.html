@@ -16,7 +16,7 @@
 <main class="page-main">
 <div class="app-top"><div><h1>Customers</h1><div class="app-sub">Permanent customer/location records with linked refund history</div></div><div class="app-badge">Sample data mode</div></div>
 <div class="customer-layout">
-<section><div class="card"><div class="toolbar"><b>Customer locations</b><button id="newCustomer" class="primary">+ Add</button></div><input id="search" placeholder="Search name, city, parent organization..." style="margin-top:10px"><select id="filter" style="margin-top:8px"><option value="all">All customers</option><option value="active">Active</option><option value="open">With open refund case</option><option value="attention">Needs attention</option></select><div id="customerList" class="customer-list"></div></div></section>
+<section><div class="card"><div class="toolbar"><b>Customer locations</b><button id="newCustomer" class="primary">+ Add</button></div><input id="search" placeholder="Search any field: name, FEIN, contact, phone, account, note..." style="margin-top:10px"><select id="filter" style="margin-top:8px"><option value="all">All customers</option><option value="active">Active</option><option value="open">With open refund case</option><option value="attention">Needs attention</option></select><div id="customerList" class="customer-list"></div></div></section>
 <section>
 <div id="empty" class="card"><h2>Select a customer</h2><p class="muted">Choose a customer location on the left.</p></div>
 <div id="workspace" class="hidden">
@@ -114,7 +114,41 @@ function seed(){return[{id:'CUST-0001',customerName:'Northside Fuel Express',cit
 let customers=(()=>{try{const x=JSON.parse(localStorage.getItem(CK));return Array.isArray(x)&&x.length?x:seed()}catch{return seed()}})();let selected=customers[0]?.id||null;let activity=(()=>{try{return JSON.parse(localStorage.getItem(AK))||{}}catch{return{}}})();
 function refunds(){try{return JSON.parse(localStorage.getItem(RK))||[]}catch{return[]}}function days(d){return d?Math.floor((new Date()-new Date(d+'T00:00:00'))/86400000):0}function attention(c){return !!(c.recordsRequested&&!c.filedDate&&days(c.recordsRequested)>30&&c.status!=='None')}function nextId(){let n=customers.reduce((m,c)=>Math.max(m,Number((c.id||'').split('-')[1])||0),0)+1;return'CUST-'+String(n).padStart(4,'0')}
 function save(){localStorage.setItem(CK,JSON.stringify(customers));localStorage.setItem(AK,JSON.stringify(activity))}function log(id,t){activity[id]=activity[id]||[];activity[id].unshift({at:new Date().toISOString(),text:t});save()}
-function caseSet(id){return refunds().filter(r=>r.customerId===id)}function renderList(){const q=$('search').value.toLowerCase(),f=$('filter').value,rs=refunds();let out=customers.filter(c=>{let cs=rs.filter(r=>r.customerId===c.id),match=[c.customerName,c.city,c.parentOrg,c.companyName].join(' ').toLowerCase().includes(q),scope=f==='all'||(f==='active'&&c.active!==false)||(f==='open'&&cs.some(x=>x.status!=='None'))||(f==='attention'&&cs.some(attention));return match&&scope});$('customerList').innerHTML=out.map(c=>'<div class="customer-item '+(c.id===selected?'active':'')+'" data-id="'+c.id+'"><b>'+esc(c.customerName)+'</b><span>'+esc(c.city||'')+'</span><br><small>'+esc(c.parentOrg||c.companyName||'')+'</small></div>').join('')||'<p class="muted">No customers match.</p>';document.querySelectorAll('.customer-item').forEach(x=>x.onclick=()=>{selected=x.dataset.id;renderAll()})}
+function caseSet(id){return refunds().filter(r=>r.customerId===id)}
+function flattenSearchValues(value,path='',out=[]){
+ if(value===null||value===undefined)return out;
+ if(Array.isArray(value)){value.forEach((v,i)=>flattenSearchValues(v,path?path+'['+i+']':String(i),out));return out}
+ if(typeof value==='object'){Object.entries(value).forEach(([k,v])=>flattenSearchValues(v,path?path+'.'+k:k,out));return out}
+ if(typeof value==='string'||typeof value==='number'||typeof value==='boolean')out.push({path,value:String(value)});
+ return out;
+}
+function normalizeSearchText(s){return String(s??'').toLowerCase().replace(/\s+/g,' ').trim()}
+function compactSearchText(s){return String(s??'').toLowerCase().replace(/[^a-z0-9]/g,'')}
+function recordMatchesQuery(customer,linkedCases,query){
+ const q=normalizeSearchText(query);if(!q)return true;
+ const fields=[
+  ...flattenSearchValues(customer,'customer'),
+  ...flattenSearchValues(linkedCases,'refunds'),
+  ...flattenSearchValues(activity[customer.id]||[],'activity')
+ ];
+ const plain=normalizeSearchText(fields.map(x=>x.value).join(' '));
+ const compact=compactSearchText(fields.map(x=>x.value).join(' '));
+ return q.split(' ').filter(Boolean).every(term=>{
+  const t=normalizeSearchText(term),tc=compactSearchText(term);
+  return plain.includes(t)||(tc.length>=3&&compact.includes(tc));
+ });
+}
+function renderList(){
+ const q=$('search').value,f=$('filter').value,rs=refunds();
+ let out=customers.filter(c=>{
+  let cs=rs.filter(r=>r.customerId===c.id),
+      match=recordMatchesQuery(c,cs,q),
+      scope=f==='all'||(f==='active'&&c.active!==false)||(f==='open'&&cs.some(x=>x.status!=='None'))||(f==='attention'&&cs.some(attention));
+  return match&&scope
+ });
+ $('customerList').innerHTML=out.map(c=>'<div class="customer-item '+(c.id===selected?'active':'')+'" data-id="'+c.id+'"><b>'+esc(c.customerName)+'</b><span>'+esc(c.city||'')+'</span><br><small>'+esc(c.parentOrg||c.companyName||'')+'</small></div>').join('')||'<p class="muted">No customers match.</p>';
+ document.querySelectorAll('.customer-item').forEach(x=>x.onclick=()=>{selected=x.dataset.id;renderAll()})
+}
 function renderWorkspace(){const c=customers.find(x=>x.id===selected);$('empty').classList.toggle('hidden',!!c);$('workspace').classList.toggle('hidden',!c);if(!c)return;const cs=caseSet(c.id),open=cs.filter(x=>x.status!=='None');$('title').textContent=c.customerName+' — '+c.city;$('subtitle').textContent=c.parentOrg||c.companyName||'Independent location';$('sAccount').textContent=c.id;$('sCases').textContent=open.length;$('sFee').textContent=(c.feePct||50)+'%';$('sStatus').textContent=c.active!==false?'Active':'Inactive';
 {const ep=providerProfile(c.electricProvider),gp=providerProfile(c.gasProvider);const formHint=p=>!p?'—':(p.providerType==='municipal'?'Municipal: NEC cover letter + NEC General Utility Release'+(p.requiresProviderForm?' + provider-specific form':''):(p.routeKey==='midamerican'?'MidAmerican provider-specific authorization':p.routeKey==='linn-rec-combined'?'Linn County REC form + NEC General Utility Release':p.requiresProviderForm?'Provider-specific utility form':p.requiresGeneral?'NEC General Utility Release':'Configured provider workflow'));$('panel-overview').innerHTML='<div class="grid-2"><div><div class="fieldline"><div class="key">Primary contact</div><div>'+esc(c.primaryContact||'—')+'</div></div><div class="fieldline"><div class="key">Main email</div><div>'+esc(c.mainEmail||'—')+'</div></div><div class="fieldline"><div class="key">Terms</div><div>'+esc(c.terms||'Due on receipt')+'</div></div><div class="fieldline"><div class="key">Representative</div><div>'+esc(c.rep||'—')+'</div></div></div><div><div class="fieldline"><div class="key">Electric provider</div><div>'+esc(c.electricProvider||'—')+'<br><small class="muted">'+esc(formHint(ep))+'</small></div></div><div class="fieldline"><div class="key">Gas provider</div><div>'+esc(c.gasProvider||'—')+'<br><small class="muted">'+esc(formHint(gp))+'</small></div></div><div class="fieldline"><div class="key">Confirmed organization</div><div>'+esc(c.confirmedOrgName||'—')+'</div></div><div class="fieldline"><div class="key">General note</div><div>'+esc(c.notes||'—')+'</div></div></div></div>';}
 $('panel-refunds').innerHTML='<div class="toolbar"><h3 style="margin:0">Refund history</h3><a class="btn primary" href="refunds.html">Open Refund Center</a></div>'+(cs.length?'<table><thead><tr><th>Cycle</th><th>Status</th><th>Records requested</th><th>Filed</th><th>Attention</th></tr></thead><tbody>'+cs.map(r=>'<tr><td>'+esc(r.cycleLabel)+'</td><td>'+esc(r.status)+'</td><td>'+esc(r.recordsRequested||'—')+'</td><td>'+esc(r.filedDate||'Not filed')+'</td><td>'+(attention(r)?'<span class="pill bad">Overdue</span>':'—')+'</td></tr>').join('')+'</tbody></table>':'<p class="muted">No refund cases yet.</p>');
