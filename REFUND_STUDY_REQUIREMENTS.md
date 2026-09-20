@@ -434,3 +434,92 @@ Current known provider workflows:
 - MidAmerican Energy Company: MidAmerican provider-specific authorization form instead of the NEC General Utility Release.
 - Linn County REC: Linn County REC Member Usage Authorization Form + NEC General Utility Release; same verified customer signature placed on both authorization forms.
 - Waukee Municipal: Waukee public-records request form + NEC cover letter + NEC General Utility Release.
+
+
+## Historical utility-tax reconstruction by bill period
+
+NEC Ledger must calculate utility-tax refunds from the tax actually charged on each individual utility bill. It must not assume that one tax presentation or one tax rate applies to every provider, county, or period in the claim.
+
+### Bill-by-bill tax classification
+
+For every utility bill included in a refund calculation, retain at minimum:
+- Utility provider
+- Customer / service location
+- Utility account
+- Meter, when available
+- Energy type
+- Bill date
+- Service-period start and end, when available
+- Taxable utility charges / tax base, when identifiable
+- Every tax line exactly as displayed on the source bill
+- Original tax-line label
+- Original tax amount
+- Source document and source page
+- State
+- County / local jurisdiction applicable to the service location
+- Historical tax-rate rule used for that bill
+- Effective date range of the tax-rate rule
+- Whether the bill displayed state and local tax separately or as one combined tax line
+- Any decomposition of a combined tax line into state and local components
+- Whether the decomposition was calculated automatically or required NEC review
+
+### Split-tax bills
+
+If the provider separately states State Tax and county / local-option tax on the bill, NEC Ledger should preserve those actual billed amounts as the source tax amounts.
+
+Do not replace separately stated billed tax amounts with a reconstructed amount merely because a published rate table produces a slightly different result. Differences caused by rounding, tax-base exclusions, provider billing logic, or partial-period treatment should be retained and flagged for reconciliation when material.
+
+### Combined-tax bills
+
+Some providers display one combined tax amount that includes both state sales tax and local / county tax.
+
+For a combined tax line, NEC Ledger must:
+1. Determine the applicable service jurisdiction from the service location.
+2. Determine the state and local tax rates actually in effect for the bill's applicable period.
+3. Use a historical tax-rate table with effective dates rather than the current tax rate.
+4. Compare the combined published rate against the effective tax rate implied by the bill when a usable taxable base is available.
+5. Break the billed combined tax into state and local components using the applicable historical rates.
+6. Preserve the original combined tax amount and the calculated component amounts in the audit trail.
+7. Reconcile the calculated state + local components back to the original combined tax charged, allowing only explainable rounding differences.
+8. Stop for NEC review when the rate, jurisdiction, tax base, or reconciliation is ambiguous.
+
+### Historical-rate changes inside one claim
+
+Tax rates may change during the refund claim period. Therefore:
+- A claim may contain multiple tax-rate periods.
+- Tax treatment must be resolved by the bill / service period, not by the claim's end date or by today's rate.
+- A new rate must not be applied retroactively to older bills.
+- NEC Ledger should maintain effective-from and effective-through dates for each state and local tax-rate rule.
+- When a bill's service period crosses a rate-change date and the provider does not already split the tax, NEC Ledger must use the provider's billing-period treatment when known; otherwise require review rather than inventing a proration method.
+
+### County / local-option breakout
+
+The local-option portion of the refund must be accumulated by the county / jurisdiction in which the taxable utility service occurred.
+
+A single refund case may therefore contain:
+- State-tax refund totals across all included utility bills
+- One or more county / local-option refund subtotals
+- Separate electric and gas calculations that ultimately roll into the same state and county filing schedules
+
+The calculation output must show enough detail to reproduce every county subtotal from the underlying bills.
+
+### Refund application
+
+After the original state and local tax paid has been established for each bill, apply the energy-study exempt percentage to each tax component.
+
+For each bill and tax component:
+
+Refundable tax = Original tax paid x Exempt-use percentage
+
+Non-refundable / corrected tax = Original tax paid x Non-exempt-use percentage
+
+State and local calculations must remain separate through the entire calculation chain even when the source bill originally displayed one combined tax line.
+
+### Validation controls
+
+Before finalizing the refund:
+- Sum reconstructed state + local tax back to the original billed tax for combined-tax bills.
+- Compare historical published rates to the effective rate implied by the bill when the taxable base is available.
+- Flag unexpected rate changes, unexplained tax-rate mismatches, missing county assignment, or ambiguous tax labels.
+- Do not silently infer a county or historical rate when the service jurisdiction is uncertain.
+- Reconcile the final state-tax refund, county/local refund totals, and total refund back to the state filing form.
