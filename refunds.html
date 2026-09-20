@@ -136,7 +136,7 @@
 </main></div>
 
 <script>
-const CASE_KEY='necLedgerRefundCasesV1', CUSTOMER_KEY='necLedgerCustomersV1', ACT_KEY='necLedgerCaseActivityV1';
+const CASE_KEY='necLedgerRefundCasesV1', CUSTOMER_KEY='necLedgerCustomersV1', ACT_KEY='necLedgerCaseActivityV1', PT_KEY='necLedgerProviderTemplatesV1';
 const $=id=>document.getElementById(id), money=n=>Number(n||0).toLocaleString('en-US',{style:'currency',currency:'USD'});
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 function defaultCustomers(){return[{id:'CUST-0001',customerName:'Northside Fuel Express',city:'Waterloo',companyName:'Midwest Fuel Group LLC',parentOrg:'Midwest Fuel Group',active:true,terms:'Due on receipt',feePct:50},{id:'CUST-0002',customerName:'Southside Motor Mart',city:'Cedar Falls',companyName:'Midwest Fuel Group LLC',parentOrg:'Midwest Fuel Group',active:true,terms:'Net 30',feePct:50}]}
@@ -158,16 +158,36 @@ function logEvent(caseId,text){activity[caseId]=activity[caseId]||[];activity[ca
 function isoNextDay(date){if(!date)return'';const d=new Date(date+'T12:00:00');d.setDate(d.getDate()+1);return d.toISOString().slice(0,10)}
 function recentWeekdayBeforeToday(){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-1);while(d.getDay()===0||d.getDay()===6)d.setDate(d.getDate()-1);return d.toISOString().slice(0,10)}
 function isWeekdayWithinPrior7(date){if(!date)return false;const d=new Date(date+'T12:00:00'),now=new Date();now.setHours(12,0,0,0);const age=(now-d)/86400000;return d.getDay()!==0&&d.getDay()!==6&&age>=1&&age<=7}
+function providerTemplates(){try{const x=JSON.parse(localStorage.getItem(PT_KEY));return Array.isArray(x)?x:[]}catch{return[]}}
+function providerProfile(name){
+ const n=String(name||'').trim().toLowerCase();if(!n)return null;
+ return providerTemplates().find(p=>[p.provider,...String(p.aliases||'').split(';').map(x=>x.trim())].some(a=>a&&a.toLowerCase()===n))||null;
+}
+function routeForProvider(name){
+ const p=providerProfile(name);if(p&&p.active!==false)return p.routeKey||'custom-provider';
+ const n=String(name||'').toLowerCase();
+ if(n.includes('midamerican'))return'midamerican';
+ if(n.includes('linn county')||n.includes('linn co')||n.includes('linn rec'))return'linn-rec-combined';
+ if(n.includes('waukee'))return'waukee-combined';
+ return'nec-general';
+}
+function requestSeedFromCustomer(c){
+ const customer=customers.find(x=>x.id===c.customerId)||{};
+ const out=[];
+ const add=(provider,energy,account)=>{if(!provider)return;const p=providerProfile(provider),route=routeForProvider(provider);out.push({id:nextUtilityId({utilityRequests:out}),provider,energy,account:account||'',meters:'',serviceAddress:[customer.physStreet,customer.physCity,customer.physStateZip].filter(Boolean).join(', '),authSource:'',priorClaimEnd:latestFiledEnd(c),requestStart:latestFiledEnd(c)?isoNextDay(latestFiledEnd(c)):'',requestEnd:'',recordsRequested:'',recordsReceived:'',signerName:customer.ownerName||customer.primaryContact||'',signerTitle:'',executionDate:recentWeekdayBeforeToday(),hasCover:(p?.providerType==='municipal'||p?.requiresCover==='yes')?'yes':(p?.requiresCover==='no'?'no':'yes'),coverText:'',signatureQA:'pending',notes:'',authTemplate:route,providerProfileId:p?.id||'',templateVersionId:p?.currentVersionId||''})};
+ add(customer.electricProvider,'Electric',customer.electricAccounts);
+ if(customer.gasProvider){
+   if(customer.gasProvider===customer.electricProvider&&out.length){out[0].energy='Electric and Gas';if(customer.gasAccounts&&customer.gasAccounts!==customer.electricAccounts)out[0].account=[customer.electricAccounts,customer.gasAccounts].filter(Boolean).join('; ');}
+   else add(customer.gasProvider,'Gas',customer.gasAccounts);
+ }
+ return out;
+}
 function nextUtilityId(c){const n=(c.utilityRequests||[]).reduce((m,u)=>Math.max(m,Number((u.id||'').split('-')[1])||0),0)+1;return 'UTIL-'+String(n).padStart(3,'0')}
 function latestFiledEnd(c){let ends=cases.filter(x=>x.customerId===c.customerId&&x.id!==c.id&&x.filedDate&&x.periodEnd).map(x=>x.periodEnd);return ends.sort().pop()||''}
 function overlapsKnownFiledPeriod(c,u){if(!u.requestStart)return false;return cases.some(x=>x.customerId===c.customerId&&x.id!==c.id&&x.filedDate&&x.periodStart&&x.periodEnd&&u.requestStart<=x.periodEnd&&(u.requestEnd||'9999-12-31')>=x.periodStart)}
 function providerTemplate(u){
- const p=(u.provider||'').toLowerCase();
  if(u.authTemplate&&u.authTemplate!=='auto')return u.authTemplate;
- if(p.includes('midamerican'))return 'midamerican';
- if(p.includes('linn county')||p.includes('linn co')||p.includes('linn rec'))return 'linn-rec-combined';
- if(p.includes('waukee'))return 'waukee-combined';
- return 'nec-general';
+ return routeForProvider(u.provider);
 }
 function utilityChecks(c,u){
  const checks=[];
@@ -193,7 +213,10 @@ function utilityChecks(c,u){
 }
 function renderUtilityRequests(c){
  const us=c.utilityRequests||[];
+ const customer=customers.find(x=>x.id===c.customerId)||{};
+ const unsynced=[...new Set([customer.electricProvider,customer.gasProvider].filter(Boolean))].filter(p=>!us.some(u=>u.provider===p));
  const html='<div class="toolbar"><div><h3 style="margin:0">Utility Requests</h3><div class="muted">Provider-specific request history, non-overlap controls, package generation, and preflight.</div></div><button class="primary" onclick="openUtilityModal()">+ Add Utility Request</button></div>'+
+ (unsynced.length?'<div class="notice" style="margin-top:12px"><b>Customer utility profile has provider'+(unsynced.length>1?'s':'')+' not yet added to this refund:</b> '+unsynced.map(esc).join(', ')+' <button style="margin-left:8px" onclick="syncCustomerUtilities()">Add from Customer Profile</button></div>':'')+
  (us.length?us.map(u=>{
    const checks=utilityChecks(c,u),bad=checks.filter(x=>!x.ok).length;
    return '<div class="utility-card"><div class="toolbar"><div><h4>'+esc(u.provider||'Unnamed utility')+'</h4><div class="muted">'+esc(u.energy||'')+' • Account '+esc(u.account||'—')+'</div></div><div><span class="pill '+(bad?'bad':'good')+'">'+(bad?bad+' preflight issue'+(bad===1?'':'s'):'Ready to generate')+'</span></div></div>'+
@@ -240,6 +263,13 @@ $('newCaseBtn').onclick=()=>openCaseModal(null);$('editCaseBtn').onclick=()=>ope
 $('saveCaseBtn').onclick=()=>{if(!$('caseCustomer').value||!$('cycleLabel').value.trim())return alert('Customer and cycle label are required.');const id=$('caseId').value||nextId(),old=cases.find(x=>x.id===id);const c={id,customerId:$('caseCustomer').value,customerName:customerName($('caseCustomer').value),cycleLabel:$('cycleLabel').value.trim(),jurisdiction:$('jurisdiction').value.trim(),status:$('status').value,utilityProvider:$('utilityProvider').value.trim(),assignedEmployee:$('assignedEmployee').value.trim(),periodStart:$('periodStart').value,periodEnd:$('periodEnd').value,recordsRequested:$('recordsRequested').value,recordsReceived:$('recordsReceived').value,filedDate:$('filedDate').value,stateReference:$('stateReference').value.trim(),electricRefund:Number($('electricRefund').value||0),gasRefund:Number($('gasRefund').value||0),otherRefund:Number($('otherRefund').value||0),feePct:Number($('feePct').value||0),nextAction:$('nextAction').value.trim(),followupDate:$('followupDate').value,notes:$('caseNotes').value.trim(),utilityRequests:old?.utilityRequests||[]};const i=cases.findIndex(x=>x.id===id);if(i>=0)cases[i]=c;else cases.push(c);selectedId=id;persist();logEvent(id,old?'Case updated':'Refund case created');$('caseModal').classList.add('hidden');renderAll()};
 $('deleteCaseBtn').onclick=()=>{if(confirm('Delete this prototype case?')){cases=cases.filter(c=>c.id!==$('caseId').value);selectedId=cases[0]?.id||null;persist();$('caseModal').classList.add('hidden');renderAll()}};
 
+window.syncCustomerUtilities=()=>{
+ const c=cases.find(x=>x.id===selectedId);if(!c)return;
+ const seeds=requestSeedFromCustomer(c);c.utilityRequests=c.utilityRequests||[];
+ let added=0;
+ for(const u of seeds){if(!c.utilityRequests.some(x=>x.provider===u.provider)){u.id=nextUtilityId(c);c.utilityRequests.push(u);added++;}}
+ if(added){c.utilityProvider=[...new Set(c.utilityRequests.map(x=>x.provider).filter(Boolean))].join('; ');persist();logEvent(c.id,'Utility request records added from customer profile');renderAll()}else alert('All customer utility providers are already represented in this refund case.');
+};
 window.openUtilityModal=(utilityId)=>{
  const c=cases.find(x=>x.id===selectedId);if(!c)return;
  const u=(c.utilityRequests||[]).find(x=>x.id===utilityId)||null;
@@ -259,7 +289,8 @@ $('uProvider').onblur=()=>{const p=$('uProvider').value.toLowerCase();if($('uAut
 $('saveUtilityBtn').onclick=()=>{
  const c=cases.find(x=>x.id===selectedId);if(!c)return;
  const id=$('utilityId').value||nextUtilityId(c);
- const u={id,provider:$('uProvider').value.trim(),energy:$('uEnergy').value,authTemplate:$('uAuthTemplate').value,account:$('uAccount').value.trim(),meters:$('uMeters').value.trim(),serviceAddress:$('uServiceAddress').value.trim(),authSource:$('uAuthSource').value.trim(),priorClaimEnd:$('uPriorEnd').value,requestStart:$('uRequestStart').value,requestEnd:$('uRequestEnd').value,recordsRequested:$('uRecordsRequested').value,recordsReceived:$('uRecordsReceived').value,signerName:$('uSignerName').value.trim(),signerTitle:$('uSignerTitle').value.trim(),executionDate:$('uExecutionDate').value,hasCover:$('uHasCover').value,coverText:$('uCoverText').value,signatureQA:$('uSignatureQA').value,notes:$('uNotes').value.trim()};
+ const selectedProvider=$('uProvider').value.trim(),profile=providerProfile(selectedProvider);
+ const u={id,provider:selectedProvider,energy:$('uEnergy').value,authTemplate:$('uAuthTemplate').value==='auto'?routeForProvider(selectedProvider):$('uAuthTemplate').value,providerProfileId:profile?.id||'',templateVersionId:profile?.currentVersionId||'',account:$('uAccount').value.trim(),meters:$('uMeters').value.trim(),serviceAddress:$('uServiceAddress').value.trim(),authSource:$('uAuthSource').value.trim(),priorClaimEnd:$('uPriorEnd').value,requestStart:$('uRequestStart').value,requestEnd:$('uRequestEnd').value,recordsRequested:$('uRecordsRequested').value,recordsReceived:$('uRecordsReceived').value,signerName:$('uSignerName').value.trim(),signerTitle:$('uSignerTitle').value.trim(),executionDate:$('uExecutionDate').value,hasCover:$('uHasCover').value,coverText:$('uCoverText').value,signatureQA:$('uSignatureQA').value,notes:$('uNotes').value.trim()};
  if(!u.provider||!u.account||!u.authSource||!u.signerName||!u.requestStart)return alert('Provider, account number, authorization source, signer name, and requested-history start are required.');
  const prior=u.priorClaimEnd||latestFiledEnd(c);if(prior&&u.requestStart<=prior)return alert('Blocked: requested history overlaps or begins inside the prior filed period. Start after '+prior+'.');
  if(overlapsKnownFiledPeriod(c,u))return alert('Blocked: this requested period overlaps another filed refund period for this customer.');
