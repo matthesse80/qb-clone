@@ -286,3 +286,17 @@ When preparing a new utility-record request, NEC Ledger must review the prior re
 - Do not add customer-specific information, account numbers, service addresses, requested dates, or other fields to the cover letter unless those items appeared on the prior cover letter or NEC specifically requests them.
 - Provider/account/request-period details should remain on the utility release or other page where NEC historically placed them.
 - The purpose is to avoid causing the utility to act only on summary information shown on the cover page and overlook the full records request stated on the following page.
+
+
+## Utility request package delivery rule
+
+When a utility-record request includes a cover letter and utility release, NEC Ledger should package them as one combined multi-page PDF in the correct order:
+
+1. Cover letter
+2. Utility release
+
+The combined PDF is the primary deliverable and should be treated as a single document for email attachment, faxing, storage, and drag-and-drop workflows.
+
+Page-level rendered previews may still be generated for visual review, but they are secondary QA artifacts and should not replace the combined PDF as the user-facing deliverable.
+
+If a prior request package contained additional pages, preserve that same package order unless NEC explicitly directs otherwise.
