@@ -1,44 +1,154 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NEC Ledger - Company & Admin</title><link rel="stylesheet" href="assets/app-shell.css"></head>
-<body><div class="shell"><aside class="side"><img class="brand-art" src="assets/nec-ledger-logo.jpg" alt="NEC Ledger"><nav class="nav">
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEC Ledger - Company & Admin</title>
+<link rel="stylesheet" href="assets/app-shell.css">
+<style>
+.provider-card{border:1px solid var(--nec-line);border-radius:12px;padding:14px;margin:10px 0;background:#fff}
+.provider-card h4{margin:0;color:var(--nec-blue-dark)}
+.provider-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:12px;margin-top:10px}
+.provider-k{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--nec-muted);margin-bottom:3px}
+.version-row{display:grid;grid-template-columns:1.2fr .7fr .8fr .8fr auto;gap:8px;align-items:center;padding:9px 0;border-top:1px solid #edf0f3}
+.version-row:first-child{border-top:0}
+.modal-admin{position:fixed;inset:5% 8%;z-index:80;overflow:auto;box-shadow:0 18px 50px rgba(0,0,0,.28)}
+.file-current{background:#f7f9fb;border:1px solid var(--nec-line);border-radius:9px;padding:10px}
+.small-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:900px){.provider-grid,.version-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body><div class="shell">
+<aside class="side"><img class="brand-art" src="assets/nec-ledger-logo.jpg" alt="NEC Ledger"><nav class="nav">
 <a href="index.html">⌂ &nbsp; Home</a><a href="customers.html">Customers</a><a href="refunds.html">Refunds</a><a href="receivables.html">Receivables</a><a href="checking.html">Banking</a><a href="reports.html">Reports</a><a class="active" href="company.html">Company & Admin</a>
-</nav><div class="sidefoot">Records. Refunds. Results.<br><br>Same work.<br>Better tools.<br>Greater impact.</div></aside><main class="page-main">
+</nav><div class="sidefoot">Records. Refunds. Results.<br><br>Same work.<br>Better tools.<br>Greater impact.</div></aside>
+<main class="page-main">
 <div class="app-top"><div><h1>Company & Admin</h1><div class="app-sub">Company identity, continuity, backup and system settings</div></div><div class="app-badge">Prototype</div></div>
-<div class="grid-2"><div class="card"><h3>My Company</h3><p><b>National Energy Consultants</b></p><p class="muted">Legal identity, addresses, registrations, advisers, insurance/licenses and continuity information will live here.</p></div>
-<div class="card"><h3>Backup & Restore</h3><p class="muted">Production design: application-consistent snapshots to a Carbonite-protected folder, plus manual Back up now and quarterly restore tests.</p><button disabled>Back up now — production build</button></div>
+
+<div class="grid-2">
+<div class="card"><h3>My Company</h3><p><b>National Energy Consultants</b></p><p class="muted">Legal identity, addresses, registrations, advisers, insurance/licenses and continuity information will live here.</p></div>
+<div class="card"><h3>Backup & Restore</h3><p class="muted">Production design: application-consistent snapshots to a Carbonite-protected folder, plus manual Back up now and quarterly restore tests.</p><button disabled>Back up now - production build</button></div>
 <div class="card"><h3>Users & Recovery</h3><p class="muted">Owner login, emergency co-owner access, session timeout and recovery settings.</p></div>
 <div class="card"><h3>Follow-Up Rules</h3><p><b>Active rule:</b> Claim not filed more than 30 days after utility records requested.</p><p class="muted">Future rules will be configurable by trigger, time interval and clearing condition.</p></div>
-<div class="card" style="grid-column:1/-1"><div class="toolbar"><div><h3 style="margin:0">Utility Provider Templates</h3><p class="muted" style="margin:4px 0 0">Provider-specific document workflows can be added, replaced, versioned, or retired without changing the refund-case data model.</p></div><button id="addProviderTemplate" class="primary">+ Add Provider Template</button></div>
-<div id="providerTemplateList" style="margin-top:12px"></div></div></div>
+
+<div class="card" style="grid-column:1/-1">
+<div class="toolbar"><div><h3 style="margin:0">Utility Provider Templates</h3><p class="muted" style="margin:4px 0 0">Upload, replace, version and retire provider-specific forms without changing the refund-case structure.</p></div><button id="addProviderTemplate" class="primary">+ Add Provider Template</button></div>
+<div class="notice" style="margin-top:12px">Prototype storage: uploaded master forms stay in this browser's IndexedDB and are not uploaded to the public GitHub repository. PDF is preferred for provider forms. Replacing a form creates a new version and keeps the prior version in history.</div>
+<div id="providerTemplateList" style="margin-top:12px"></div>
+</div>
+</div>
+
+<div id="providerModal" class="hidden card modal-admin">
+<div class="toolbar"><div><h2 id="providerModalTitle" style="margin:0">Provider Template</h2><div class="muted">Document workflow and provider matching</div></div><button id="closeProviderModal">Close</button></div>
+<input type="hidden" id="ptId">
+<div class="grid-3" style="margin-top:14px">
+<div><label>Provider name *</label><input id="ptProvider"></div>
+<div><label>Aliases / matching names</label><input id="ptAliases" placeholder="Separate aliases with semicolons"></div>
+<div><label>Workflow name *</label><input id="ptWorkflow"></div>
+<div><label>Routing key</label><select id="ptRoute">
+<option value="nec-general">NEC General Utility Release</option>
+<option value="midamerican">MidAmerican provider form</option>
+<option value="linn-rec-combined">Linn County REC combined</option>
+<option value="waukee-combined">Waukee Municipal three-page</option>
+<option value="custom-provider">Other provider-specific workflow</option>
+</select></div>
+<div><label>Cover letter</label><select id="ptCover"><option value="inherit">Inherit prior provider package</option><option value="yes">Always include</option><option value="no">Do not include</option></select></div>
+<div><label>Status</label><select id="ptActive"><option value="yes">Active</option><option value="no">Inactive</option></select></div>
+<div><label>Provider form required?</label><select id="ptProviderForm"><option value="yes">Yes</option><option value="no">No</option></select></div>
+<div><label>NEC General Utility Release required?</label><select id="ptGeneral"><option value="yes">Yes</option><option value="no">No</option></select></div>
+<div><label>Same customer signature on multiple pages?</label><select id="ptMultiSig"><option value="no">No</option><option value="yes">Yes</option></select></div>
+</div>
+<div style="margin-top:12px"><label>Package page order *</label><textarea id="ptOrder" style="min-height:82px"></textarea></div>
+<div style="margin-top:12px"><label>Provider-specific completion instructions</label><textarea id="ptInstructions" style="min-height:100px"></textarea></div>
+<div class="toolbar" style="justify-content:flex-end;margin-top:14px"><button id="saveProviderBtn" class="primary">Save Provider</button></div>
+</div>
+
+<div id="versionModal" class="hidden card modal-admin">
+<div class="toolbar"><div><h2 id="versionModalTitle" style="margin:0">Upload Template Version</h2><div class="muted">The current version will be preserved as superseded history.</div></div><button id="closeVersionModal">Close</button></div>
+<input type="hidden" id="versionProviderId">
+<div class="grid-2" style="margin-top:14px">
+<div><label>Master form file *</label><input id="versionFile" type="file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"></div>
+<div><label>Revision / version *</label><input id="versionRevision" placeholder="Example: 15-40 (11/30/2021)"></div>
+<div><label>Date verified current</label><input id="versionVerified" type="date"></div>
+<div><label>Effective / source date</label><input id="versionEffective" type="date"></div>
+</div>
+<div style="margin-top:12px"><label>Version notes</label><textarea id="versionNotes" placeholder="What changed, source received from provider, special completion notes..."></textarea></div>
+<div class="toolbar" style="justify-content:flex-end;margin-top:14px"><button id="saveVersionBtn" class="primary">Upload and Make Current</button></div>
+</div>
+
 </main></div>
+
 <script>
 const PT_KEY='necLedgerProviderTemplatesV1';
 const seedTemplates=[
- {id:'PT-STD',provider:'Standard / fallback',aliases:'',workflow:'NEC General Utility Release',order:'Inherited cover letter when historically used -> NEC General Utility Release',requiresCover:'inherit',requiresGeneral:true,requiresProviderForm:false,multiSignature:false,revision:'Internal standard',verified:'',active:true},
- {id:'PT-MIDAM',provider:'MidAmerican Energy Company',aliases:'MidAmerican; MidAmerican Energy',workflow:'MidAmerican provider-specific authorization',order:'MidAmerican Authorization for Release of Information',requiresCover:'inherit',requiresGeneral:false,requiresProviderForm:true,multiSignature:false,revision:'Provider-specific; version to be verified',verified:'',active:true},
- {id:'PT-LINN',provider:'Linn County REC',aliases:'Linn County Rural Electric Cooperative; Linn Co REC',workflow:'Linn County combined authorization',order:'Linn County REC Member Usage Authorization Form -> NEC General Utility Release',requiresCover:'inherit',requiresGeneral:true,requiresProviderForm:true,multiSignature:true,revision:'Provider-specific; version to be verified',verified:'',active:true},
- {id:'PT-WAUKEE',provider:'Waukee Municipal',aliases:'Waukee Municipal Utilities; Waukee Mun',workflow:'Waukee three-page request package',order:'Waukee Request for Examination and Copying of Public Records -> NEC cover letter -> NEC General Utility Release',requiresCover:'yes',requiresGeneral:true,requiresProviderForm:true,multiSignature:false,revision:'Provider-specific; version to be verified',verified:'',active:true}
+ {id:'PT-STD',provider:'Standard / fallback',aliases:'',workflow:'NEC General Utility Release',routeKey:'nec-general',order:'Inherited cover letter when historically used -> NEC General Utility Release',requiresCover:'inherit',requiresGeneral:true,requiresProviderForm:false,multiSignature:false,instructions:'Use the NEC General Utility Release unless a provider-specific profile overrides it.',active:true,versions:[],currentVersionId:''},
+ {id:'PT-MIDAM',provider:'MidAmerican Energy Company',aliases:'MidAmerican; MidAmerican Energy',workflow:'MidAmerican provider-specific authorization',routeKey:'midamerican',order:'MidAmerican Authorization for Release of Information',requiresCover:'inherit',requiresGeneral:false,requiresProviderForm:true,multiSignature:false,instructions:'Use the MidAmerican provider form. Do not substitute the NEC General Utility Release.',active:true,versions:[],currentVersionId:''},
+ {id:'PT-LINN',provider:'Linn County REC',aliases:'Linn County Rural Electric Cooperative; Linn Co REC; Linn REC',workflow:'Linn County combined authorization',routeKey:'linn-rec-combined',order:'Linn County REC Member Usage Authorization Form -> NEC General Utility Release',requiresCover:'inherit',requiresGeneral:true,requiresProviderForm:true,multiSignature:true,instructions:'Place the same verified client-authorized signature on the Linn County REC form and the NEC General Utility Release.',active:true,versions:[],currentVersionId:''},
+ {id:'PT-WAUKEE',provider:'Waukee Municipal',aliases:'Waukee Municipal Utilities; Waukee Mun',workflow:'Waukee three-page request package',routeKey:'waukee-combined',order:'Waukee Request for Examination and Copying of Public Records -> NEC cover letter -> NEC General Utility Release',requiresCover:'yes',requiresGeneral:true,requiresProviderForm:true,multiSignature:false,instructions:'Keep the Waukee public-records request form first, NEC cover letter second, and NEC General Utility Release third.',active:true,versions:[],currentVersionId:''}
 ];
-let templates=(()=>{try{const x=JSON.parse(localStorage.getItem(PT_KEY));return Array.isArray(x)&&x.length?x:seedTemplates}catch{return seedTemplates}})();
-const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-function saveTemplates(){localStorage.setItem(PT_KEY,JSON.stringify(templates));renderTemplates()}
-function renderTemplates(){
- document.getElementById('providerTemplateList').innerHTML=templates.map(t=>'<div style="border:1px solid var(--nec-line);border-radius:10px;padding:12px;margin:8px 0;background:#fff"><div class="toolbar"><div><b>'+esc(t.provider)+'</b><div class="muted">'+esc(t.workflow)+'</div></div><div><span class="pill '+(t.active?'good':'bad')+'">'+(t.active?'Active':'Inactive')+'</span> <button onclick="editTemplate(\''+t.id+'\')">Edit</button></div></div><div class="grid-2" style="margin-top:8px"><div><small class="muted">Package order</small><div>'+esc(t.order)+'</div></div><div><small class="muted">Revision / verification</small><div>'+esc(t.revision||'—')+(t.verified?' • verified '+esc(t.verified):'')+'</div></div></div></div>').join('');
+
+function normalizeTemplate(t){
+ return Object.assign({aliases:'',workflow:'Provider-specific utility request',routeKey:'custom-provider',order:'Provider form',requiresCover:'inherit',requiresGeneral:false,requiresProviderForm:true,multiSignature:false,instructions:'',active:true,versions:[],currentVersionId:''},t,{versions:Array.isArray(t.versions)?t.versions:[]});
 }
+let templates=(()=>{try{const x=JSON.parse(localStorage.getItem(PT_KEY));return Array.isArray(x)&&x.length?x.map(normalizeTemplate):seedTemplates.map(normalizeTemplate)}catch{return seedTemplates.map(normalizeTemplate)}})();
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const fmtBytes=n=>{n=Number(n||0);if(n<1024)return n+' B';if(n<1048576)return (n/1024).toFixed(1)+' KB';return (n/1048576).toFixed(1)+' MB'};
+function saveTemplates(){localStorage.setItem(PT_KEY,JSON.stringify(templates));renderTemplates()}
+
+let dbp=new Promise((resolve,reject)=>{const req=indexedDB.open('necLedgerProviderTemplateFiles',1);req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains('files'))db.createObjectStore('files',{keyPath:'id'})};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)});
+async function putTemplateBlob(rec){const db=await dbp;return new Promise((resolve,reject)=>{const r=db.transaction('files','readwrite').objectStore('files').put(rec);r.onsuccess=resolve;r.onerror=()=>reject(r.error)})}
+async function getTemplateBlob(id){const db=await dbp;return new Promise((resolve,reject)=>{const r=db.transaction('files').objectStore('files').get(id);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+
+function currentVersion(t){return (t.versions||[]).find(v=>v.id===t.currentVersionId)||null}
+function versionHistoryHtml(t){
+ const vs=[...(t.versions||[])].sort((a,b)=>(b.uploadedAt||'').localeCompare(a.uploadedAt||''));
+ if(!vs.length)return '<div class="muted">No master form has been uploaded yet.</div>';
+ return vs.map(v=>'<div class="version-row"><div><b>'+esc(v.fileName)+'</b><br><small class="muted">'+fmtBytes(v.fileSize)+' • '+esc(v.fileType||'file')+'</small></div><div>'+esc(v.revision||'Unlabeled')+'</div><div>'+esc(v.verified||'Not verified')+'</div><div><span class="pill '+(v.id===t.currentVersionId?'good':'info')+'">'+(v.id===t.currentVersionId?'CURRENT':'Superseded')+'</span></div><div class="small-actions"><button onclick="openVersion(\''+v.id+'\')">Open</button><button onclick="downloadVersion(\''+v.id+'\')">Download</button>'+(v.id===t.currentVersionId?'':'<button onclick="makeCurrent(\''+t.id+'\',\''+v.id+'\')">Make current</button>')+'</div></div>').join('');
+}
+function renderTemplates(){
+ document.getElementById('providerTemplateList').innerHTML=templates.map(t=>{
+  const cur=currentVersion(t);
+  return '<div class="provider-card"><div class="toolbar"><div><h4>'+esc(t.provider)+'</h4><div class="muted">'+esc(t.workflow)+'</div></div><div class="small-actions"><span class="pill '+(t.active?'good':'bad')+'">'+(t.active?'Active':'Inactive')+'</span><button onclick="editTemplate(\''+t.id+'\')">Edit Workflow</button><button class="primary" onclick="uploadVersion(\''+t.id+'\')">'+(cur?'Replace / New Version':'Upload Master Form')+'</button></div></div>'+
+  '<div class="provider-grid"><div><div class="provider-k">Package order</div><div>'+esc(t.order)+'</div></div><div><div class="provider-k">Current master</div><div class="file-current">'+(cur?'<b>'+esc(cur.fileName)+'</b><br><span class="muted">'+esc(cur.revision||'No revision label')+(cur.verified?' • verified '+esc(cur.verified):'')+'</span>':'<span class="muted">No current provider form uploaded</span>')+'</div></div><div><div class="provider-k">Rules</div><div>'+(t.requiresProviderForm?'Provider form required':'No provider form')+'<br>'+(t.requiresGeneral?'NEC General Release required':'No NEC General Release')+'<br>Cover: '+esc(t.requiresCover)+(t.multiSignature?'<br>Same customer signature on multiple pages':'')+'</div></div></div>'+
+  (t.instructions?'<div style="margin-top:10px"><div class="provider-k">Completion instructions</div><div>'+esc(t.instructions)+'</div></div>':'')+
+  '<details style="margin-top:12px"><summary style="cursor:pointer;font-weight:700">Version history ('+(t.versions||[]).length+')</summary><div style="margin-top:8px">'+versionHistoryHtml(t)+'</div></details></div>';
+ }).join('');
+}
+
 window.editTemplate=id=>{
  const t=templates.find(x=>x.id===id);if(!t)return;
- const provider=prompt('Provider name',t.provider);if(provider===null)return;
- const aliases=prompt('Aliases / matching names',t.aliases||'');if(aliases===null)return;
- const workflow=prompt('Workflow name',t.workflow||'');if(workflow===null)return;
- const order=prompt('Package page order',t.order||'');if(order===null)return;
- const revision=prompt('Current form revision/version notes',t.revision||'');if(revision===null)return;
- const verified=prompt('Date verified current (YYYY-MM-DD)',t.verified||'');if(verified===null)return;
- Object.assign(t,{provider,aliases,workflow,order,revision,verified});saveTemplates();
+ document.getElementById('providerModalTitle').textContent='Edit Provider Template';
+ document.getElementById('ptId').value=t.id;document.getElementById('ptProvider').value=t.provider;document.getElementById('ptAliases').value=t.aliases||'';document.getElementById('ptWorkflow').value=t.workflow||'';document.getElementById('ptRoute').value=t.routeKey||'custom-provider';document.getElementById('ptCover').value=t.requiresCover||'inherit';document.getElementById('ptActive').value=t.active?'yes':'no';document.getElementById('ptProviderForm').value=t.requiresProviderForm?'yes':'no';document.getElementById('ptGeneral').value=t.requiresGeneral?'yes':'no';document.getElementById('ptMultiSig').value=t.multiSignature?'yes':'no';document.getElementById('ptOrder').value=t.order||'';document.getElementById('ptInstructions').value=t.instructions||'';
+ document.getElementById('providerModal').classList.remove('hidden');
 };
 document.getElementById('addProviderTemplate').onclick=()=>{
- const provider=prompt('Provider name');if(!provider)return;
- const workflow=prompt('Workflow name','Provider-specific utility request');if(workflow===null)return;
- const order=prompt('Package page order','Provider form -> NEC cover letter if required -> NEC General Utility Release if required');if(order===null)return;
- templates.push({id:'PT-'+Date.now(),provider,aliases:'',workflow,order,requiresCover:'inherit',requiresGeneral:false,requiresProviderForm:true,multiSignature:false,revision:'',verified:'',active:true});saveTemplates();
+ document.getElementById('providerModalTitle').textContent='Add Provider Template';document.getElementById('ptId').value='';document.getElementById('ptProvider').value='';document.getElementById('ptAliases').value='';document.getElementById('ptWorkflow').value='Provider-specific utility request';document.getElementById('ptRoute').value='custom-provider';document.getElementById('ptCover').value='inherit';document.getElementById('ptActive').value='yes';document.getElementById('ptProviderForm').value='yes';document.getElementById('ptGeneral').value='no';document.getElementById('ptMultiSig').value='no';document.getElementById('ptOrder').value='Provider form';document.getElementById('ptInstructions').value='';document.getElementById('providerModal').classList.remove('hidden');
 };
+document.getElementById('closeProviderModal').onclick=()=>document.getElementById('providerModal').classList.add('hidden');
+document.getElementById('saveProviderBtn').onclick=()=>{
+ const id=document.getElementById('ptId').value||'PT-'+Date.now();
+ const old=templates.find(x=>x.id===id);
+ const t=normalizeTemplate({id,provider:document.getElementById('ptProvider').value.trim(),aliases:document.getElementById('ptAliases').value.trim(),workflow:document.getElementById('ptWorkflow').value.trim(),routeKey:document.getElementById('ptRoute').value,requiresCover:document.getElementById('ptCover').value,active:document.getElementById('ptActive').value==='yes',requiresProviderForm:document.getElementById('ptProviderForm').value==='yes',requiresGeneral:document.getElementById('ptGeneral').value==='yes',multiSignature:document.getElementById('ptMultiSig').value==='yes',order:document.getElementById('ptOrder').value.trim(),instructions:document.getElementById('ptInstructions').value.trim(),versions:old?.versions||[],currentVersionId:old?.currentVersionId||''});
+ if(!t.provider||!t.workflow||!t.order)return alert('Provider name, workflow name, and package page order are required.');
+ const i=templates.findIndex(x=>x.id===id);if(i>=0)templates[i]=t;else templates.push(t);saveTemplates();document.getElementById('providerModal').classList.add('hidden');
+};
+
+window.uploadVersion=id=>{
+ const t=templates.find(x=>x.id===id);if(!t)return;
+ document.getElementById('versionProviderId').value=id;document.getElementById('versionModalTitle').textContent=(currentVersion(t)?'Replace / Add Version - ':'Upload Master Form - ')+t.provider;document.getElementById('versionFile').value='';document.getElementById('versionRevision').value='';document.getElementById('versionVerified').value='';document.getElementById('versionEffective').value='';document.getElementById('versionNotes').value='';document.getElementById('versionModal').classList.remove('hidden');
+};
+document.getElementById('closeVersionModal').onclick=()=>document.getElementById('versionModal').classList.add('hidden');
+document.getElementById('saveVersionBtn').onclick=async()=>{
+ const providerId=document.getElementById('versionProviderId').value,t=templates.find(x=>x.id===providerId),file=document.getElementById('versionFile').files[0];if(!t||!file)return alert('Choose a master form file.');
+ const revision=document.getElementById('versionRevision').value.trim();if(!revision)return alert('Enter the form revision/version.');
+ const id='PTFILE-'+Date.now();const meta={id,fileName:file.name,fileType:file.type||'application/octet-stream',fileSize:file.size,revision,verified:document.getElementById('versionVerified').value,effective:document.getElementById('versionEffective').value,notes:document.getElementById('versionNotes').value.trim(),uploadedAt:new Date().toISOString()};
+ await putTemplateBlob({id,providerId,blob:file,fileName:file.name,fileType:meta.fileType,uploadedAt:meta.uploadedAt});
+ t.versions=t.versions||[];t.versions.forEach(v=>v.status='superseded');meta.status='current';t.versions.push(meta);t.currentVersionId=id;saveTemplates();document.getElementById('versionModal').classList.add('hidden');
+};
+window.openVersion=async id=>{const r=await getTemplateBlob(id);if(!r)return alert('Template file is not available in this browser.');const url=URL.createObjectURL(r.blob);window.open(url,'_blank');setTimeout(()=>URL.revokeObjectURL(url),120000)};
+window.downloadVersion=async id=>{const r=await getTemplateBlob(id);if(!r)return alert('Template file is not available in this browser.');const url=URL.createObjectURL(r.blob),a=document.createElement('a');a.href=url;a.download=r.fileName||'provider-template';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000)};
+window.makeCurrent=(providerId,versionId)=>{const t=templates.find(x=>x.id===providerId);if(!t)return;if(!confirm('Make this older version current for future utility requests?'))return;t.currentVersionId=versionId;(t.versions||[]).forEach(v=>v.status=v.id===versionId?'current':'superseded');saveTemplates()};
+
 renderTemplates();
-</script></body></html>
+</script>
+</body>
+</html>
