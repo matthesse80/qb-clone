@@ -22,20 +22,16 @@ body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f4f6f8;color:#1f
 .app-badge{font-size:12px;padding:7px 11px;border-radius:999px;background:#eef6df;color:#517a20;border:1px solid #cfe5af}
 @media(max-width:1000px){.shell{grid-template-columns:1fr}.side{display:none}.page-main{padding:18px}}
 </style>
+<link rel="stylesheet" href="assets/app-shell.css">
 </head>
 <body><div class="shell"><aside class="side">
   <img class="brand-art" src="assets/nec-ledger-logo.jpg" alt="NEC Ledger">
   <nav class="nav">
-    <a class="" href="index.html">⌂ &nbsp; Home</a>
-    <a class="" href="customers.html">Customers</a>
-    <a href="#">Refund Cases</a><a href="#">Invoices</a><a href="#">Payments</a><a href="#">A/R</a>
-    <a class="active" href="checking.html">Checking Ledger</a>
-    <a href="#">Reports</a><a href="#">My Company</a><a href="#">Backup & Restore</a>
-    <div class="sep"></div><a href="#">Settings</a>
-  </nav>
+<a href="index.html">⌂ &nbsp; Home</a><a href="customers.html">Customers</a><a href="refunds.html">Refunds</a><a href="receivables.html">Receivables</a><a class="active" href="checking.html">Banking</a><a href="reports.html">Reports</a><a href="company.html">Company & Admin</a>
+</nav>
   <div class="sidefoot">Records. Refunds. Results.<br><br>Same work.<br>Better tools.<br>Greater impact.</div>
 </aside><main class="page-main">
-<div class="app-top"><div><h1>Checking Ledger</h1><div class="app-sub">Register, reconciliation, exports, and year-end categorization</div></div><div class="app-badge">Sample data mode</div></div><div class="wrap" style="max-width:none;margin:0;padding:0">
+<div class="app-top"><div><h1>Banking</h1><div class="app-sub">Register, reconciliation, exports, and year-end categorization</div></div><div class="app-badge">Sample data mode</div></div><div class="wrap" style="max-width:none;margin:0;padding:0">
 <div class="card toolbar"><div><h2 style="margin:0">Checking ledger</h2><div class="muted">Book balance, cleared balance, reconciliation and year-end categorization.</div></div><div><button id="exportCsv">Export CSV</button> <button id="backupJson">Backup data</button> <button class="primary" id="newTxn">+ Transaction</button></div></div>
 
 <div class="grid" style="margin-bottom:16px"><div class="stat"><span class="muted">Book balance</span><b id="bookBalance">$0.00</b></div><div class="stat"><span class="muted">Cleared balance</span><b id="clearedBalance">$0.00</b></div><div class="stat"><span class="muted">Uncleared difference</span><b id="unclearedTotal">$0.00</b></div><div class="stat"><span class="muted">Transactions</span><b id="txnCount">0</b></div></div>
