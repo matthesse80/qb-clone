@@ -225,3 +225,16 @@ For these state forms:
 - The printed signer name must be checked against the customer's documented signer history before insertion.
 - The original signed/initialed source form should remain preserved in the case record, while the completed filing version is stored as a separate derivative document.
 - NEC-specific and Matthew Hesse-specific fields that are already part of the standard form/template may remain pre-populated.
+
+
+## Execution-date rule for generated documents
+
+For NEC documents that require an execution/signature date to be completed by NEC after the client has signed or otherwise authorized completion:
+
+- The execution date should be a weekday (Monday through Friday).
+- It should fall within the seven calendar days immediately preceding the document creation date.
+- Unless NEC specifies a different qualifying weekday, use the most recent weekday before the creation date.
+- Never use a weekend date for the execution date.
+- If NEC provides a specific execution date, use that date only if it satisfies the rule or NEC explicitly overrides the rule for that case.
+
+Example: if a document is created on Sunday, September 20, 2026, the default execution date is Friday, September 18, 2026.
