@@ -545,3 +545,74 @@ The energy-study non-exempt percentage is applied independently to each reconstr
 - Refundable tax = Original tax - corrected tax.
 
 The study percentage should be based on the modeled exempt and non-exempt equipment usage used by NEC. Actual meter usage is a reconciliation/validation input; it does not automatically replace the modeled exempt/non-exempt denominator. The study must display the comparison between modeled total usage and actual billed/metered usage and flag material variance for review.
+
+
+## Bill issue-date assignment and 12-bill study reconciliation
+
+Tax-breakdown period assignment and energy-study usage reconciliation are related but distinct workflows.
+
+### Tax breakdown period is based on bill issue date
+
+Every individual utility bill must be assigned to the tax-breakdown month and quarter in which the bill was issued.
+
+Rules:
+- Use the bill's issue / bill date for tax-breakdown placement, not the service-period end date, payment date, due date, or an assumed one-bill-per-month sequence.
+- If a provider issues two or more bills in one calendar month, all of those bills belong in that same issue month and their applicable state/local tax amounts are aggregated into that month's tax-breakdown value.
+- If no bill is issued in a calendar month, that month contributes zero tax to the tax-breakdown sheet.
+- Quarterly breakout totals are the sum of the bills actually issued in the three calendar months of that quarter.
+- Preserve each underlying bill as a separate source record even when multiple bills are aggregated into one tax-breakdown line.
+- Provider billing cadence must never be normalized to one bill per month merely for convenience.
+
+This is especially important for providers whose billing dates shift over time, including cases where one month contains two issue dates and another contains none.
+
+### Energy-study actual-usage period uses 12 consecutive bills
+
+The electric and gas energy-study reconciliation must be based on the actual usage from the 12-bill period selected for the study, not on an assumption of 12 distinct calendar months.
+
+Rules:
+- Select the 12 consecutive utility bills that correspond to the study period / meter-read period established for that fuel.
+- Sum the usage from all 12 selected bills.
+- Two bills issued in the same calendar month still count as two separate bills if both are part of the selected 12-bill sequence.
+- A calendar month with no issued bill does not create a synthetic zero-usage bill.
+- Electric and gas may have different 12-bill sequences and different exact study dates.
+- Preserve each bill's issue date, service/read dates, usage amount, units, and source page.
+- Normalize gas units to the study unit when required, while retaining the original billed unit and conversion method.
+
+### Five-percent study validation
+
+For each fuel separately:
+
+Modeled usage = Exempt modeled usage + Non-exempt modeled usage
+
+Comparison ratio = Modeled usage / Actual usage from the selected 12 bills
+
+Variance % = (Modeled usage - Actual usage) / Actual usage
+
+The completed study is acceptable only when modeled usage is within +/-5% of the actual 12-bill usage.
+
+Controls:
+- Electric and gas must each pass the +/-5% test independently.
+- A failed comparison blocks finalization until the equipment assumptions, operating hours, load factors, unit conversions, meter linkage, or selected 12-bill period are reviewed.
+- Do not alter actual billed usage to force the comparison into range.
+- Keep the actual-usage total, modeled exempt total, modeled non-exempt total, comparison percentage, and variance percentage visible in the audit record.
+
+### NEC calculation workbook as refund control
+
+NEC's calculation workbook is a required refund-level check and should be completed for every refund.
+
+The automated workflow should populate a copy of the approved calculation-workbook template with:
+- Electric study start/end dates
+- The 12 selected electric-bill usage values and total
+- Gas study start/end dates
+- The 12 selected gas-bill usage values and total
+- Gas unit-conversion support where needed
+- Bill-level state and local tax amounts assigned by issue month
+- Monthly-to-quarterly tax aggregation
+- Historical combined-tax decomposition when applicable
+- Electric and gas non-exempt percentages from the completed studies
+- State Electric, County Electric, State Gas, and County Gas breakout sheets
+- Final reconciliation to the IA 843 state-tax, local-option-tax, and total-refund amounts
+
+The workbook should function as an independent control against NEC Ledger's internal calculation. The final refund should not be considered ready until the workbook and NEC Ledger totals reconcile.
+
+Any fixed tax-split helper in a workbook template (for example 6/7 state and 1/7 local) is only a convenience for periods where that historical rate structure actually applies. NEC Ledger must determine the applicable historical rate first and must not blindly apply a fixed split across all providers or periods.
