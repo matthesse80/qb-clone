@@ -329,3 +329,40 @@ Required QA:
 - Preserve blank continuation lines and other form elements that appear on the source form when recreating the page.
 - Render every page of the final combined PDF after assembly and visually inspect the full page before delivery.
 - The final email/fax deliverable must remain one true multi-page PDF, not a single tall combined image.
+
+
+## Provider-specific utility authorization forms
+
+The NEC General Utility Release is a fallback / standard form, not a universal form for every utility provider.
+
+Before generating any utility-record request, NEC Ledger must determine whether the utility provider requires or historically uses its own authorization form.
+
+Rules:
+- Provider-specific authorization forms override the NEC General Utility Release when NEC has established that the provider uses its own form.
+- Cover-letter inheritance is independent of authorization-form selection. If the prior request package for that provider included a cover letter, include the corresponding inherited cover letter unless NEC explicitly directs otherwise.
+- Do not force provider-specific requests into the field layout or wording of the NEC General Utility Release.
+- Preserve the provider's own field structure, selections, instructions, authorization choices, and signature/date area.
+- Provider-specific templates must be versioned. Store provider name, template name, source/revision date when known, date verified, and whether the template is currently approved for use.
+- If the provider-specific form is not available or its version is uncertain, block final package generation and require review rather than silently substituting the NEC General Utility Release.
+
+### MidAmerican Energy Company
+MidAmerican Energy Company uses its own "Authorization for Release of Information - Historical Customer Usage Information" form.
+
+The provider-specific workflow must support the form's distinct fields and choices, including:
+- Customer name and title
+- Service address
+- Company name
+- Customer phone and email
+- NEC third-party contact information
+- Account-specific request versus aggregate request
+- Electric / lighting / gas selection
+- Usage only versus amounts billed
+- Previous 12 months / previous 24 months / specified period
+- Specified-period limit shown on the form
+- Utility account number(s)
+- Meter number(s), when applicable
+- Additional-account / additional-address indicators
+- Authorization duration / expiration choice
+- Customer signature and date
+
+When MidAmerican is selected as the provider, NEC Ledger should select the MidAmerican provider-specific authorization template rather than the NEC General Utility Release.
