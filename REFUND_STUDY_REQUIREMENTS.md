@@ -911,3 +911,83 @@ Once Matt approves the filing strategy:
 - For separate claims, each filing uses the beginning and ending period supported by the bills included in that fuel-specific claim.
 - If a later bill is intentionally excluded for parity, that bill must remain available for a future claim and must not be marked as already refunded.
 - Never silently discard an unmatched bill or mark its period as claimed unless it was actually included in the filed claim.
+
+
+## Energy-study workbook formula fidelity and industrial-equipment observations
+
+NEC Ledger should reproduce the calculation logic used in NEC's working Excel energy-study workbook rather than substitute a different engineering formula unless Matt explicitly changes the methodology.
+
+### Electric row formula priority
+
+For each equipment row, calculate annual kWh from the first available rating method in this order:
+
+1. Watts:
+   quantity x (watts / 1000) x load factor x hours/day x days/year
+2. Volts and amps:
+   quantity x (volts x amps / 1000) x load factor x hours/day x days/year
+3. Horsepower:
+   quantity x (horsepower x 746 / 1000) x load factor x hours/day x days/year
+
+Round each equipment row to the nearest whole kWh, matching the existing NEC workbook.
+
+For three-phase motors, preserve NEC's current workbook convention: multiply nameplate volts by 1.732 before entering the volts value used in the volts x amps formula. Do not silently substitute a different three-phase or power-factor methodology unless Matt directs a change.
+
+### Study totals
+
+- Total exempt kWh = sum of exempt equipment rows.
+- Total non-exempt kWh = sum of non-exempt equipment rows.
+- Exempt percentage = total exempt / (total exempt + total non-exempt).
+- Non-exempt percentage = total non-exempt / (total exempt + total non-exempt).
+- Comparison = (total exempt + total non-exempt) / actual kWh from selected study bills.
+- Variance = comparison - 1.00.
+- Final validation remains within +/-5% of actual usage.
+
+### Pallet / wood-products manufacturing observations
+
+The Odessa Wood Products study provides useful historical NEC observations for industrial equipment. These are not yet universal defaults unless separately identified as established NEC standards.
+
+Observed exempt-side load factors:
+- Pallet dismantler: 1.00
+- Chop saw: 1.00
+- Radial arm saw: 1.00
+- Horizontal band resaw: 1.00
+- Band saw: 1.00
+- Swing saw: 1.00
+- Double-head notcher: 1.00
+- Pallet-making machine: 1.00
+- Pop-up saw: 1.00
+- Roto chopper grinder: 1.00
+- Air compressor for nailers: 0.70 on one group and 1.00 on another unit in the reviewed study
+
+Observed non-exempt-side factors:
+- Conveyor for pallet machine: 1.00
+- Dust collector: 1.00
+- Microwave: 1.00
+- Computer: 1.00
+- Ceiling fan: 1.00
+- Electric water heater: 0.15
+- LED lighting: 1.00
+- Coffee maker: 0.30 in this historical study
+- Refrigerator: 0.50
+- Pop machine: 0.33
+- A/C: 0.36 in this site/year-specific historical study only
+- Security lights: 1.00
+
+The historical coffee-maker 0.30 observation does not override NEC's currently established standard/default where Matt has specified a different value. HVAC remains site/year-specific and should not be standardized from this example.
+
+### Utility-bill corrections and mixed-source packets
+
+Utility source packets may contain:
+- corrected bills,
+- correction tables,
+- multiple bill sections on one issued bill,
+- multiple service addresses or premises,
+- or pages that are not part of the studied meter/premise.
+
+NEC Ledger must preserve the provider's corrected bill amounts and must identify the exact service address/account/meter tied to the study before using usage or tax data.
+
+When a provider issues a corrected bill that changes previously billed tax or usage:
+- retain both original and corrected source references,
+- use the provider's final corrected amount for the refund calculation,
+- record the correction in the audit trail,
+- and do not double-count the original and corrected bill.
