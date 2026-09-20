@@ -300,3 +300,18 @@ The combined PDF is the primary deliverable and should be treated as a single do
 Page-level rendered previews may still be generated for visual review, but they are secondary QA artifacts and should not replace the combined PDF as the user-facing deliverable.
 
 If a prior request package contained additional pages, preserve that same package order unless NEC explicitly directs otherwise.
+
+
+## Signature placement and visual QA
+
+Client signatures used on utility releases and state filing derivatives must be treated as high-risk visual elements because clipping, truncation, poor alignment, or overlap can cause a request or filing to be rejected.
+
+Before finalizing a document:
+- Preserve the complete visible signature, including descenders, flourishes, and trailing strokes.
+- Do not crop tightly enough to cut any portion of the signature.
+- Position the signature naturally on or immediately above the intended signature line, consistent with the source document.
+- Keep adequate clearance from the printed signature label and nearby text.
+- Do not stretch the signature disproportionately.
+- Render the completed page at full size and visually inspect the entire signature region before delivery.
+- If the signature is close to an image boundary or form line, use extra crop margin and reposition rather than trimming the source.
+- A utility-request package should not be considered complete until the signature is fully visible in the final rendered PDF.
