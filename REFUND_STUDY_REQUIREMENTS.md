@@ -731,3 +731,83 @@ NEC Ledger should therefore:
 - Treat prior HVAC values only as historical observations.
 - Require a study-specific HVAC load factor or explicit NEC approval before finalizing the study.
 - Allow location/year-specific defaults to be developed later if NEC establishes enough historical support.
+
+
+## Missing-bill and service-period continuity control
+
+NEC Ledger must check the continuity of utility service periods before a refund is finalized. A missing utility bill can reduce the refund because tax and usage from the omitted service period are not captured.
+
+This continuity check is separate from tax-breakdown period assignment:
+- Tax-breakdown placement is based on the bill ISSUE DATE.
+- Missing-bill detection is based primarily on SERVICE-PERIOD / METER-READ COVERAGE.
+
+### Continuity logic
+
+For each provider + utility account + meter + fuel/service combination:
+1. Sort the source bills by service-period start/end date (or meter-read dates when those are the provider's coverage boundaries).
+2. Compare each bill's coverage end with the next bill's coverage start.
+3. Treat normal boundary conventions as continuous when the next period starts on the same date as the prior period ends, or no more than one calendar day later.
+4. If the uncovered interval is more than one day, flag a potential missing bill / missing service period.
+5. Do not infer that a bill is missing merely because one calendar month has no bill issue date. Some providers issue two bills in one month and none in another.
+6. Do not use due date or payment date for continuity testing.
+7. If a provider does not show explicit service dates, use meter-read dates or other reliable coverage dates when available.
+8. If reliable coverage dates are unavailable, flag continuity as "Unable to verify" rather than inventing a service period.
+
+The gap record should retain:
+- Provider
+- Account
+- Meter
+- Fuel/service type
+- Prior bill issue date
+- Prior coverage start/end
+- Next bill issue date
+- Next coverage start/end
+- Number of uncovered days
+- Estimated missing period
+- Source pages / bill identifiers
+- Review status
+- NEC decision
+
+### Filing decision when a gap exists
+
+A detected service-period gap is a filing decision gate, not an automatic permanent filing block.
+
+NEC Ledger must present Matt with these choices:
+- Request missing bill / postpone filing
+- Proceed despite missing period
+- Not actually a gap / resolved
+
+Default behavior is to hold final filing until a decision is recorded.
+
+If "Request missing bill / postpone filing" is selected:
+- Mark the refund as waiting for missing utility records.
+- Prevent the case from being marked filed.
+- Create/fill a follow-up action for the utility provider.
+- Re-run continuity review when replacement/additional bills are received.
+
+If "Proceed despite missing period" is selected:
+- Require a short decision note.
+- Preserve the gap warning and decision in the audit trail.
+- Allow calculation/filing to continue using only the bills actually received.
+- Do not fabricate usage, tax, or a synthetic bill for the missing period.
+- Make clear that the resulting refund may be lower because the missing period was excluded.
+
+If "Not actually a gap / resolved" is selected:
+- Require a brief resolution note or reference to the bill/document that closes the gap.
+- Remove the filing hold but preserve the original flag and resolution history.
+
+### Multiple gaps
+
+If multiple service-period gaps are found, track each independently. Final filing can proceed only when every gap has either:
+- been resolved, or
+- received an explicit "Proceed despite missing period" decision.
+
+### 12-bill study impact
+
+A bill with missing coverage can also affect the 12-bill usage study.
+
+The selected 12-bill study sequence must be reviewed for service-period continuity. If one of the selected 12 bills is missing:
+- Do not silently substitute a zero-usage month.
+- Prefer obtaining the missing bill before finalizing the study.
+- If NEC intentionally uses a different continuous 12-bill sequence, record the selected sequence and reason.
+- If Matt explicitly proceeds with an incomplete usage sequence, flag the study as requiring manual approval and do not represent the +/-5% comparison as fully validated without that approval.
