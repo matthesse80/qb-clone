@@ -106,7 +106,8 @@
 <div><label>Account number *</label><input id="uAccount"></div>
 <div><label>Meter(s)</label><input id="uMeters" placeholder="Comma-separated meter IDs"></div>
 <div><label>Service address</label><input id="uServiceAddress"></div>
-<div><label>Authorization / signature source *</label><input id="uAuthSource" placeholder="Signed general utility release on file"></div>
+<div><label>Authorization form *</label><select id="uAuthTemplate"><option value="auto">Auto by provider</option><option value="nec-general">NEC General Utility Release</option><option value="midamerican">MidAmerican provider form</option></select></div>
+<div><label>Authorization / signature source *</label><input id="uAuthSource" placeholder="Signed authorization on file"></div>
 <div><label>Prior filed claim ends</label><input id="uPriorEnd" type="date"></div>
 <div><label>Requested history starts *</label><input id="uRequestStart" type="date"></div>
 <div><label>Requested history ends</label><input id="uRequestEnd" type="date"><div class="muted">Leave blank for Present</div></div>
@@ -160,6 +161,12 @@ function isWeekdayWithinPrior7(date){if(!date)return false;const d=new Date(date
 function nextUtilityId(c){const n=(c.utilityRequests||[]).reduce((m,u)=>Math.max(m,Number((u.id||'').split('-')[1])||0),0)+1;return 'UTIL-'+String(n).padStart(3,'0')}
 function latestFiledEnd(c){let ends=cases.filter(x=>x.customerId===c.customerId&&x.id!==c.id&&x.filedDate&&x.periodEnd).map(x=>x.periodEnd);return ends.sort().pop()||''}
 function overlapsKnownFiledPeriod(c,u){if(!u.requestStart)return false;return cases.some(x=>x.customerId===c.customerId&&x.id!==c.id&&x.filedDate&&x.periodStart&&x.periodEnd&&u.requestStart<=x.periodEnd&&(u.requestEnd||'9999-12-31')>=x.periodStart)}
+function providerTemplate(u){
+ const p=(u.provider||'').toLowerCase();
+ if(u.authTemplate&&u.authTemplate!=='auto')return u.authTemplate;
+ if(p.includes('midamerican'))return 'midamerican';
+ return 'nec-general';
+}
 function utilityChecks(c,u){
  const checks=[];
  const add=(ok,label)=>checks.push({ok,label});
@@ -167,6 +174,8 @@ function utilityChecks(c,u){
  add(!!u.account,'Utility account number entered');
  add(!!u.energy,'Energy type selected');
  add(!!u.authSource,'Signed authorization / signature source identified');
+ const tpl=providerTemplate(u);
+ add(tpl!=='midamerican'||u.authTemplate==='midamerican'||(u.provider||'').toLowerCase().includes('midamerican'),'MidAmerican requests use the MidAmerican provider form');
  add(!!u.signerName,'Signer identity entered');
  add(!!u.requestStart,'Requested history start entered');
  const prior=u.priorClaimEnd||latestFiledEnd(c);
@@ -184,7 +193,7 @@ function renderUtilityRequests(c){
  (us.length?us.map(u=>{
    const checks=utilityChecks(c,u),bad=checks.filter(x=>!x.ok).length;
    return '<div class="utility-card"><div class="toolbar"><div><h4>'+esc(u.provider||'Unnamed utility')+'</h4><div class="muted">'+esc(u.energy||'')+' • Account '+esc(u.account||'—')+'</div></div><div><span class="pill '+(bad?'bad':'good')+'">'+(bad?bad+' preflight issue'+(bad===1?'':'s'):'Ready to generate')+'</span></div></div>'+
-   '<div class="utility-grid"><div class="fieldline"><div class="key">History requested</div><div>'+esc(u.requestStart||'—')+' to '+esc(u.requestEnd||'Present')+'</div></div><div class="fieldline"><div class="key">Prior claim end</div><div>'+esc(u.priorClaimEnd||latestFiledEnd(c)||'—')+'</div></div><div class="fieldline"><div class="key">Meters</div><div>'+esc(u.meters||'—')+'</div></div><div class="fieldline"><div class="key">Records requested</div><div>'+esc(u.recordsRequested||'Not sent')+'</div></div><div class="fieldline"><div class="key">Records received</div><div>'+esc(u.recordsReceived||'Not received')+'</div></div><div class="fieldline"><div class="key">Cover letter</div><div>'+(u.hasCover==='yes'?'Required from prior package':'Not used previously')+'</div></div></div>'+
+   '<div class="utility-grid"><div class="fieldline"><div class="key">History requested</div><div>'+esc(u.requestStart||'—')+' to '+esc(u.requestEnd||'Present')+'</div></div><div class="fieldline"><div class="key">Prior claim end</div><div>'+esc(u.priorClaimEnd||latestFiledEnd(c)||'—')+'</div></div><div class="fieldline"><div class="key">Meters</div><div>'+esc(u.meters||'—')+'</div></div><div class="fieldline"><div class="key">Records requested</div><div>'+esc(u.recordsRequested||'Not sent')+'</div></div><div class="fieldline"><div class="key">Records received</div><div>'+esc(u.recordsReceived||'Not received')+'</div></div><div class="fieldline"><div class="key">Cover letter</div><div>'+(u.hasCover==='yes'?'Required from prior package':'Not used previously')+'</div></div><div class="fieldline"><div class="key">Authorization form</div><div>'+esc(providerTemplate(u)==='midamerican'?'MidAmerican provider form':'NEC General Utility Release')+'</div></div></div>'+
    '<ul class="checklist">'+checks.map(x=>'<li class="'+(x.ok?'check-ok':'check-bad')+'">'+(x.ok?'✓':'✕')+' '+esc(x.label)+'</li>').join('')+'</ul>'+
    '<div class="toolbar" style="justify-content:flex-end;margin-top:12px"><button onclick="openUtilityModal(\''+u.id+'\')">Edit</button><button class="primary" onclick="generateUtilityPackage(\''+u.id+'\')">Generate Request Package</button></div></div>';
  }).join(''):'<div class="package-note" style="margin-top:12px">No utility requests yet. Add one provider at a time. The system will suggest the first unclaimed date from prior filed cases and will block known overlaps.</div>');
@@ -232,7 +241,7 @@ window.openUtilityModal=(utilityId)=>{
  const u=(c.utilityRequests||[]).find(x=>x.id===utilityId)||null;
  const suggestedPrior=u?.priorClaimEnd||latestFiledEnd(c)||'';
  $('utilityFormTitle').textContent=u?'Edit Utility Request':'New Utility Request';$('utilityId').value=u?.id||'';
- $('uProvider').value=u?.provider||'';$('uEnergy').value=u?.energy||'Electric';$('uAccount').value=u?.account||'';$('uMeters').value=u?.meters||'';$('uServiceAddress').value=u?.serviceAddress||'';
+ $('uProvider').value=u?.provider||'';$('uEnergy').value=u?.energy||'Electric';$('uAuthTemplate').value=u?.authTemplate||'auto';$('uAccount').value=u?.account||'';$('uMeters').value=u?.meters||'';$('uServiceAddress').value=u?.serviceAddress||'';
  $('uAuthSource').value=u?.authSource||'';$('uPriorEnd').value=suggestedPrior;$('uRequestStart').value=u?.requestStart||(suggestedPrior?isoNextDay(suggestedPrior):'');$('uRequestEnd').value=u?.requestEnd||'';
  $('uRecordsRequested').value=u?.recordsRequested||'';$('uRecordsReceived').value=u?.recordsReceived||'';$('uSignerName').value=u?.signerName||'';$('uSignerTitle').value=u?.signerTitle||'';
  $('uExecutionDate').value=u?.executionDate||recentWeekdayBeforeToday();$('uHasCover').value=u?.hasCover||'yes';$('uCoverText').value=u?.coverText||'';
@@ -242,10 +251,11 @@ window.openUtilityModal=(utilityId)=>{
 };
 $('closeUtilityModal').onclick=()=>$('utilityModal').classList.add('hidden');
 $('uPriorEnd').onchange=()=>{if(!$('utilityId').value&&$('uPriorEnd').value)$('uRequestStart').value=isoNextDay($('uPriorEnd').value)};
+$('uProvider').onblur=()=>{if($('uAuthTemplate').value==='auto'&&$('uProvider').value.toLowerCase().includes('midamerican'))$('utilityValidation').innerHTML='<b>MidAmerican detected:</b> this provider uses its own authorization form. The NEC General Utility Release will not be generated.'};
 $('saveUtilityBtn').onclick=()=>{
  const c=cases.find(x=>x.id===selectedId);if(!c)return;
  const id=$('utilityId').value||nextUtilityId(c);
- const u={id,provider:$('uProvider').value.trim(),energy:$('uEnergy').value,account:$('uAccount').value.trim(),meters:$('uMeters').value.trim(),serviceAddress:$('uServiceAddress').value.trim(),authSource:$('uAuthSource').value.trim(),priorClaimEnd:$('uPriorEnd').value,requestStart:$('uRequestStart').value,requestEnd:$('uRequestEnd').value,recordsRequested:$('uRecordsRequested').value,recordsReceived:$('uRecordsReceived').value,signerName:$('uSignerName').value.trim(),signerTitle:$('uSignerTitle').value.trim(),executionDate:$('uExecutionDate').value,hasCover:$('uHasCover').value,coverText:$('uCoverText').value,signatureQA:$('uSignatureQA').value,notes:$('uNotes').value.trim()};
+ const u={id,provider:$('uProvider').value.trim(),energy:$('uEnergy').value,authTemplate:$('uAuthTemplate').value,account:$('uAccount').value.trim(),meters:$('uMeters').value.trim(),serviceAddress:$('uServiceAddress').value.trim(),authSource:$('uAuthSource').value.trim(),priorClaimEnd:$('uPriorEnd').value,requestStart:$('uRequestStart').value,requestEnd:$('uRequestEnd').value,recordsRequested:$('uRecordsRequested').value,recordsReceived:$('uRecordsReceived').value,signerName:$('uSignerName').value.trim(),signerTitle:$('uSignerTitle').value.trim(),executionDate:$('uExecutionDate').value,hasCover:$('uHasCover').value,coverText:$('uCoverText').value,signatureQA:$('uSignatureQA').value,notes:$('uNotes').value.trim()};
  if(!u.provider||!u.account||!u.authSource||!u.signerName||!u.requestStart)return alert('Provider, account number, authorization source, signer name, and requested-history start are required.');
  const prior=u.priorClaimEnd||latestFiledEnd(c);if(prior&&u.requestStart<=prior)return alert('Blocked: requested history overlaps or begins inside the prior filed period. Start after '+prior+'.');
  if(overlapsKnownFiledPeriod(c,u))return alert('Blocked: this requested period overlaps another filed refund period for this customer.');
@@ -258,6 +268,7 @@ $('deleteUtilityBtn').onclick=()=>{const c=cases.find(x=>x.id===selectedId);if(!
 window.generateUtilityPackage=(utilityId)=>{
  const c=cases.find(x=>x.id===selectedId),u=(c?.utilityRequests||[]).find(x=>x.id===utilityId);if(!c||!u)return;
  const checks=utilityChecks(c,u),bad=checks.filter(x=>!x.ok);if(bad.length)return alert('Package blocked by preflight:\n\n'+bad.map(x=>'• '+x.label).join('\n'));
+ if(providerTemplate(u)==='midamerican')return alert('MidAmerican uses its own authorization form. NEC Ledger will not substitute the NEC General Utility Release. The MidAmerican template-filling workflow is the next provider-specific generator to add.');
  const cover=u.hasCover==='yes'?'<section class="page"><img class="logo" src="assets/nec-ledger-logo.jpg"><div class="letter">'+u.coverText.split(/\n+/).map(p=>'<p>'+esc(p)+'</p>').join('')+'</div></section>':'';
  const energy=u.energy==='Electric and Gas'?'electric and gas':u.energy.toLowerCase();
  const release='<section class="page release"><h2>LETTER OF AUTHORIZATION &amp; UTILITY BILLING RELEASE</h2><p>I, <b>'+esc(u.signerName)+'</b>, title <b>'+esc(u.signerTitle||'')+'</b></p><p>Do hereby authorize and appoint:</p><p><b>National Energy Consultants</b><br>P.O. Box 562 Cedar Falls, IA 50613<br>Phone (319) 231-0857<br>Fax (877) 553-0187<br>matt@nationalenergyconsultants.com</p><p>To request and receive confidential <b>'+esc(energy)+'</b> billing data for the accounts listed below from the records of <b>'+esc(u.provider)+'</b>.</p><p>This history must show the amount of state and local tax (if applicable) paid on the accounts on a monthly or quarterly basis. If the history does not show the amount of tax paid, then it must be accompanied by a signed document from the utility provider stating the amount of tax paid on the account(s) on a monthly or quarterly basis.</p><p>The named appointee is authorized to receive utility billing information for a period of sixty (60) days from the signed date below.</p><p>I understand that <b>'+esc(u.provider)+'</b> may add charges to my utility account for costs incurred in providing this information.</p><p>EXECUTED this <b>'+esc(u.executionDate)+'</b></p><div class="sigline">'+esc(u.signerName)+'<span>Customer signature</span></div><p>Historic information for the period of <b>'+esc(u.requestStart)+'</b> to <b>'+esc(u.requestEnd||'Present')+'</b></p><p>Account Name: ______________________________</p><p>Service Address: '+esc(u.serviceAddress||'______________________________')+'</p><p>Account Numbers: <b>'+esc(u.account)+'</b></p><p>Meter(s): '+esc(u.meters||'—')+'</p></section>';
