@@ -227,14 +227,16 @@ For these state forms:
 - NEC-specific and Matthew Hesse-specific fields that are already part of the standard form/template may remain pre-populated.
 
 
-## Execution-date rule for generated documents
+## Execution-date rule for utility release forms
 
-For NEC documents that require an execution/signature date to be completed by NEC after the client has signed or otherwise authorized completion:
+This rule applies only to general utility release forms. It does not automatically apply to state filing forms, contracts, powers of attorney, or other NEC documents.
+
+For a general utility release whose execution/date field is completed by NEC after the client has signed or otherwise authorized completion:
 
 - The execution date should be a weekday (Monday through Friday).
 - It should fall within the seven calendar days immediately preceding the document creation date.
 - Unless NEC specifies a different qualifying weekday, use the most recent weekday before the creation date.
-- Never use a weekend date for the execution date.
-- If NEC provides a specific execution date, use that date only if it satisfies the rule or NEC explicitly overrides the rule for that case.
+- Never use a weekend date for the utility release execution date.
+- If NEC provides a specific utility release execution date, use that date only if it satisfies the rule or NEC explicitly overrides the rule for that case.
 
-Example: if a document is created on Sunday, September 20, 2026, the default execution date is Friday, September 18, 2026.
+Example: if a utility release is created on Sunday, September 20, 2026, the default execution date is Friday, September 18, 2026.
