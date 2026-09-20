@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEC Ledger - Refunds</title>
+<link rel="stylesheet" href="assets/app-shell.css">
+<style>
+.case-layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:16px}.case-list{max-height:72vh;overflow:auto}.case-item{padding:12px;border:1px solid var(--nec-line);border-radius:10px;margin:8px 0;cursor:pointer;background:#fff}.case-item.active{border-color:var(--nec-green-dark);box-shadow:0 0 0 2px rgba(140,198,62,.18)}.case-item b{display:block}.case-item small{color:var(--nec-muted)}
+.case-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:14px}.case-head h2{margin:0;color:var(--nec-blue-dark)}.case-actions{display:flex;gap:8px;flex-wrap:wrap}.panel{display:none}.panel.active{display:block}
+.fieldline{display:grid;grid-template-columns:190px 1fr;gap:8px;padding:8px 0;border-bottom:1px solid #edf0f3}.fieldline .key{color:var(--nec-muted);font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+.doc-row{display:grid;grid-template-columns:1.5fr .8fr .8fr auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid #edf0f3}.activity{padding:10px 0;border-bottom:1px solid #edf0f3}.activity small{color:var(--nec-muted)}
+.calc-box{background:#f8fafc;border:1px solid var(--nec-line);border-radius:10px;padding:14px}.calc-total{font-size:28px;font-weight:800;color:var(--nec-blue-dark)}
+@media(max-width:900px){.case-layout{grid-template-columns:1fr}.case-list{max-height:none}}
+</style>
+</head>
+<body><div class="shell">
+<aside class="side">
+<img class="brand-art" src="assets/nec-ledger-logo.jpg" alt="NEC Ledger">
+<nav class="nav">
+<a href="index.html">⌂ &nbsp; Home</a><a href="customers.html">Customers</a><a class="active" href="refunds.html">Refunds</a>
+<a href="receivables.html">Receivables</a><a href="checking.html">Banking</a><a href="reports.html">Reports</a><a href="company.html">Company & Admin</a>
+</nav><div class="sidefoot">Records. Refunds. Results.<br><br>Same work.<br>Better tools.<br>Greater impact.</div>
+</aside>
+<main class="page-main">
+<div class="app-top"><div><h1>Refunds</h1><div class="app-sub">One permanent case workspace for every refund cycle</div></div><div class="app-badge">Sample data mode</div></div>
+
+<div class="case-layout">
+<section>
+<div class="card">
+<div class="toolbar"><b>Refund cases</b><button id="newCaseBtn" class="primary">+ New Case</button></div>
+<input id="caseSearch" placeholder="Search customer, cycle, utility..." style="margin-top:10px">
+<div style="display:flex;gap:6px;margin-top:10px"><select id="caseFilter"><option value="all">All cases</option><option value="open">Open</option><option value="attention">Needs attention</option><option value="closed">Closed</option></select></div>
+<div id="caseList" class="case-list"></div>
+</div>
+</section>
+
+<section>
+<div id="emptyState" class="card"><h2>Select a refund case</h2><p class="muted">Choose a case on the left or create a new one.</p></div>
+<div id="caseWorkspace" class="hidden">
+<div class="card">
+<div class="case-head"><div><h2 id="caseTitle"></h2><div id="caseSubtitle" class="muted"></div></div><div class="case-actions"><span id="attentionPill"></span><button id="editCaseBtn">Edit Case</button></div></div>
+<div class="grid-4">
+<div class="metric"><div class="k">Status</div><div class="v" id="mStatus" style="font-size:20px"></div></div>
+<div class="metric"><div class="k">Days since records request</div><div class="v" id="mDays"></div></div>
+<div class="metric"><div class="k">Combined refund</div><div class="v" id="mRefund"></div></div>
+<div class="metric"><div class="k">Projected NEC fee</div><div class="v" id="mFee"></div></div>
+</div>
+</div>
+
+<div class="card" style="margin-top:14px">
+<div class="tabs">
+<button class="tab active" data-tab="overview">Overview</button><button class="tab" data-tab="documents">Documents</button><button class="tab" data-tab="data">Data</button><button class="tab" data-tab="calculation">Calculation</button><button class="tab" data-tab="filing">Filing</button><button class="tab" data-tab="billing">Billing</button><button class="tab" data-tab="activity">Activity</button>
+</div>
+
+<div id="panel-overview" class="panel active"></div>
+<div id="panel-documents" class="panel">
+<div class="toolbar"><div><b>Case documents</b><div class="muted">Original files stay attached to this refund cycle.</div></div><button id="addDocBtn" class="primary">+ Add Document</button></div>
+<div class="notice" style="margin:12px 0">Prototype document storage uses this browser's IndexedDB. Do not upload real client files until the production security and backup build is complete.</div>
+<div id="docList"></div>
+</div>
+<div id="panel-data" class="panel"></div>
+<div id="panel-calculation" class="panel"></div>
+<div id="panel-filing" class="panel"></div>
+<div id="panel-billing" class="panel"></div>
+<div id="panel-activity" class="panel"></div>
+</div>
+</div>
+</section>
+</div>
+
+<div id="caseModal" class="hidden card" style="position:fixed;inset:5% 8%;z-index:50;overflow:auto;box-shadow:0 18px 50px rgba(0,0,0,.25)">
+<div class="toolbar"><h2 id="caseFormTitle" style="margin:0">New Refund Case</h2><button id="closeCaseModal">Close</button></div>
+<input type="hidden" id="caseId">
+<div class="grid-3" style="margin-top:14px">
+<div><label>Customer *</label><select id="caseCustomer"></select></div>
+<div><label>Cycle label *</label><input id="cycleLabel" placeholder="2026 Iowa Utility Refund"></div>
+<div><label>Jurisdiction</label><input id="jurisdiction" value="Iowa"></div>
+<div><label>Case status</label><select id="status"><option>Pending</option><option>In Progress</option><option>In Collection</option><option>None</option></select></div>
+<div><label>Utility provider(s)</label><input id="utilityProvider"></div>
+<div><label>Assigned employee</label><input id="assignedEmployee" value="Matt"></div>
+<div><label>Filing period start</label><input id="periodStart" type="date"></div>
+<div><label>Filing period end</label><input id="periodEnd" type="date"></div>
+<div><label>Records requested date</label><input id="recordsRequested" type="date"></div>
+<div><label>Records received date</label><input id="recordsReceived" type="date"></div>
+<div><label>Claim filed date</label><input id="filedDate" type="date"></div>
+<div><label>State reference</label><input id="stateReference"></div>
+<div><label>Electric refund</label><input id="electricRefund" type="number" step="0.01" value="0"></div>
+<div><label>Gas refund</label><input id="gasRefund" type="number" step="0.01" value="0"></div>
+<div><label>Other approved refund</label><input id="otherRefund" type="number" step="0.01" value="0"></div>
+<div><label>NEC fee %</label><input id="feePct" type="number" step="0.01" value="50"></div>
+<div><label>Next action</label><input id="nextAction"></div>
+<div><label>Follow-up date</label><input id="followupDate" type="date"></div>
+</div>
+<div style="margin-top:12px"><label>Case notes</label><textarea id="caseNotes"></textarea></div>
+<div class="toolbar" style="justify-content:flex-end;margin-top:14px"><button id="deleteCaseBtn" class="danger hidden">Delete Draft Case</button><button id="saveCaseBtn" class="primary">Save Case</button></div>
+</div>
+
+<div id="docModal" class="hidden card" style="position:fixed;inset:12% 18%;z-index:60;box-shadow:0 18px 50px rgba(0,0,0,.25)">
+<div class="toolbar"><h2 style="margin:0">Add Case Document</h2><button id="closeDocModal">Close</button></div>
+<div class="grid-2" style="margin-top:14px"><div><label>File</label><input id="docFile" type="file"></div><div><label>Document group</label><select id="docGroup"><option>Source Document</option><option>Working / Generated</option><option>Final Document</option></select></div></div>
+<div style="margin-top:12px"><label>Description</label><input id="docDescription" placeholder="Electric usage records, state determination, filing package..."></div>
+<div style="text-align:right;margin-top:14px"><button id="saveDocBtn" class="primary">Attach Document</button></div>
+</div>
+</main></div>
+
+<script>
+const CASE_KEY='necLedgerRefundCasesV1', CUSTOMER_KEY='necLedgerCustomersV1', ACT_KEY='necLedgerCaseActivityV1';
+const $=id=>document.getElementById(id), money=n=>Number(n||0).toLocaleString('en-US',{style:'currency',currency:'USD'});
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function defaultCustomers(){return[{id:'CUST-0001',customerName:'Northside Fuel Express',city:'Waterloo',companyName:'Midwest Fuel Group LLC',parentOrg:'Midwest Fuel Group',active:true,terms:'Due on receipt',feePct:50},{id:'CUST-0002',customerName:'Southside Motor Mart',city:'Cedar Falls',companyName:'Midwest Fuel Group LLC',parentOrg:'Midwest Fuel Group',active:true,terms:'Net 30',feePct:50}]}
+let customers=(()=>{try{return JSON.parse(localStorage.getItem(CUSTOMER_KEY))||defaultCustomers()}catch{return defaultCustomers()}})();
+function daysAgo(n){let d=new Date();d.setDate(d.getDate()-n);return d.toISOString().slice(0,10)}
+function defaultCases(){return[
+{id:'CASE-0001',customerId:'CUST-0001',customerName:'Northside Fuel Express',cycleLabel:'2026 Iowa Utility Refund',jurisdiction:'Iowa',status:'Pending',utilityProvider:'Sample Electric Utility',assignedEmployee:'Matt',periodStart:'2023-01-01',periodEnd:'2025-12-31',recordsRequested:daysAgo(38),recordsReceived:daysAgo(20),filedDate:'',stateReference:'',electricRefund:0,gasRefund:0,otherRefund:0,feePct:50,nextAction:'Prepare and file claim',followupDate:'',notes:'Synthetic example demonstrating the 30-day filing exception.'},
+{id:'CASE-0002',customerId:'CUST-0002',customerName:'Southside Motor Mart',cycleLabel:'2026 Iowa Utility Refund',jurisdiction:'Iowa',status:'In Progress',utilityProvider:'Sample Gas Utility',assignedEmployee:'Matt',periodStart:'2023-01-01',periodEnd:'2025-12-31',recordsRequested:daysAgo(18),recordsReceived:daysAgo(8),filedDate:daysAgo(3),stateReference:'SAMPLE-2026-02',electricRefund:1200,gasRefund:850,otherRefund:0,feePct:50,nextAction:'Await state response',followupDate:'',notes:'Synthetic filed case.'}
+]}
+let cases=(()=>{try{const x=JSON.parse(localStorage.getItem(CASE_KEY));return Array.isArray(x)&&x.length?x:defaultCases()}catch{return defaultCases()}})();
+let activity=(()=>{try{return JSON.parse(localStorage.getItem(ACT_KEY))||{}}catch{return{}}})();
+let selectedId=cases[0]?.id||null;
+function persist(){localStorage.setItem(CASE_KEY,JSON.stringify(cases));localStorage.setItem(ACT_KEY,JSON.stringify(activity))}
+function diffDays(date){if(!date)return 0;const a=new Date(date+'T00:00:00'),b=new Date();return Math.floor((b-a)/86400000)}
+function needsAttention(c){return !!(c.recordsRequested && !c.filedDate && diffDays(c.recordsRequested)>30 && c.status!=='None')}
+function nextId(){let n=cases.reduce((m,c)=>Math.max(m,Number((c.id||'').split('-')[1])||0),0)+1;return 'CASE-'+String(n).padStart(4,'0')}
+function customerName(id){const c=customers.find(x=>x.id===id);return c?c.customerName:'Unknown Customer'}
+function logEvent(caseId,text){activity[caseId]=activity[caseId]||[];activity[caseId].unshift({at:new Date().toISOString(),text});persist()}
+function renderList(){
+ const q=$('caseSearch').value.toLowerCase(), f=$('caseFilter').value;
+ const filtered=cases.filter(c=>{
+   const match=[c.customerName,c.cycleLabel,c.utilityProvider,c.jurisdiction].join(' ').toLowerCase().includes(q);
+   const scope=f==='all'||(f==='attention'&&needsAttention(c))||(f==='closed'&&c.status==='None')||(f==='open'&&c.status!=='None');
+   return match&&scope;
+ });
+ $('caseList').innerHTML=filtered.map(c=>'<div class="case-item '+(c.id===selectedId?'active':'')+'" data-id="'+c.id+'"><b>'+esc(c.customerName)+'</b><span>'+esc(c.cycleLabel)+'</span><br><small>'+esc(c.status)+' • '+(needsAttention(c)?'Needs attention':'No filing exception')+'</small></div>').join('')||'<p class="muted">No cases match.</p>';
+ [...document.querySelectorAll('.case-item')].forEach(x=>x.onclick=()=>{selectedId=x.dataset.id;renderAll()});
+}
+function renderWorkspace(){
+ const c=cases.find(x=>x.id===selectedId);
+ $('emptyState').classList.toggle('hidden',!!c);$('caseWorkspace').classList.toggle('hidden',!c);if(!c)return;
+ $('caseTitle').textContent=c.customerName+' — '+c.cycleLabel;$('caseSubtitle').textContent=(c.jurisdiction||'')+' • '+(c.utilityProvider||'No utility provider entered');
+ $('mStatus').textContent=c.status;$('mDays').textContent=c.recordsRequested?diffDays(c.recordsRequested):'—';
+ const total=Number(c.electricRefund||0)+Number(c.gasRefund||0)+Number(c.otherRefund||0),fee=total*(Number(c.feePct||0)/100);
+ $('mRefund').textContent=money(total);$('mFee').textContent=money(fee);
+ $('attentionPill').innerHTML=needsAttention(c)?'<span class="pill bad">Claim filing overdue</span>':'<span class="pill good">No filing exception</span>';
+ $('panel-overview').innerHTML='<div class="grid-2"><div><div class="fieldline"><div class="key">Records requested</div><div>'+esc(c.recordsRequested||'—')+'</div></div><div class="fieldline"><div class="key">Records received</div><div>'+esc(c.recordsReceived||'Not received')+'</div></div><div class="fieldline"><div class="key">Claim filed</div><div>'+esc(c.filedDate||'Not filed')+'</div></div><div class="fieldline"><div class="key">Next action</div><div>'+esc(c.nextAction||'—')+'</div></div></div><div><div class="fieldline"><div class="key">Filing period</div><div>'+esc(c.periodStart||'—')+' to '+esc(c.periodEnd||'—')+'</div></div><div class="fieldline"><div class="key">Assigned</div><div>'+esc(c.assignedEmployee||'—')+'</div></div><div class="fieldline"><div class="key">State reference</div><div>'+esc(c.stateReference||'—')+'</div></div><div class="fieldline"><div class="key">Notes</div><div>'+esc(c.notes||'—')+'</div></div></div></div>';
+ $('panel-data').innerHTML='<h3>Structured case data</h3><p class="muted">This is where extracted utility and state data will live after you teach NEC Ledger the refund workflow.</p><div class="grid-3"><div class="metric"><div class="k">Electric component</div><div class="v">'+money(c.electricRefund)+'</div></div><div class="metric"><div class="k">Gas component</div><div class="v">'+money(c.gasRefund)+'</div></div><div class="metric"><div class="k">Other component</div><div class="v">'+money(c.otherRefund)+'</div></div></div>';
+ $('panel-calculation').innerHTML='<h3>Refund calculation</h3><div class="calc-box"><div>Combined refund: <b>'+money(total)+'</b></div><div>NEC fee: '+Number(c.feePct||0).toFixed(2)+'%</div><hr style="border:0;border-top:1px solid var(--nec-line)"><div class="calc-total">'+money(fee)+'</div><div class="muted">Projected NEC fee</div></div><p class="muted">The detailed refund algorithm will be added after the real NEC refund walkthrough.</p>';
+ $('panel-filing').innerHTML='<h3>Filing</h3><div class="fieldline"><div class="key">Claim filed date</div><div>'+esc(c.filedDate||'Not filed')+'</div></div><div class="fieldline"><div class="key">State reference</div><div>'+esc(c.stateReference||'—')+'</div></div>'+(needsAttention(c)?'<div class="notice" style="margin-top:12px"><b>Follow-up exception:</b> More than 30 days have passed since utility records were requested and this claim has not been filed.</div>':'');
+ $('panel-billing').innerHTML='<h3>Billing</h3><p>Projected invoice amount: <b>'+money(fee)+'</b></p><button class="primary" onclick="alert(\'Invoice creation will connect here in the Receivables build.\')">Create Invoice</button>';
+ const events=activity[c.id]||[];$('panel-activity').innerHTML='<div class="toolbar"><h3 style="margin:0">Case activity</h3><button onclick="addActivity()">+ Log Activity</button></div>'+(events.length?events.map(e=>'<div class="activity"><b>'+esc(e.text)+'</b><br><small>'+new Date(e.at).toLocaleString()+'</small></div>').join(''):'<p class="muted">No activity logged yet.</p>');
+ renderDocs(c.id);
+}
+window.addActivity=()=>{const t=prompt('Activity note');if(t){logEvent(selectedId,t);renderWorkspace()}}
+function renderAll(){renderList();renderWorkspace()}
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));t.classList.add('active');$('panel-'+t.dataset.tab).classList.add('active')});
+$('caseSearch').oninput=renderList;$('caseFilter').onchange=renderList;
+function populateCustomers(){ $('caseCustomer').innerHTML=customers.map(c=>'<option value="'+c.id+'">'+esc(c.customerName)+' — '+esc(c.city||'')+'</option>').join('') }
+function openCaseModal(c){populateCustomers();$('caseFormTitle').textContent=c?'Edit Refund Case':'New Refund Case';$('caseId').value=c?.id||'';$('caseCustomer').value=c?.customerId||customers[0]?.id||'';$('cycleLabel').value=c?.cycleLabel||new Date().getFullYear()+' Iowa Utility Refund';$('jurisdiction').value=c?.jurisdiction||'Iowa';$('status').value=c?.status||'Pending';$('utilityProvider').value=c?.utilityProvider||'';$('assignedEmployee').value=c?.assignedEmployee||'Matt';$('periodStart').value=c?.periodStart||'';$('periodEnd').value=c?.periodEnd||'';$('recordsRequested').value=c?.recordsRequested||'';$('recordsReceived').value=c?.recordsReceived||'';$('filedDate').value=c?.filedDate||'';$('stateReference').value=c?.stateReference||'';$('electricRefund').value=c?.electricRefund||0;$('gasRefund').value=c?.gasRefund||0;$('otherRefund').value=c?.otherRefund||0;$('feePct').value=c?.feePct??50;$('nextAction').value=c?.nextAction||'';$('followupDate').value=c?.followupDate||'';$('caseNotes').value=c?.notes||'';$('deleteCaseBtn').classList.toggle('hidden',!c);$('caseModal').classList.remove('hidden')}
+$('newCaseBtn').onclick=()=>openCaseModal(null);$('editCaseBtn').onclick=()=>openCaseModal(cases.find(x=>x.id===selectedId));$('closeCaseModal').onclick=()=>$('caseModal').classList.add('hidden');
+$('saveCaseBtn').onclick=()=>{if(!$('caseCustomer').value||!$('cycleLabel').value.trim())return alert('Customer and cycle label are required.');const id=$('caseId').value||nextId(),old=cases.find(x=>x.id===id);const c={id,customerId:$('caseCustomer').value,customerName:customerName($('caseCustomer').value),cycleLabel:$('cycleLabel').value.trim(),jurisdiction:$('jurisdiction').value.trim(),status:$('status').value,utilityProvider:$('utilityProvider').value.trim(),assignedEmployee:$('assignedEmployee').value.trim(),periodStart:$('periodStart').value,periodEnd:$('periodEnd').value,recordsRequested:$('recordsRequested').value,recordsReceived:$('recordsReceived').value,filedDate:$('filedDate').value,stateReference:$('stateReference').value.trim(),electricRefund:Number($('electricRefund').value||0),gasRefund:Number($('gasRefund').value||0),otherRefund:Number($('otherRefund').value||0),feePct:Number($('feePct').value||0),nextAction:$('nextAction').value.trim(),followupDate:$('followupDate').value,notes:$('caseNotes').value.trim()};const i=cases.findIndex(x=>x.id===id);if(i>=0)cases[i]=c;else cases.push(c);selectedId=id;persist();logEvent(id,old?'Case updated':'Refund case created');$('caseModal').classList.add('hidden');renderAll()};
+$('deleteCaseBtn').onclick=()=>{if(confirm('Delete this prototype case?')){cases=cases.filter(c=>c.id!==$('caseId').value);selectedId=cases[0]?.id||null;persist();$('caseModal').classList.add('hidden');renderAll()}};
+
+// IndexedDB document store
+let dbp=new Promise((resolve,reject)=>{const req=indexedDB.open('necLedgerDocs',1);req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains('docs'))db.createObjectStore('docs',{keyPath:'id'})};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)});
+async function docsFor(caseId){const db=await dbp;return new Promise((resolve,reject)=>{const req=db.transaction('docs').objectStore('docs').getAll();req.onsuccess=()=>resolve(req.result.filter(d=>d.caseId===caseId));req.onerror=()=>reject(req.error)})}
+async function renderDocs(caseId){const docs=await docsFor(caseId);$('docList').innerHTML=docs.length?docs.map(d=>'<div class="doc-row"><div><b>'+esc(d.name)+'</b><br><small class="muted">'+esc(d.description||'')+'</small></div><div>'+esc(d.group)+'</div><div>'+new Date(d.addedAt).toLocaleDateString()+'</div><div><button onclick="openDoc(\''+d.id+'\')">Open</button></div></div>').join(''):'<p class="muted">No documents attached to this refund case.</p>'}
+window.openDoc=async id=>{const db=await dbp;const req=db.transaction('docs').objectStore('docs').get(id);req.onsuccess=()=>{const d=req.result;if(!d)return;const url=URL.createObjectURL(d.blob);window.open(url,'_blank');setTimeout(()=>URL.revokeObjectURL(url),60000)}};
+$('addDocBtn').onclick=()=>{$('docFile').value='';$('docDescription').value='';$('docModal').classList.remove('hidden')};$('closeDocModal').onclick=()=>$('docModal').classList.add('hidden');
+$('saveDocBtn').onclick=async()=>{const f=$('docFile').files[0];if(!f)return alert('Choose a file.');const db=await dbp;const rec={id:'DOC-'+Date.now(),caseId:selectedId,name:f.name,type:f.type,size:f.size,group:$('docGroup').value,description:$('docDescription').value.trim(),addedAt:new Date().toISOString(),blob:f};await new Promise((resolve,reject)=>{const req=db.transaction('docs','readwrite').objectStore('docs').put(rec);req.onsuccess=resolve;req.onerror=()=>reject(req.error)});logEvent(selectedId,'Document attached: '+f.name);$('docModal').classList.add('hidden');renderWorkspace()};
+renderAll();
+</script>
+</body></html>
