@@ -991,3 +991,39 @@ When a provider issues a corrected bill that changes previously billed tax or us
 - use the provider's final corrected amount for the refund calculation,
 - record the correction in the audit trail,
 - and do not double-count the original and corrected bill.
+
+
+### Load-factor versus operating-hours modeling convention
+
+NEC uses two valid ways to represent intermittent equipment use. NEC Ledger must preserve the modeling choice rather than force every appliance into one convention.
+
+1. **Direct run-time convention**
+   - For equipment that draws its rated load consistently while it is actually running, a load factor of **1.00** is generally appropriate.
+   - The entered hours/day should then represent the equipment's actual operating/run time, not merely the hours the facility is open.
+   - Example: a grinder may be available during the entire manufacturing shift but actually operate about one hour/day. Model it with load factor 1.00 and about one hour/day when that best reflects the operation.
+
+2. **Open-hours / duty-cycle convention**
+   - For equipment whose modeled hours represent the hours the business or service is available rather than literal energized run time, the load factor may represent the fraction of that period during which the equipment is actually drawing load.
+   - Example: a convenience-store fuel pump may use all store-open hours as the time basis, while the load factor represents the portion of those hours during which customers are actually pumping fuel.
+
+Rules:
+- Do not automatically lower a load factor merely because equipment is not used continuously throughout the business day.
+- First determine whether NEC intends to represent intermittent use through **hours/day** or through **load factor**.
+- For direct-use production machinery, a 1.00 load factor is a reasonable initial default when entered hours can represent actual run time.
+- Do not double-discount intermittent use by both reducing hours to actual run time and also applying a duty-cycle load factor unless NEC intentionally wants both adjustments.
+- The study should make the chosen convention apparent enough that a reviewer can understand whether intermittency is represented by hours, load factor, or both.
+- Convenience-store, grain-operation, and other industry-specific defaults should be added as NEC provides completed examples; do not invent those defaults before examples are reviewed.
+
+### Corrected utility-bill precedence
+
+Provider-issued corrections can materially alter usage and tax totals and must be handled as first-class source records.
+
+When a utility provider issues a corrected bill or correction table:
+- Identify the original bill/charge being corrected.
+- Link the correction to that original bill.
+- Use the provider's final corrected usage and tax values for the refund calculation.
+- Do not add the corrected amount on top of the original amount.
+- Preserve both original and correction documents in the audit trail.
+- If a correction affects only selected service addresses, meters, or bill components, apply it only to those affected records.
+- Re-run tax-breakdown totals, 12-bill usage totals, and +/-5% study validation when corrected data changes an included study period.
+- Flag any correction whose relationship to the original bill is ambiguous for Matt's review before finalization.
