@@ -275,3 +275,14 @@ For the current masters:
 - IA 2848: if the client supplies only signed page 4, add current pages 1-3 to complete the 4-page packet.
 
 The completed derivative filing packet must retain a link to the original client-supplied signed page(s) in the case history.
+
+
+## Utility-record cover-letter inheritance rule
+
+When preparing a new utility-record request, NEC Ledger must review the prior request package for that utility/provider.
+
+- If the prior utility release/request package included a cover letter, the new request package must also include a cover letter unless NEC explicitly instructs otherwise.
+- The new cover letter should preserve the same general wording, information scope, and formatting as the prior cover letter.
+- Do not add customer-specific information, account numbers, service addresses, requested dates, or other fields to the cover letter unless those items appeared on the prior cover letter or NEC specifically requests them.
+- Provider/account/request-period details should remain on the utility release or other page where NEC historically placed them.
+- The purpose is to avoid causing the utility to act only on summary information shown on the cover page and overlook the full records request stated on the following page.
