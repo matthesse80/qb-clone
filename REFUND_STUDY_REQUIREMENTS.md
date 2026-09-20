@@ -391,3 +391,46 @@ Provider-form rule:
 - Do not replace the Linn County REC form with the NEC General Utility Release.
 - Do not omit the NEC General Utility Release just because the Linn County REC form is present.
 - If the prior Linn County REC request package also included a cover letter, preserve the cover letter according to the standard cover-letter inheritance rule.
+
+
+### Waukee Municipal Utilities
+
+Waukee Municipal uses a three-part outgoing utility-record request package in this order:
+
+1. Waukee "Request for Examination and Copying of Public Records" form
+2. NEC utility-record cover letter
+3. NEC General Utility Release
+
+The Waukee municipal form is a provider-specific request form and must remain the first page. The NEC cover letter follows it and must preserve the standard inherited wording without adding customer/account/request-period details that were not present on the prior cover. The NEC General Utility Release remains the final page and carries the customer authorization, provider/account information, requested history period, execution date, and customer signature.
+
+Do not substitute the NEC General Utility Release for the Waukee form, and do not omit either the cover letter or the NEC General Utility Release when building a Waukee Municipal request package unless NEC explicitly changes the workflow.
+
+### Configurable provider-template registry
+
+Utility-provider document workflows must be data-driven rather than permanently hard-coded into the application.
+
+NEC Ledger must maintain a provider-template registry that can be changed without redesigning the Refund workflow. Each provider profile should support:
+- Provider name and aliases / matching names
+- Template/workflow name
+- Current provider-form file or files
+- Provider-form revision/version, when known
+- Date NEC verified the form as current
+- Package page order
+- Whether an NEC cover letter is required
+- Which cover-letter template/version is used
+- Whether the NEC General Utility Release is required
+- Whether the provider form itself requires the customer signature
+- Whether the same verified client-authorized signature must be placed on multiple pages
+- Provider-specific completion instructions
+- Active/inactive status
+- Superseded-template history
+
+When a utility provider changes its required form, NEC must be able to upload the replacement template, update the provider profile, preserve the superseded template for audit/history, and use the newly approved version for future request packages.
+
+When NEC encounters a new provider with a specialized form, the provider can be added to this registry without changing the underlying refund-case data model.
+
+Current known provider workflows:
+- Standard / fallback: NEC General Utility Release, plus inherited cover letter when historically used.
+- MidAmerican Energy Company: MidAmerican provider-specific authorization form instead of the NEC General Utility Release.
+- Linn County REC: Linn County REC Member Usage Authorization Form + NEC General Utility Release; same verified customer signature placed on both authorization forms.
+- Waukee Municipal: Waukee public-records request form + NEC cover letter + NEC General Utility Release.
