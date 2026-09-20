@@ -211,3 +211,17 @@ Required process:
 - Record which prior document or customer record was used as the source for the printed name.
 
 NEC Ledger should not make a legal or biometric determination about a signature. The control is intended to ensure the printed name is grounded in the customer's documented signer history and that ambiguous cases are reviewed rather than guessed.
+
+
+## State filing forms signed blank and completed later by NEC
+
+The same source-versus-completed-document workflow applies to state filing forms when the client intentionally signs and/or initials forms while leaving the remaining client-specific fields blank for NEC to complete later.
+
+For these state forms:
+- Client signatures and initials may already be present on the reusable signed source.
+- NEC may later complete authorized fields such as printed name, date, taxpayer/entity information, address, filing period, refund amounts, title, and other case-specific information.
+- The date is an NEC-completed field when the client intentionally leaves it blank for NEC to complete as part of the filing workflow.
+- NEC Ledger must use the date provided or confirmed by NEC for the filing; it should not independently invent or backdate a filing date.
+- The printed signer name must be checked against the customer's documented signer history before insertion.
+- The original signed/initialed source form should remain preserved in the case record, while the completed filing version is stored as a separate derivative document.
+- NEC-specific and Matthew Hesse-specific fields that are already part of the standard form/template may remain pre-populated.
