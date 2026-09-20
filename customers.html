@@ -1,115 +1,75 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NEC Ledger</title>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEC Ledger - Customers</title><link rel="stylesheet" href="assets/app-shell.css">
 <style>
-:root{--bg:#f4f6f8;--panel:#fff;--ink:#1f2937;--muted:#6b7280;--line:#dfe3e8;--accent:#155eef;--danger:#b42318}
-*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
-header{background:#101828;color:#fff;padding:16px 22px;display:flex;align-items:center;justify-content:space-between}
-header h1{margin:0;font-size:22px}header small{color:#cbd5e1}
-nav{background:#fff;border-bottom:1px solid var(--line);padding:10px 20px;display:flex;gap:10px;flex-wrap:wrap}
-button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 12px;font-weight:600;cursor:pointer}
-button.primary{background:var(--accent);border-color:var(--accent);color:#fff}.danger{color:var(--danger)}
-main{max-width:1200px;margin:24px auto;padding:0 18px}.toolbar{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:0 1px 2px rgba(16,24,40,.04)}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-label{display:block;font-size:12px;font-weight:700;color:#475467;margin-bottom:5px}input,select,textarea{width:100%;padding:9px 10px;border:1px solid #cfd4dc;border-radius:8px;font:inherit;background:#fff}textarea{min-height:82px}
-table{width:100%;border-collapse:collapse;background:#fff}th,td{text-align:left;padding:11px;border-bottom:1px solid var(--line);font-size:14px}th{color:#475467;background:#f9fafb}
-.muted{color:var(--muted)}.pill{display:inline-block;padding:3px 8px;border-radius:999px;background:#eef4ff;color:#3538cd;font-size:12px;font-weight:700}
-.hidden{display:none}.section-title{font-size:15px;margin:18px 0 10px}.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
-.phone-row{display:grid;grid-template-columns:160px 1fr 1.3fr;gap:8px;margin-bottom:8px}.notice{padding:10px 12px;background:#fffaeb;border:1px solid #fedf89;border-radius:8px;font-size:13px;color:#7a2e0e}
-@media(max-width:800px){.grid,.grid-3,.phone-row{grid-template-columns:1fr}}
-
-:root{--navy:#17388f;--navy2:#0f245e;--green:#8cc63e;--green2:#69a82d;--bg:#f3f6f8;--panel:#fff;--ink:#1f2a44;--muted:#697386;--line:#dbe2e8}
-.shell{min-height:100vh;display:grid;grid-template-columns:240px 1fr}
-.side{background:linear-gradient(180deg,#071522,#0b2b49 60%,#071522);color:#fff;padding:18px 14px;display:flex;flex-direction:column}
-.brand-art{display:block;width:100%;max-width:205px;margin:0 auto 14px;border-radius:12px}
-.nav a{display:block;color:#eef3ff;text-decoration:none;padding:11px 12px;border-radius:8px;margin:3px 0}
-.nav a:hover,.nav a.active{background:rgba(140,198,62,.18);border-left:3px solid var(--green)}
-.sep{height:1px;background:#355066;margin:12px 4px}
-.sidefoot{margin-top:auto;padding:12px 10px;color:#cbd5e1;font-family:Georgia,serif;font-style:italic;line-height:1.45}
-.page-main{padding:26px 30px;min-width:0}
-.app-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:18px}
-.app-top h1{margin:0;font-size:34px;color:var(--navy2);font-family:Georgia,serif}
-.app-sub{color:var(--muted);margin-top:4px}
-.app-badge{font-size:12px;padding:7px 11px;border-radius:999px;background:#eef6df;color:#517a20;border:1px solid #cfe5af}
-@media(max-width:1000px){.shell{grid-template-columns:1fr}.side{display:none}.page-main{padding:18px}}
-</style>
-</head>
-<body><div class="shell"><aside class="side">
-  <img class="brand-art" src="assets/nec-ledger-logo.jpg" alt="NEC Ledger">
-  <nav class="nav">
-    <a class="" href="index.html">⌂ &nbsp; Home</a>
-    <a class="active" href="customers.html">Customers</a>
-    <a href="#">Refund Cases</a><a href="#">Invoices</a><a href="#">Payments</a><a href="#">A/R</a>
-    <a class="" href="checking.html">Checking Ledger</a>
-    <a href="#">Reports</a><a href="#">My Company</a><a href="#">Backup & Restore</a>
-    <div class="sep"></div><a href="#">Settings</a>
-  </nav>
-  <div class="sidefoot">Records. Refunds. Results.<br><br>Same work.<br>Better tools.<br>Greater impact.</div>
-</aside><main class="page-main">
-<div class="app-top"><div><h1>Customers</h1><div class="app-sub">Customer locations, contacts, filing details, and fee settings</div></div><div class="app-badge">Sample data mode</div></div>
-<section id="customersView">
-<div class="toolbar"><div><h2 style="margin:0">Customers</h2><div class="muted">One record per physical operating location</div></div><button class="primary" id="addCustomerBtn">+ Add Customer</button></div>
+.customer-layout{display:grid;grid-template-columns:310px minmax(0,1fr);gap:16px}.customer-list{max-height:74vh;overflow:auto}.customer-item{padding:12px;border:1px solid var(--nec-line);border-radius:10px;margin:8px 0;background:#fff;cursor:pointer}.customer-item.active{border-color:var(--nec-green-dark);box-shadow:0 0 0 2px rgba(140,198,62,.18)}.customer-item b{display:block}.customer-item small{color:var(--nec-muted)}
+.panel{display:none}.panel.active{display:block}.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.summary .metric .v{font-size:18px}.fieldline{display:grid;grid-template-columns:180px 1fr;gap:8px;padding:8px 0;border-bottom:1px solid #edf0f3}.fieldline .key{font-size:11px;text-transform:uppercase;color:var(--nec-muted);letter-spacing:.4px}
+.phone-row{display:grid;grid-template-columns:160px 1fr 1.2fr;gap:8px;margin-bottom:8px}.modal{position:fixed;inset:4% 7%;z-index:60;overflow:auto;box-shadow:0 18px 50px rgba(0,0,0,.25)}
+@media(max-width:900px){.customer-layout{grid-template-columns:1fr}.customer-list{max-height:none}.summary{grid-template-columns:1fr 1fr}}@media(max-width:650px){.summary,.phone-row{grid-template-columns:1fr}}
+</style></head>
+<body><div class="shell">
+<aside class="side"><img class="brand-art" src="assets/nec-ledger-logo.jpg" alt="NEC Ledger"><nav class="nav">
+<a href="index.html">⌂ &nbsp; Home</a><a class="active" href="customers.html">Customers</a><a href="refunds.html">Refunds</a><a href="receivables.html">Receivables</a><a href="checking.html">Banking</a><a href="reports.html">Reports</a><a href="company.html">Company & Admin</a>
+</nav><div class="sidefoot">Records. Refunds. Results.<br><br>Same work.<br>Better tools.<br>Greater impact.</div></aside>
+<main class="page-main">
+<div class="app-top"><div><h1>Customers</h1><div class="app-sub">Permanent customer/location records with linked refund history</div></div><div class="app-badge">Sample data mode</div></div>
+<div class="customer-layout">
+<section><div class="card"><div class="toolbar"><b>Customer locations</b><button id="newCustomer" class="primary">+ Add</button></div><input id="search" placeholder="Search name, city, parent organization..." style="margin-top:10px"><select id="filter" style="margin-top:8px"><option value="all">All customers</option><option value="active">Active</option><option value="open">With open refund case</option><option value="attention">Needs attention</option></select><div id="customerList" class="customer-list"></div></div></section>
+<section>
+<div id="empty" class="card"><h2>Select a customer</h2><p class="muted">Choose a customer location on the left.</p></div>
+<div id="workspace" class="hidden">
 <div class="card">
-<div class="toolbar"><input id="searchBox" placeholder="Search customer name, city, company, or parent organization" style="max-width:520px"><span id="customerCount" class="muted"></span></div>
-<div style="overflow:auto"><table><thead><tr><th>Account</th><th>Customer</th><th>City</th><th>Parent organization</th><th>Fee</th><th>Status</th><th></th></tr></thead><tbody id="customerRows"></tbody></table></div>
-</div>
-</section>
-<section id="formView" class="hidden">
-<div class="toolbar"><div><h2 id="formTitle" style="margin:0">Add Customer</h2><div class="muted">Synthetic/sample data only for this prototype.</div></div><button id="backBtn">← Back to Customers</button></div>
-<form id="customerForm" class="card">
+<div class="toolbar"><div><h2 id="title" style="margin:0;color:var(--nec-blue-dark)"></h2><div id="subtitle" class="muted"></div></div><button id="editCustomer">Edit Customer</button></div>
+<div class="summary" style="margin-top:14px">
+<div class="metric"><div class="k">Account</div><div class="v" id="sAccount"></div></div><div class="metric"><div class="k">Open refund cases</div><div class="v" id="sCases"></div></div><div class="metric"><div class="k">Default NEC fee</div><div class="v" id="sFee"></div></div><div class="metric"><div class="k">Status</div><div class="v" id="sStatus"></div></div>
+</div></div>
+<div class="card" style="margin-top:14px">
+<div class="tabs"><button class="tab active" data-tab="overview">Overview</button><button class="tab" data-tab="refunds">Refunds</button><button class="tab" data-tab="transactions">Transactions</button><button class="tab" data-tab="contacts">Contacts</button><button class="tab" data-tab="documents">Documents</button><button class="tab" data-tab="activity">Activity</button><button class="tab" data-tab="profile">Profile</button></div>
+<div id="panel-overview" class="panel active"></div><div id="panel-refunds" class="panel"></div><div id="panel-transactions" class="panel"></div><div id="panel-contacts" class="panel"></div><div id="panel-documents" class="panel"></div><div id="panel-activity" class="panel"></div><div id="panel-profile" class="panel"></div>
+</div></div>
+</section></div>
+
+<div id="modal" class="card modal hidden">
+<div class="toolbar"><h2 id="formTitle" style="margin:0">Customer</h2><button id="closeModal">Close</button></div>
+<div class="notice" style="margin:12px 0">Prototype only. Do not enter real FEIN, SSN, or utility account numbers yet.</div>
 <input type="hidden" id="customerId">
-<div class="notice">Do not enter real FEIN, SSN, utility account numbers, or other sensitive client identifiers in this prototype.</div>
-<h3 class="section-title">Customer identity</h3>
-<div class="grid">
-<div><label>Customer name *</label><input id="customerName" maxlength="300" required></div>
-<div><label>City *</label><input id="city" required></div>
-<div><label>Company / legal name</label><input id="companyName"></div>
-<div><label>Parent organization</label><input id="parentOrg" placeholder="Optional operator/group"></div>
-<div><label>Primary contact</label><input id="primaryContact"></div>
-<div><label>Status</label><select id="active"><option value="true">Active</option><option value="false">Inactive</option></select></div>
-</div>
-<h3 class="section-title">Phone numbers</h3><div id="phones"></div>
-<h3 class="section-title">Email</h3><div class="grid"><div><label>Main Email</label><input id="mainEmail" type="email"></div><div><label>CC Email</label><input id="ccEmail" type="email"></div></div>
-<h3 class="section-title">Invoice mailing address</h3>
 <div class="grid-3">
-<div><label>Address type</label><select id="mailType"><option>Business</option><option>Owner home</option><option>Other</option></select></div>
-<div><label>Recipient / addressee</label><input id="mailRecipient"></div><div><label>Attention / contact</label><input id="mailAttention"></div>
-<div><label>Street</label><input id="mailStreet"></div><div><label>City</label><input id="mailCity"></div><div><label>State</label><input id="mailState" maxlength="2"></div>
-<div><label>ZIP</label><input id="mailZip"></div><div style="grid-column:span 2"><label>Delivery note</label><input id="mailNote"></div>
+<div><label>Customer name *</label><input id="customerName"></div><div><label>City *</label><input id="city"></div><div><label>Company / legal name</label><input id="companyName"></div>
+<div><label>Parent organization</label><input id="parentOrg"></div><div><label>Primary contact</label><input id="primaryContact"></div><div><label>Status</label><select id="active"><option value="true">Active</option><option value="false">Inactive</option></select></div>
+<div><label>Main email</label><input id="mainEmail"></div><div><label>CC email</label><input id="ccEmail"></div><div><label>Rep</label><input id="rep"></div>
+<div><label>Terms</label><select id="terms"><option>Due on receipt</option><option>Net 15</option><option>Net 30</option><option>Net 60</option><option>Net 90</option></select></div><div><label>Default NEC fee %</label><select id="feePct"><option value="50">50%</option><option value="40">40%</option></select></div><div><label>Confirmed organization name</label><input id="confirmedOrgName"></div>
+<div><label>FEIN</label><input id="fein"></div><div><label>Owner name</label><input id="ownerName"></div><div><label>SSN</label><input id="ssn"></div>
+<div><label>Sales tax ID</label><input id="salesTaxId"></div><div><label>Electric provider</label><input id="electricProvider"></div><div><label>Electric account number(s)</label><input id="electricAccounts"></div>
+<div><label>Gas provider</label><input id="gasProvider"></div><div><label>Gas account number(s)</label><input id="gasAccounts"></div><div><label>Confirmation date</label><input id="confirmationDate" type="date"></div>
 </div>
-<h3 class="section-title">Physical location</h3>
-<div class="grid-3"><div><label>Street</label><input id="physStreet"></div><div><label>City</label><input id="physCity"></div><div><label>State</label><input id="physState" maxlength="2"></div><div><label>ZIP</label><input id="physZip"></div></div>
-<h3 class="section-title">Payment settings</h3>
-<div class="grid"><div><label>Payment terms</label><select id="terms"><option>Due on receipt</option><option>Net 15</option><option>Net 30</option><option>Net 60</option><option>Net 90</option></select></div><div><label>Default NEC fee %</label><select id="feePct"><option value="50">50%</option><option value="40">40%</option></select></div><div><label>Representative</label><input id="rep"></div></div>
-<h3 class="section-title">Filing / utility fields (sample only)</h3>
-<div class="grid">
-<div><label>FEIN</label><input id="fein" maxlength="25"></div><div><label>Owner name</label><input id="ownerName"></div>
-<div><label>SSN</label><input id="ssn"></div><div><label>Sales tax ID</label><input id="salesTaxId" maxlength="20"></div>
-<div><label>Electric provider</label><input id="electricProvider"></div><div><label>Electric account number(s)</label><input id="electricAccounts" maxlength="30"></div>
-<div><label>Gas provider</label><input id="gasProvider"></div><div><label>Gas account number(s)</label><input id="gasAccounts" maxlength="30"></div>
-<div><label>Confirmation date</label><input id="confirmationDate" type="date"></div><div><label>Confirmed organization name</label><input id="confirmedOrgName"></div>
+<h3>Phone numbers</h3><div id="phones"></div>
+<h3>Addresses</h3><div class="grid-3"><div><label>Mailing street</label><input id="mailStreet"></div><div><label>Mailing city</label><input id="mailCity"></div><div><label>Mailing state / ZIP</label><input id="mailStateZip"></div><div><label>Physical street</label><input id="physStreet"></div><div><label>Physical city</label><input id="physCity"></div><div><label>Physical state / ZIP</label><input id="physStateZip"></div></div>
+<div style="margin-top:12px"><label>General customer note</label><textarea id="notes"></textarea></div>
+<div style="text-align:right;margin-top:14px"><button id="deleteCustomer" class="danger hidden">Delete Prototype Record</button> <button id="saveCustomer" class="primary">Save Customer</button></div>
 </div>
-<h3 class="section-title">Notes</h3><textarea id="notes" placeholder="Communications, filing dates, utility records, collections notes, etc."></textarea>
-<div class="actions"><button type="button" id="deleteBtn" class="danger hidden">Delete</button><button type="button" id="cancelBtn">Cancel</button><button type="submit" class="primary">Save Customer</button></div>
-</form>
-</section>
-</main></div><script>
-const KEY='necLedgerCustomersV1',phoneTypes=['Business Phone','Cell Phone','Home Phone','Fax','Other'],$=id=>document.getElementById(id);let customers=load();
-function seed(){return[{id:'CUST-0001',customerName:'Northside Fuel Express',city:'Waterloo',companyName:'Midwest Fuel Group LLC',parentOrg:'Midwest Fuel Group',primaryContact:'Alex Morgan',active:true,terms:'Due on receipt',feePct:50,phones:[],mainEmail:'',ccEmail:'',notes:'Synthetic sample record.'},{id:'CUST-0002',customerName:'Southside Motor Mart',city:'Cedar Falls',companyName:'Midwest Fuel Group LLC',parentOrg:'Midwest Fuel Group',primaryContact:'Jamie Lee',active:true,terms:'Net 30',feePct:50,phones:[],mainEmail:'',ccEmail:'',notes:'Synthetic sample record.'}]}
-function load(){try{const v=JSON.parse(localStorage.getItem(KEY));return Array.isArray(v)&&v.length?v:seed()}catch(e){return seed()}}function save(){localStorage.setItem(KEY,JSON.stringify(customers));render()}
-function nextId(){const n=customers.reduce((m,c)=>Math.max(m,Number((c.id||'').split('-')[1])||0),0)+1;return'CUST-'+String(n).padStart(4,'0')}
-function phoneEditor(values=[]){$('phones').innerHTML='';for(let i=0;i<4;i++){const v=values[i]||{},row=document.createElement('div');row.className='phone-row';row.innerHTML='<select class="phoneType">'+phoneTypes.map(t=>'<option'+(v.type===t?' selected':'')+'>'+t+'</option>').join('')+'</select><input class="phoneNumber" placeholder="Phone number" value="'+esc(v.number||'')+'"><input class="phoneDetails" placeholder="Belongs to / Ask for / Details" value="'+esc(v.details||'')+'">';$('phones').appendChild(row)}}
-function render(){const q=$('searchBox').value.trim().toLowerCase(),filtered=customers.filter(c=>[c.customerName,c.city,c.companyName,c.parentOrg].join(' ').toLowerCase().includes(q));$('customerCount').textContent=filtered.length+' customer'+(filtered.length===1?'':'s');$('customerRows').innerHTML=filtered.map(c=>'<tr><td>'+esc(c.id)+'</td><td><strong>'+esc(c.customerName)+'</strong></td><td>'+esc(c.city)+'</td><td>'+esc(c.parentOrg||'—')+'</td><td>'+Number(c.feePct||50)+'%</td><td>'+(c.active!==false?'Active':'Inactive')+'</td><td><button onclick="openCustomer(\''+c.id+'\')">Open</button></td></tr>').join('')}
-function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function showList(){$('formView').classList.add('hidden');$('customersView').classList.remove('hidden');render()}function showForm(){$('customersView').classList.add('hidden');$('formView').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'})}
-function clearForm(){$('customerForm').reset();$('customerId').value='';$('active').value='true';$('terms').value='Due on receipt';$('feePct').value='50';phoneEditor([]);$('deleteBtn').classList.add('hidden')}
-function openNew(){clearForm();$('formTitle').textContent='Add Customer';showForm()}
-window.openCustomer=function(id){const c=customers.find(x=>x.id===id);if(!c)return;clearForm();$('formTitle').textContent=c.customerName+' — '+c.city;$('customerId').value=c.id;['customerName','city','companyName','parentOrg','primaryContact','mainEmail','ccEmail','mailType','mailRecipient','mailAttention','mailStreet','mailCity','mailState','mailZip','mailNote','physStreet','physCity','physState','physZip','terms','rep','fein','ownerName','ssn','salesTaxId','electricProvider','electricAccounts','gasProvider','gasAccounts','confirmationDate','confirmedOrgName','notes'].forEach(f=>{if($(f))$(f).value=c[f]||''});$('active').value=String(c.active!==false);$('feePct').value=String(c.feePct||50);phoneEditor(c.phones||[]);$('deleteBtn').classList.remove('hidden');showForm()}
-$('customerForm').addEventListener('submit',e=>{e.preventDefault();const id=$('customerId').value||nextId(),phones=[...document.querySelectorAll('.phone-row')].map(r=>({type:r.querySelector('.phoneType').value,number:r.querySelector('.phoneNumber').value.trim(),details:r.querySelector('.phoneDetails').value.trim()})).filter(p=>p.number||p.details),c={id,phones};['customerName','city','companyName','parentOrg','primaryContact','mainEmail','ccEmail','mailType','mailRecipient','mailAttention','mailStreet','mailCity','mailState','mailZip','mailNote','physStreet','physCity','physState','physZip','terms','rep','fein','ownerName','ssn','salesTaxId','electricProvider','electricAccounts','gasProvider','gasAccounts','confirmationDate','confirmedOrgName','notes'].forEach(f=>c[f]=$(f).value.trim());c.active=$('active').value==='true';c.feePct=Number($('feePct').value);const i=customers.findIndex(x=>x.id===id);if(i>=0)customers[i]=c;else customers.push(c);save();showList()});
-$('deleteBtn').addEventListener('click',()=>{const id=$('customerId').value;if(id&&confirm('Delete this customer from the prototype?')){customers=customers.filter(c=>c.id!==id);save();showList()}});$('addCustomerBtn').addEventListener('click',openNew);$('backBtn').addEventListener('click',showList);$('cancelBtn').addEventListener('click',showList);$('searchBox').addEventListener('input',render);phoneEditor([]);render();if(location.hash==='#new'){openNew();}
-</script>
-</body></html>
+<script>
+const CK='necLedgerCustomersV1',RK='necLedgerRefundCasesV1',AK='necLedgerCustomerActivityV1';const $=id=>document.getElementById(id);const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const phoneTypes=['Business Phone','Cell Phone','Home Phone','Fax','Other'];
+function seed(){return[{id:'CUST-0001',customerName:'Northside Fuel Express',city:'Waterloo',companyName:'Midwest Fuel Group LLC',parentOrg:'Midwest Fuel Group',primaryContact:'Alex Morgan',active:true,terms:'Due on receipt',feePct:50,phones:[{type:'Business Phone',number:'(555) 010-1001',details:'Main'}],mainEmail:'',ccEmail:'',rep:'MH',electricProvider:'Sample Electric Utility',gasProvider:'Sample Gas Utility',notes:'Synthetic sample record.'},{id:'CUST-0002',customerName:'Southside Motor Mart',city:'Cedar Falls',companyName:'Midwest Fuel Group LLC',parentOrg:'Midwest Fuel Group',primaryContact:'Jamie Lee',active:true,terms:'Net 30',feePct:50,phones:[],mainEmail:'',ccEmail:'',rep:'MH',notes:'Synthetic sample record.'}]}
+let customers=(()=>{try{const x=JSON.parse(localStorage.getItem(CK));return Array.isArray(x)&&x.length?x:seed()}catch{return seed()}})();let selected=customers[0]?.id||null;let activity=(()=>{try{return JSON.parse(localStorage.getItem(AK))||{}}catch{return{}}})();
+function refunds(){try{return JSON.parse(localStorage.getItem(RK))||[]}catch{return[]}}function days(d){return d?Math.floor((new Date()-new Date(d+'T00:00:00'))/86400000):0}function attention(c){return !!(c.recordsRequested&&!c.filedDate&&days(c.recordsRequested)>30&&c.status!=='None')}function nextId(){let n=customers.reduce((m,c)=>Math.max(m,Number((c.id||'').split('-')[1])||0),0)+1;return'CUST-'+String(n).padStart(4,'0')}
+function save(){localStorage.setItem(CK,JSON.stringify(customers));localStorage.setItem(AK,JSON.stringify(activity))}function log(id,t){activity[id]=activity[id]||[];activity[id].unshift({at:new Date().toISOString(),text:t});save()}
+function caseSet(id){return refunds().filter(r=>r.customerId===id)}function renderList(){const q=$('search').value.toLowerCase(),f=$('filter').value,rs=refunds();let out=customers.filter(c=>{let cs=rs.filter(r=>r.customerId===c.id),match=[c.customerName,c.city,c.parentOrg,c.companyName].join(' ').toLowerCase().includes(q),scope=f==='all'||(f==='active'&&c.active!==false)||(f==='open'&&cs.some(x=>x.status!=='None'))||(f==='attention'&&cs.some(attention));return match&&scope});$('customerList').innerHTML=out.map(c=>'<div class="customer-item '+(c.id===selected?'active':'')+'" data-id="'+c.id+'"><b>'+esc(c.customerName)+'</b><span>'+esc(c.city||'')+'</span><br><small>'+esc(c.parentOrg||c.companyName||'')+'</small></div>').join('')||'<p class="muted">No customers match.</p>';document.querySelectorAll('.customer-item').forEach(x=>x.onclick=()=>{selected=x.dataset.id;renderAll()})}
+function renderWorkspace(){const c=customers.find(x=>x.id===selected);$('empty').classList.toggle('hidden',!!c);$('workspace').classList.toggle('hidden',!c);if(!c)return;const cs=caseSet(c.id),open=cs.filter(x=>x.status!=='None');$('title').textContent=c.customerName+' — '+c.city;$('subtitle').textContent=c.parentOrg||c.companyName||'Independent location';$('sAccount').textContent=c.id;$('sCases').textContent=open.length;$('sFee').textContent=(c.feePct||50)+'%';$('sStatus').textContent=c.active!==false?'Active':'Inactive';
+$('panel-overview').innerHTML='<div class="grid-2"><div><div class="fieldline"><div class="key">Primary contact</div><div>'+esc(c.primaryContact||'—')+'</div></div><div class="fieldline"><div class="key">Main email</div><div>'+esc(c.mainEmail||'—')+'</div></div><div class="fieldline"><div class="key">Terms</div><div>'+esc(c.terms||'Due on receipt')+'</div></div><div class="fieldline"><div class="key">Representative</div><div>'+esc(c.rep||'—')+'</div></div></div><div><div class="fieldline"><div class="key">Electric provider</div><div>'+esc(c.electricProvider||'—')+'</div></div><div class="fieldline"><div class="key">Gas provider</div><div>'+esc(c.gasProvider||'—')+'</div></div><div class="fieldline"><div class="key">Confirmed organization</div><div>'+esc(c.confirmedOrgName||'—')+'</div></div><div class="fieldline"><div class="key">General note</div><div>'+esc(c.notes||'—')+'</div></div></div></div>';
+$('panel-refunds').innerHTML='<div class="toolbar"><h3 style="margin:0">Refund history</h3><a class="btn primary" href="refunds.html">Open Refund Center</a></div>'+(cs.length?'<table><thead><tr><th>Cycle</th><th>Status</th><th>Records requested</th><th>Filed</th><th>Attention</th></tr></thead><tbody>'+cs.map(r=>'<tr><td>'+esc(r.cycleLabel)+'</td><td>'+esc(r.status)+'</td><td>'+esc(r.recordsRequested||'—')+'</td><td>'+esc(r.filedDate||'Not filed')+'</td><td>'+(attention(r)?'<span class="pill bad">Overdue</span>':'—')+'</td></tr>').join('')+'</tbody></table>':'<p class="muted">No refund cases yet.</p>');
+$('panel-transactions').innerHTML='<h3>Transactions</h3><p class="muted">Invoices, payments, credits and collections for this customer will aggregate here as the Receivables module is completed.</p>';
+$('panel-contacts').innerHTML='<h3>Contacts</h3><p><b>'+esc(c.primaryContact||'No primary contact')+'</b></p><p>'+esc(c.mainEmail||'')+'</p>'+(c.phones||[]).map(p=>'<div class="fieldline"><div class="key">'+esc(p.type)+'</div><div>'+esc(p.number)+' '+esc(p.details||'')+'</div></div>').join('');
+$('panel-documents').innerHTML='<h3>Documents</h3><p class="muted">General customer documents will live here. Refund-specific files remain inside each refund case so historical cycles stay self-contained.</p>';
+const ev=activity[c.id]||[];$('panel-activity').innerHTML='<div class="toolbar"><h3 style="margin:0">Customer activity</h3><button onclick="addActivity()">+ Log Activity</button></div>'+(ev.length?ev.map(e=>'<div style="padding:10px 0;border-bottom:1px solid #edf0f3"><b>'+esc(e.text)+'</b><br><small class="muted">'+new Date(e.at).toLocaleString()+'</small></div>').join(''):'<p class="muted">No customer-level activity yet.</p>');
+$('panel-profile').innerHTML='<h3>Profile / filing information</h3><div class="grid-2"><div><div class="fieldline"><div class="key">FEIN</div><div>'+esc(c.fein||'—')+'</div></div><div class="fieldline"><div class="key">Owner</div><div>'+esc(c.ownerName||'—')+'</div></div><div class="fieldline"><div class="key">SSN</div><div>'+esc(c.ssn||'—')+'</div></div></div><div><div class="fieldline"><div class="key">Sales tax ID</div><div>'+esc(c.salesTaxId||'—')+'</div></div><div class="fieldline"><div class="key">Electric account(s)</div><div>'+esc(c.electricAccounts||'—')+'</div></div><div class="fieldline"><div class="key">Gas account(s)</div><div>'+esc(c.gasAccounts||'—')+'</div></div></div></div>'}
+window.addActivity=()=>{let t=prompt('Customer activity note');if(t){log(selected,t);renderWorkspace()}}
+function renderAll(){renderList();renderWorkspace()}document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));t.classList.add('active');$('panel-'+t.dataset.tab).classList.add('active')});$('search').oninput=renderList;$('filter').onchange=renderList;
+function phoneEditor(vals=[]){$('phones').innerHTML='';for(let i=0;i<4;i++){let v=vals[i]||{},d=document.createElement('div');d.className='phone-row';d.innerHTML='<select class="pt">'+phoneTypes.map(t=>'<option'+(t===v.type?' selected':'')+'>'+t+'</option>').join('')+'</select><input class="pn" placeholder="Phone number" value="'+esc(v.number||'')+'"><input class="pd" placeholder="Belongs to / Ask for / Details" value="'+esc(v.details||'')+'">';$('phones').appendChild(d)}}
+function openForm(c){$('formTitle').textContent=c?'Edit Customer':'Add Customer';$('customerId').value=c?.id||'';['customerName','city','companyName','parentOrg','primaryContact','mainEmail','ccEmail','rep','confirmedOrgName','fein','ownerName','ssn','salesTaxId','electricProvider','electricAccounts','gasProvider','gasAccounts','confirmationDate','mailStreet','mailCity','mailStateZip','physStreet','physCity','physStateZip','notes'].forEach(k=>$(k).value=c?.[k]||'');$('active').value=String(c?.active!==false);$('terms').value=c?.terms||'Due on receipt';$('feePct').value=String(c?.feePct||50);phoneEditor(c?.phones||[]);$('deleteCustomer').classList.toggle('hidden',!c);$('modal').classList.remove('hidden')}
+$('newCustomer').onclick=()=>openForm(null);$('editCustomer').onclick=()=>openForm(customers.find(x=>x.id===selected));$('closeModal').onclick=()=>$('modal').classList.add('hidden');
+$('saveCustomer').onclick=()=>{if(!$('customerName').value.trim()||!$('city').value.trim())return alert('Customer name and city are required.');let id=$('customerId').value||nextId(),old=customers.find(x=>x.id===id),c={id,phones:[...document.querySelectorAll('.phone-row')].map(r=>({type:r.querySelector('.pt').value,number:r.querySelector('.pn').value.trim(),details:r.querySelector('.pd').value.trim()})).filter(x=>x.number||x.details)};['customerName','city','companyName','parentOrg','primaryContact','mainEmail','ccEmail','rep','confirmedOrgName','fein','ownerName','ssn','salesTaxId','electricProvider','electricAccounts','gasProvider','gasAccounts','confirmationDate','mailStreet','mailCity','mailStateZip','physStreet','physCity','physStateZip','notes'].forEach(k=>c[k]=$(k).value.trim());c.active=$('active').value==='true';c.terms=$('terms').value;c.feePct=Number($('feePct').value);let i=customers.findIndex(x=>x.id===id);if(i>=0)customers[i]=c;else customers.push(c);selected=id;save();log(id,old?'Customer profile updated':'Customer created');$('modal').classList.add('hidden');renderAll()};
+$('deleteCustomer').onclick=()=>{if(confirm('Delete this prototype customer?')){customers=customers.filter(c=>c.id!==$('customerId').value);selected=customers[0]?.id||null;save();$('modal').classList.add('hidden');renderAll()}};
+renderAll();if(location.hash==='#new')openForm(null);
+</script></body></html>
