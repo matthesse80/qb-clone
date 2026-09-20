@@ -1,0 +1,12 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NEC Ledger - Receivables</title><link rel="stylesheet" href="assets/app-shell.css"></head>
+<body><div class="shell"><aside class="side"><img class="brand-art" src="assets/nec-ledger-logo.jpg" alt="NEC Ledger"><nav class="nav">
+<a href="index.html">⌂ &nbsp; Home</a><a href="customers.html">Customers</a><a href="refunds.html">Refunds</a><a class="active" href="receivables.html">Receivables</a><a href="checking.html">Banking</a><a href="reports.html">Reports</a><a href="company.html">Company & Admin</a>
+</nav><div class="sidefoot">Records. Refunds. Results.<br><br>Same work.<br>Better tools.<br>Greater impact.</div></aside><main class="page-main">
+<div class="app-top"><div><h1>Receivables</h1><div class="app-sub">Invoices, payments, open balances, credits and collections</div></div><div class="app-badge">Sample data mode</div></div>
+<div class="card"><div class="tabs"><button class="tab active" data-tab="open">Open A/R</button><button class="tab" data-tab="invoices">Invoices</button><button class="tab" data-tab="payments">Payments</button><button class="tab" data-tab="collections">Collections</button></div>
+<div id="panel-open" class="panel active"><h3>Open receivables</h3><p class="muted">The invoice/payment engine will connect here next. Refund cases can already hand off projected NEC fees to this module.</p></div>
+<div id="panel-invoices" class="panel"><div class="toolbar"><h3 style="margin:0">Invoices</h3><button class="primary" onclick="alert('Invoice creation is the next detailed build after the refund workflow walkthrough.')">+ Invoice</button></div><div id="invoiceList"></div></div>
+<div id="panel-payments" class="panel"><h3>Payments</h3><p class="muted">FIFO payment allocation and unapplied credits will live here.</p></div>
+<div id="panel-collections" class="panel"><h3>Collections</h3><p class="muted">Collection matters will remain linked to the original invoice while tracking fees, costs, remittance and adjustments separately.</p></div>
+</div></main></div>
+<script>const $=id=>document.getElementById(id);document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));t.classList.add('active');$('panel-'+t.dataset.tab).classList.add('active')});</script></body></html>
