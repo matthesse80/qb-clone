@@ -197,3 +197,17 @@ Any form completed later by NEC Ledger is a derivative document linked to its so
 - Data source for those fields
 - Date derivative was generated
 - User who approved / generated it
+
+
+## Signer-name consistency control
+
+Before NEC Ledger fills a "Print name", "Printed name", owner, or authorized-signer field on a derivative document, it must verify the signer name from reliable customer records and prior completed signed documents.
+
+Required process:
+- Use prior NEC documents where the signer name and role were already recorded on the same signed form.
+- Cross-check the current customer's legal entity, owner / authorized signer records, title, and historical signed-document history.
+- Do not fill a printed-name field solely from a generic contact record when more than one authorized person may sign for the business.
+- If the current signed document does not clearly indicate which authorized signer signed it, or if historical records conflict, stop and require manual NEC review.
+- Record which prior document or customer record was used as the source for the printed name.
+
+NEC Ledger should not make a legal or biometric determination about a signature. The control is intended to ensure the printed name is grounded in the customer's documented signer history and that ambiguous cases are reviewed rather than guessed.
