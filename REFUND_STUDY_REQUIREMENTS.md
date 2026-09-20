@@ -366,3 +366,28 @@ The provider-specific workflow must support the form's distinct fields and choic
 - Customer signature and date
 
 When MidAmerican is selected as the provider, NEC Ledger should select the MidAmerican provider-specific authorization template rather than the NEC General Utility Release.
+
+
+### Linn County Rural Electric Cooperative (Linn County REC)
+
+Linn County REC uses its own "Linn County REC Member Usage Authorization Form", but NEC also includes the NEC General Utility Release in the same outgoing request package.
+
+Required package structure:
+1. Linn County REC Member Usage Authorization Form
+2. NEC General Utility Release
+
+Both pages belong to one combined multi-page utility-record request package.
+
+Signer/signature rule:
+- The customer signature used on the Linn County REC provider form should be sourced from the same client-authorized signature on the NEC General Utility Release when the client has authorized NEC to reuse that signed authorization.
+- The signature must appear on BOTH the Linn County REC form and the NEC General Utility Release.
+- Reuse the same verified signer identity across both pages.
+- Preserve the full signature image without clipping, stretching, or cutting off descenders/flourishes.
+- Position the signature naturally on each form's designated signature line.
+- Visually inspect both signature placements before finalizing the package.
+
+Provider-form rule:
+- Preserve Linn County REC's own fields, selections, wording, authorization-duration controls, member information, account information, service address, phone/email, requested-period information, member signature/date, and Authorized Representative section.
+- Do not replace the Linn County REC form with the NEC General Utility Release.
+- Do not omit the NEC General Utility Release just because the Linn County REC form is present.
+- If the prior Linn County REC request package also included a cover letter, preserve the cover letter according to the standard cover-letter inheritance rule.
