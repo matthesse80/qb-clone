@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEC Ledger - Checking</title>
+<style>
+body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f4f6f8;color:#1f2937}header{background:#101828;color:white;padding:16px 22px}nav{background:white;padding:10px 20px;border-bottom:1px solid #d0d5dd}nav a{margin-right:10px;color:#1f2937;text-decoration:none;font-weight:600}.wrap{max-width:1200px;margin:22px auto;padding:0 18px}.card{background:white;border:1px solid #d0d5dd;border-radius:12px;padding:16px;margin-bottom:16px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}label{display:block;font-size:12px;font-weight:700;color:#475467;margin-bottom:5px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;padding:8px;border:1px solid #d0d5dd;border-radius:8px;box-sizing:border-box}textarea{min-height:65px}button{padding:8px 11px;border:1px solid #d0d5dd;border-radius:8px;background:white;cursor:pointer;font-weight:600}button.primary{background:#155eef;color:white;border-color:#155eef}.hidden{display:none}.stat{background:white;border:1px solid #d0d5dd;border-radius:10px;padding:12px}.stat b{display:block;font-size:20px;margin-top:4px}table{width:100%;border-collapse:collapse}th,td{padding:8px;border-bottom:1px solid #eaecf0;text-align:left;font-size:13px}th{background:#f9fafb}.num{text-align:right}.muted{color:#667085}.good{color:#067647}.bad{color:#b42318}@media(max-width:850px){.grid{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}@media(max-width:550px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><strong style="font-size:21px">NEC Ledger</strong><div style="font-size:12px;color:#cbd5e1">Checking register & bank reconciliation</div></header>
+<nav><a href="index.html">Customers</a><a href="checking.html">Checking ledger</a></nav>
+<div class="wrap">
+<div class="card toolbar"><div><h2 style="margin:0">Checking ledger</h2><div class="muted">Book balance, cleared balance, reconciliation and year-end categorization.</div></div><div><button id="exportCsv">Export CSV</button> <button id="backupJson">Backup data</button> <button class="primary" id="newTxn">+ Transaction</button></div></div>
+
+<div class="grid" style="margin-bottom:16px"><div class="stat"><span class="muted">Book balance</span><b id="bookBalance">$0.00</b></div><div class="stat"><span class="muted">Cleared balance</span><b id="clearedBalance">$0.00</b></div><div class="stat"><span class="muted">Uncleared difference</span><b id="unclearedTotal">$0.00</b></div><div class="stat"><span class="muted">Transactions</span><b id="txnCount">0</b></div></div>
+
+<div class="card hidden" id="txnForm">
+<h3 id="txnTitle">New transaction</h3><input type="hidden" id="txnId">
+<div class="grid">
+<div><label>Date</label><input id="date" type="date"></div>
+<div><label>Type</label><select id="type"><option value="expense">Expense / withdrawal</option><option value="deposit">Deposit / income</option><option value="transfer">Transfer</option></select></div>
+<div><label>Amount</label><input id="amount" type="number" min="0" step="0.01"></div>
+<div><label>Check / reference</label><input id="reference"></div>
+<div><label>Payee / source</label><input id="payee"></div>
+<div><label>Category</label><input id="category" list="cats"><datalist id="cats"><option>NEC fee income</option><option>Advertising</option><option>Bank fees</option><option>Insurance</option><option>Legal & professional</option><option>Office supplies</option><option>Postage</option><option>Software</option><option>Telephone / internet</option><option>Travel</option><option>Taxes & licenses</option><option>Owner draw</option><option>Owner contribution</option><option>Credit card payment</option></datalist></div>
+<div><label>Cleared bank?</label><select id="cleared"><option value="false">No</option><option value="true">Yes</option></select></div>
+<div><label>Tax year</label><input id="taxYear" type="number"></div>
+</div>
+<div style="margin-top:12px"><label>Memo</label><textarea id="memo"></textarea></div>
+<div style="text-align:right;margin-top:12px"><button id="cancelTxn">Cancel</button> <button id="deleteTxn" class="hidden">Delete</button> <button id="saveTxn" class="primary">Save transaction</button></div>
+</div>
+
+<div class="card">
+<div class="toolbar"><strong>Register</strong><input id="search" placeholder="Search payee, category, memo or reference" style="max-width:420px"></div>
+<div style="overflow:auto"><table><thead><tr><th>Date</th><th>Ref</th><th>Payee/source</th><th>Category</th><th>Clr</th><th>Rec</th><th class="num">Payment</th><th class="num">Deposit</th><th class="num">Balance</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+</div>
+
+<div class="grid2">
+<div class="card"><h3>Reconcile bank statement</h3><div class="grid2"><div><label>Opening balance</label><input id="openingBalance" type="number" step="0.01"></div><div><label>Statement ending date</label><input id="statementDate" type="date"></div><div><label>Statement ending balance</label><input id="statementBalance" type="number" step="0.01"></div><div><label>Difference</label><input id="difference" readonly></div></div><p class="muted">Mark transactions cleared as they appear on the bank statement. Final reconciliation requires a $0.00 difference.</p><button id="completeReconcile" class="primary">Complete reconciliation</button><div id="reconcileStatus" class="muted" style="margin-top:10px"></div></div>
+<div class="card"><h3>Year-end tax summary</h3><div class="grid2"><div><label>Year</label><input id="summaryYear" type="number"></div><div style="align-self:end"><button id="refreshSummary">Refresh summary</button></div></div><div id="yearSummary" style="margin-top:12px"></div></div>
+</div>
+</div>
+
+<script>
+const KTX='necLedgerCheckingV1',KOPEN='necLedgerOpeningBalanceV1',KREC='necLedgerReconciliationsV1';
+const $=id=>document.getElementById(id);
+let txns=JSON.parse(localStorage.getItem(KTX)||'[]');
+let recs=JSON.parse(localStorage.getItem(KREC)||'[]');
+const money=n=>Number(n||0).toLocaleString('en-US',{style:'currency',currency:'USD'});
+const esc=s=>String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const opening=()=>Number(localStorage.getItem(KOPEN)||0);
+const signed=t=>t.type==='deposit'?Number(t.amount||0):-Number(t.amount||0);
+function save(){localStorage.setItem(KTX,JSON.stringify(txns));render();calcReconcile();renderSummary()}
+function render(){
+ let q=$('search').value.toLowerCase(), bal=opening(), cleared=opening();
+ let sorted=[...txns].sort((a,b)=>(a.date+a.id).localeCompare(b.date+b.id)), balances={};
+ sorted.forEach(t=>{bal+=signed(t);balances[t.id]=bal;if(t.cleared)cleared+=signed(t)});
+ let filtered=sorted.filter(t=>[t.payee,t.category,t.memo,t.reference].join(' ').toLowerCase().includes(q));
+ $('rows').innerHTML=filtered.map(t=>'<tr><td>'+esc(t.date)+'</td><td>'+esc(t.reference)+'</td><td>'+esc(t.payee)+'</td><td>'+esc(t.category)+'</td><td>'+(t.cleared?'✓':'')+'</td><td>'+(t.reconciled?'✓':'')+'</td><td class="num">'+(t.type!=='deposit'?money(t.amount):'')+'</td><td class="num">'+(t.type==='deposit'?money(t.amount):'')+'</td><td class="num">'+money(balances[t.id])+'</td><td><button onclick="editTxn(\\''+t.id+'\\')">Open</button></td></tr>').join('');
+ $('bookBalance').textContent=money(bal);$('clearedBalance').textContent=money(cleared);$('unclearedTotal').textContent=money(bal-cleared);$('txnCount').textContent=txns.length;
+}
+function showForm(t){
+ $('txnForm').classList.remove('hidden');$('txnTitle').textContent=t?'Edit transaction':'New transaction';$('txnId').value=t?t.id:'';
+ $('date').value=t?t.date:new Date().toISOString().slice(0,10);$('type').value=t?t.type:'expense';$('amount').value=t?t.amount:'';$('reference').value=t?t.reference||'':'';$('payee').value=t?t.payee||'':'';$('category').value=t?t.category||'':'';$('cleared').value=String(t?t.cleared:false);$('taxYear').value=t?(t.taxYear||t.date.slice(0,4)):new Date().getFullYear();$('memo').value=t?t.memo||'':'';
+ $('deleteTxn').classList.toggle('hidden',!t);
+}
+window.editTxn=id=>showForm(txns.find(t=>t.id===id));
+$('newTxn').onclick=()=>showForm(null);$('cancelTxn').onclick=()=>$('txnForm').classList.add('hidden');
+$('saveTxn').onclick=()=>{if(!$('date').value||!$('amount').value)return alert('Date and amount are required.');let id=$('txnId').value||'TXN-'+Date.now(), prior=txns.find(t=>t.id===id)||{};let t={...prior,id:id,date:$('date').value,type:$('type').value,amount:Number($('amount').value),reference:$('reference').value.trim(),payee:$('payee').value.trim(),category:$('category').value.trim(),cleared:$('cleared').value==='true',taxYear:Number($('taxYear').value||$('date').value.slice(0,4)),memo:$('memo').value.trim()};let i=txns.findIndex(x=>x.id===id);if(i>=0)txns[i]=t;else txns.push(t);$('txnForm').classList.add('hidden');save()};
+$('deleteTxn').onclick=()=>{let id=$('txnId').value;if(confirm('Delete this transaction?')){txns=txns.filter(t=>t.id!==id);$('txnForm').classList.add('hidden');save()}};
+$('openingBalance').value=opening();$('openingBalance').onchange=()=>{localStorage.setItem(KOPEN,String(Number($('openingBalance').value||0)));render();calcReconcile()};$('search').oninput=render;
+function calcReconcile(){let end=$('statementDate').value,b=Number($('statementBalance').value||0),calc=opening();txns.filter(t=>t.cleared&&(!end||t.date<=end)).forEach(t=>calc+=signed(t));let diff=b-calc;$('difference').value=money(diff);$('difference').className=Math.abs(diff)<0.005?'good':'bad';return diff}
+$('statementDate').onchange=calcReconcile;$('statementBalance').oninput=calcReconcile;
+$('completeReconcile').onclick=()=>{let end=$('statementDate').value;if(!end)return alert('Enter the statement ending date.');let diff=calcReconcile();if(Math.abs(diff)>=0.005)return alert('The reconciliation difference must be $0.00.');txns=txns.map(t=>(t.cleared&&t.date<=end)?{...t,reconciled:true,reconciledThrough:end}:t);recs.push({date:end,endingBalance:Number($('statementBalance').value),completedAt:new Date().toISOString()});localStorage.setItem(KREC,JSON.stringify(recs));save();$('reconcileStatus').textContent='Reconciled through '+end+' at '+money($('statementBalance').value)};
+function download(name,content,type){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type:type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+$('exportCsv').onclick=()=>{let head=['Date','Type','Amount','Reference','Payee','Category','Memo','Cleared','Reconciled','TaxYear'];let rows=[head,...txns.map(t=>[t.date,t.type,t.amount,t.reference,t.payee,t.category,t.memo,t.cleared,t.reconciled,t.taxYear])];let csv=rows.map(r=>r.map(v=>'"'+String(v||'').replaceAll('"','""')+'"').join(',')).join('\\n');download('NEC_Checking_Ledger.csv',csv,'text/csv')};
+$('backupJson').onclick=()=>{let data={format:'NEC Ledger prototype backup',createdAt:new Date().toISOString(),openingBalance:opening(),transactions:txns,reconciliations:recs};download('NEC_Ledger_Backup_'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(data,null,2),'application/json')};
+function renderSummary(){let y=Number($('summaryYear').value||new Date().getFullYear()),subset=txns.filter(t=>Number(t.taxYear||t.date.slice(0,4))===y),income=0,expense=0,cats={};subset.forEach(t=>{let v=signed(t);if(v>0)income+=v;else expense+=-v;cats[t.category||'Uncategorized']=(cats[t.category||'Uncategorized']||0)+v});$('yearSummary').innerHTML='<p><b>Income:</b> '+money(income)+' &nbsp; <b>Expenses/withdrawals:</b> '+money(expense)+' &nbsp; <b>Net:</b> '+money(income-expense)+'</p><table><thead><tr><th>Category</th><th class="num">Net amount</th></tr></thead><tbody>'+Object.entries(cats).sort((a,b)=>a[0].localeCompare(b[0])).map(x=>'<tr><td>'+esc(x[0])+'</td><td class="num">'+money(x[1])+'</td></tr>').join('')+'</tbody></table>'}
+$('summaryYear').value=new Date().getFullYear();$('refreshSummary').onclick=renderSummary;render();calcReconcile();renderSummary();
+</script>
+</body></html>
