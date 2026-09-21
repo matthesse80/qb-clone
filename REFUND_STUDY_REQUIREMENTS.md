@@ -1199,3 +1199,44 @@ For seasonal grain studies, NEC Ledger should therefore display:
 - Annual actual-vs-modeled variance.
 
 If the modeled operating window materially conflicts with the bill pattern, flag the study for review even when total annual modeled usage is within +/-5%.
+
+
+## Energy-study training and change-review workflow
+
+When ChatGPT/NEC Ledger modifies an existing energy study during training or production review, the first editable Excel output should be a marked-up review copy rather than an immediately "clean" replacement.
+
+### Review-copy workflow
+
+1. Preserve the original workbook unchanged.
+2. Create a working review copy.
+3. Visually highlight every cell or row changed, added, or materially recalculated by ChatGPT/NEC Ledger.
+4. Keep formulas functional so Matt can test changes by modifying hours, days, load factors, quantities, or ratings.
+5. Include a concise change log identifying:
+   - Sheet
+   - Cell/row or equipment item
+   - Original value
+   - Proposed value
+   - Reason for change
+   - Whether the change was formula-driven, bill-derived, or judgment/assumption
+6. Matt reviews the marked-up workbook and accepts, rejects, or revises changes.
+7. After approval, create a clean working copy with the review highlighting removed but the approved values/formulas retained.
+
+### Suggested visual markup
+
+Use a consistent workbook markup convention:
+- Yellow fill: value or assumption changed by ChatGPT/NEC Ledger and awaiting review.
+- Green fill: newly added row/equipment/item.
+- Blue fill: formula or source-linked calculation changed.
+- Red/pink fill: unresolved issue, missing data, or item requiring Matt's decision.
+
+The exact colors may be changed later, but one stable legend should be used across all studies.
+
+### Auditability
+
+The clean approved workbook should not lose the training history. Preserve either:
+- a separate "Change Log" worksheet in the review copy, or
+- a separate archived review workbook plus the clean approved workbook.
+
+Do not remove or overwrite the original study source.
+
+During initial training, default to highlighting more rather than less. Once NEC's standard rules are mature, routine formula-driven changes may be handled with lighter review while unusual assumptions, load-factor changes, equipment additions/removals, study-period changes, and manual bill corrections remain prominently flagged.
