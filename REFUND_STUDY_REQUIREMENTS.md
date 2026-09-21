@@ -1328,3 +1328,57 @@ Before generating a final exemption certificate, confirm:
 - authorized signer information.
 
 The final certificate must be delivered to the utility/seller and retained in the NEC case file. Do not route it to Iowa DOR as though it were an IA 843 refund filing.
+
+
+## Service-address identity, three-year lookback, and study/refund-period overlap
+
+### Service address must match the energy study
+
+The utility SERVICE ADDRESS, not the mailing/remittance address, is the location that must correspond to the energy study.
+
+Rules:
+- Match the energy study to the utility service address tied to the studied account/meter.
+- Ignore mailing address differences when validating location identity.
+- A provider bill may abbreviate the service address or omit the city/state and show only the street number/name. That is acceptable when the street address, account/meter, customer/location context, and surrounding records make the service-location identity clear.
+- Do not reject a valid match solely because the bill omits the city.
+- If the bill shows a materially different service street/address from the study, stop and flag the mismatch before using the bill in the study or tax calculation.
+- Preserve the source service address as shown on the bill and the normalized study service address used for matching.
+
+### NEC operational three-year lookback rule
+
+For NEC refund preparation, do not include tax periods that go back more than three years from the contemplated filing date / current filing window.
+
+Operational rule:
+- Treat three years as the normal maximum lookback.
+- When the oldest potentially refundable month is the currently open month three years prior, NEC may choose to sacrifice/exclude that oldest partial/open month rather than risk including an out-of-window period.
+- Example business rule: if filing around August 31, 2026, do not attempt to claim August 2023 simply to capture the oldest edge month.
+- It is acceptable to exclude one older bill/period at the beginning of the claim when needed to keep the filing comfortably within the three-year window.
+- Excluding an older bill from the REFUND CLAIM does not require excluding it from a separate 12-bill ENERGY-STUDY validation period if that bill is otherwise part of the representative consecutive-bill study.
+- Record any intentionally excluded edge bill/period in the audit trail and mark it "not claimed" rather than "previously refunded."
+
+Before final filing, NEC Ledger should compare the proposed claim start with the filing-date lookback window and flag any period that may be outside NEC's three-year operating rule.
+
+### Energy-study period may overlap a prior refund period
+
+The 12 consecutive bills used to validate an energy study are a REPRESENTATIVE USAGE STUDY PERIOD and do not have to equal the tax-refund claim period.
+
+Therefore:
+- The selected 12-bill energy-study period may overlap months/bills that were already included in a prior filed refund.
+- Prior-refund overlap does NOT invalidate those bills for purposes of calculating actual 12-bill usage and validating the equipment model.
+- The +/-5% usage validation should continue to use all 12 selected consecutive study bills.
+- The TAX BREAKOUT sheets for the new refund must exclude any tax periods already included in a prior filed refund.
+- Never double-claim tax merely because an overlapping bill was used in the energy-study usage validation.
+
+For a repeat refund:
+1. Determine the prior filed-through date separately for electric and gas.
+2. Select the representative 12-bill study period needed to validate current equipment usage.
+3. Calculate actual study usage from all selected study bills, even if early bills overlap the prior refund.
+4. Determine the new eligible refund period beginning after the prior filed-through date, subject also to the three-year lookback rule.
+5. Populate the state/county tax-breakout sheets only with bills/tax attributable to the new unclaimed refund period.
+6. Preserve a bill-level flag showing whether each source bill is:
+   - Study + claim
+   - Study only (already refunded / overlap)
+   - Claim only
+   - Excluded / not claimed
+
+This separation between STUDY PERIOD and REFUND PERIOD is mandatory in NEC Ledger and in the Excel working workbook.
