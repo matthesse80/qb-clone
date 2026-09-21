@@ -1382,3 +1382,57 @@ For a repeat refund:
    - Excluded / not claimed
 
 This separation between STUDY PERIOD and REFUND PERIOD is mandatory in NEC Ledger and in the Excel working workbook.
+
+
+## Service-address matching and three-year refund lookback
+
+### Service address controls the study linkage
+
+For utility bills used in an NEC energy study or refund calculation, the SERVICE ADDRESS / service location must match the location shown on the energy study.
+
+Rules:
+- Do not use the mailing address as the location-matching field.
+- Match on service address, account, meter/service identifier, and fuel as available.
+- A bill may omit the city/state and show only the street number/name; that can still be an acceptable match when the street address, account, meter, provider, and customer context clearly identify the same service location.
+- If the service address conflicts with the study location, flag the bill for review and do not silently include it.
+- Mailing-address differences alone are not a reason to reject a bill.
+
+### Three-year refund lookback
+
+NEC refund claims may not reach back more than three years from the filing date.
+
+NEC Ledger must calculate an earliest normally-eligible claim date from the intended filing date and flag any bill/period older than that boundary.
+
+Business rule:
+- Do not automatically include a full calendar month that clearly falls outside the three-year lookback.
+- NEC may use judgment near a month boundary when the current month has not closed and may prefer to preserve one newer month at the front end rather than force inclusion of an older month at the back end.
+- Matt makes that judgment; NEC Ledger should flag the boundary and show which bill(s) would be dropped or retained.
+- Example principle: if filing at the end of August 2026, do not attempt to claim August 2023 merely to maximize the back end.
+- Any intentionally excluded older bill remains excluded from the refund calculation and audit trail rather than being marked as refunded.
+
+### Study period may overlap a prior refund
+
+The 12-consecutive-bill period used to validate an energy study is independent from the tax-refund claim period.
+
+Therefore:
+- It is acceptable for the 12-bill study period to overlap months already included in a prior filed refund.
+- Prior-refund overlap does NOT invalidate the energy study.
+- The tax breakout sheets must include only tax from periods that are eligible for the NEW refund claim.
+- Never carry overlapping prior-refund tax into the new State or County tax breakdown merely because those bills were used in the 12-bill usage study.
+- Keep the bill available as study evidence while marking its tax component as previously claimed / excluded from the new refund.
+
+For a repeat refund:
+1. Determine the last filed-through date separately for electric and gas.
+2. Determine the three-year lookback boundary from the intended new filing date.
+3. Set the new tax-claim start to the later of:
+   - the day after that fuel's prior filed-through date, or
+   - the earliest date NEC elects to use under the three-year lookback rule.
+4. Use the selected 12 consecutive bills for study validation even if some begin before the new tax-claim start.
+5. Build State/County tax breakdowns only from bills/portions assigned to the new eligible claim period.
+
+### Woodbine Food Land live-training example
+
+Prior filed electric refund period: 12/1/2021 through 11/30/2023.
+Current 12-bill study period reviewed: 8/18/2023 through 8/18/2024.
+
+The August-November 2023 bills may remain in the 12-bill energy-study usage validation, but their tax must not appear on the next refund's tax-breakdown sheets because those periods were already included in the prior refund. The new electric refund tax period begins after 11/30/2023, subject to the three-year filing-date rule and the actual bills available for the new claim.
