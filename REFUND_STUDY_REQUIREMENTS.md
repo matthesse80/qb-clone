@@ -1516,3 +1516,51 @@ For all future State Electric, County Electric, State Gas, and County Gas sheets
 Whenever possible, generate a new calculation workbook by copying an approved NEC example/template workbook and changing only the case-specific cells rather than recreating the workbook design from scratch.
 
 This rule applies to both review copies and clean approved copies. Review highlighting may be used temporarily during training, but the underlying visible-sheet layout must still match the NEC template. Once approved, remove training highlighting from the clean copy without changing the template structure.
+
+### NEC calculation-sheet formula workflow
+
+The NEC calculation workbook is designed to provide a visible calculation trail that Matt can independently check.
+
+For the electric portion of the NEC calcs sheet:
+
+1. Enter the monthly electric taxable base in the lower helper section. For Woodbine-style bills this is the total of the Electric charge plus the Electric Demand charge, excluding gas and unrelated taxable charges.
+2. In the helper rows, calculate:
+   - State electric tax = taxable electric base x 6%
+   - Local option electric tax = taxable electric base x 1%
+   - Total electric tax = taxable electric base x 7%
+3. Preserve those helper cells as Excel formulas, following the original NEC workbook design.
+4. Copy the resulting monthly State and Local amounts into the corresponding month rows in the upper calculation section. This upper area acts as the source for the quarterly/monthly tax-period rollups used on the breakout sheets.
+5. Do not bypass the lower helper calculation by directly hardcoding only the quarterly breakout values. Matt must be able to see and check the monthly calculation trail.
+
+For Woodbine Food Land in the current training example, the relevant lower helper rows are 60-68, with taxable electric base in column F, State in D, Local in E, and total tax in G.
+
+### State Electric formula chain
+
+In the approved NEC tax-breakout template after removal of the County # column:
+- Cell C5 contains the electric non-exempt percentage.
+- Column B contains Original State Tax.
+- Column C contains Corrected Amount, calculated as ROUND(B[row] * $C$5, 2).
+- Column D contains Tax to be Refunded, calculated as B[row] - C[row].
+- Row 32 totals the original, corrected, and refund columns.
+- State Electric D33 links to the combined local-option refund from County Electric D33.
+- State Electric D34 equals State Electric D32 + D33 and is the total electric refund due.
+
+These cells must remain formulas in the Excel workbook so Matt can inspect and modify inputs and see the workbook recalculate.
+
+### County Electric formula chain
+
+In the approved NEC template after removal of the County # column:
+- County Electric C5 links automatically to State Electric C5.
+- Column B contains Original Local Option Tax.
+- Column C contains Corrected Amount, calculated as ROUND(B[row] * $C$5, 2).
+- Column D contains LOST / refundable local tax, calculated as B[row] - C[row].
+- Row 32 totals the original, corrected, and LOST columns.
+- D33 equals D32 and is linked back to State Electric D33.
+
+The same formula-chain concept applies to State Gas and County Gas when gas is part of the claim.
+
+### Formula-preservation control
+
+Do not replace derived cells with hardcoded calculated results when the approved NEC template expects formulas. User-entered/source-derived inputs may be hardcoded, but corrected amounts, refunds, subtotals, cross-sheet links, and total-refund cells must remain formulas.
+
+Excel calculation mode should be set to automatic/full recalculation on open so the formulas update when Matt changes an input.
