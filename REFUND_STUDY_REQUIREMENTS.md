@@ -1723,3 +1723,16 @@ Cadence should not be optimized only for NEC revenue. It should also minimize un
 
 ### Research / calibration
 Matt and ChatGPT will refine this model over time using actual NEC case economics plus external research where useful (customer-contact psychology, response burden, B2B follow-up behavior, and similar evidence). Until then, the ledger should preserve enough historical data to support later calibration rather than pretending there is already a precise optimal formula.
+
+### Iowa state-form field placement and IA 843 local-option schedule rule
+
+For Iowa state refund forms generated from signed blanks:
+- Treat field placement with the same precision standard used for signature placement on utility releases.
+- Text should sit cleanly and consistently just above the printed rule/inside the intended field box, without touching labels, drifting into adjacent fields, or appearing visually loose.
+- Use the existing signed blank as the visual master and preserve all existing signatures/initials exactly.
+- After filling, render every page and visually QA alignment before delivery.
+
+For IA 843 page 2 specifically:
+- Populate the State Tax Refund Requested, LOST Refund Requested, and Total Refund Requested summary amounts when applicable.
+- Leave the detailed `County in which local option tax was paid` / `Local option tax requested` table blank unless Matt explicitly directs otherwise.
+- Do not enter the county name or local-option amount in that detail table merely because the LOST amount is known.
