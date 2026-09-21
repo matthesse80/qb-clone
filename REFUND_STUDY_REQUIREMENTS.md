@@ -1692,3 +1692,34 @@ Suggested working presets from Matt's current business rules:
 ### Three-year protection
 - The purpose of the outreach schedule is to begin work early enough that NEC does not lose refundable periods to the three-year lookback.
 - If a configured outreach cadence would place the customer uncomfortably close to the three-year boundary, surface the approaching lookback risk rather than silently waiting.
+
+## Refund cadence economics and customer-friction model (conceptual placeholder)
+
+NEC Ledger should eventually recommend, but not force, an outreach cadence by balancing refund economics against customer friction and the three-year lookback risk.
+
+### Current operating rule
+- The customer/location profile keeps a manually editable outreach cadence and/or manual next-outreach date.
+- Any system-generated cadence recommendation is advisory only until Matt approves the model.
+- Existing practical presets (for example 30 months for small/low-fee clients and 18 months for larger/multi-location clients) remain useful working defaults, not permanent optimization rules.
+
+### Future recommendation model
+The recommendation should consider at least:
+- Expected NEC fee from the next refund cycle.
+- Internal cost to prepare the refund: records requests, bill review, energy-study work, tax breakout, forms, filing, invoicing, collections, and follow-up.
+- Customer burden: outreach frequency, signatures, paperwork, questions, and perceived hassle.
+- Number of locations that can be handled together for the same owner/contact.
+- Seasonal usage patterns, especially grain/agriculture and other operations where waiting for another high-use season can materially improve the economics.
+- Time since the prior refund covered-through date.
+- Remaining time before the three-year lookback begins to eliminate refundable periods.
+- Prior response difficulty / signature friction / turnaround time, when enough history exists.
+
+### Economic objective
+The future model should estimate the incremental value of contacting the customer now versus waiting longer. It should avoid both:
+- contacting customers so frequently that the expected NEC fee is not worth the internal and customer effort; and
+- waiting so long that NEC loses material refundable periods or creates an unnecessarily large, cumbersome future project.
+
+### Customer-experience objective
+Cadence should not be optimized only for NEC revenue. It should also minimize unnecessary customer touchpoints and paperwork. Where several locations share an owner/contact, coordinate outreach when practical while keeping each location's refund records separate.
+
+### Research / calibration
+Matt and ChatGPT will refine this model over time using actual NEC case economics plus external research where useful (customer-contact psychology, response burden, B2B follow-up behavior, and similar evidence). Until then, the ledger should preserve enough historical data to support later calibration rather than pretending there is already a precise optimal formula.
