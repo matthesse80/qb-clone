@@ -1436,3 +1436,25 @@ Prior filed electric refund period: 12/1/2021 through 11/30/2023.
 Current 12-bill study period reviewed: 8/18/2023 through 8/18/2024.
 
 The August-November 2023 bills may remain in the 12-bill energy-study usage validation, but their tax must not appear on the next refund's tax-breakdown sheets because those periods were already included in the prior refund. The new electric refund tax period begins after 11/30/2023, subject to the three-year filing-date rule and the actual bills available for the new claim.
+
+
+### Bill-level rounding before state/local split
+
+The Woodbine Food Land repeat-refund review confirms an NEC calculation convention for combined state + local tax.
+
+When the electric tax for a bill must be reconstructed from the taxable electric charges:
+1. Calculate the combined electric tax at the applicable combined historical rate.
+2. Round that combined bill-level tax to cents.
+3. Split the rounded combined tax into state and local components according to the applicable state/local rate ratio.
+4. Round each component to cents.
+5. Aggregate those bill-level state/local components into the monthly/quarterly tax-breakdown rows.
+6. Only then apply the study non-exempt percentage to the aggregated state/local tax row.
+
+Example for a 7% combined rate consisting of 6% state + 1% local:
+- Combined electric tax = ROUND(electric taxable base x 7%, 2)
+- State tax = ROUND(combined electric tax x 6/7, 2)
+- Local tax = ROUND(combined electric tax x 1/7, 2)
+
+This bill-level rounding convention reproduces the prior NEC Woodbine breakout more closely than applying 6% and 1% independently to an unrounded base.
+
+If the bill's Sales Tax line covers only the studied electric service, use the actual billed Sales Tax amount as the combined electric tax. If the bill combines tax from electric plus another taxable fuel/service, reconstruct only the studied electric portion from the electric taxable charges and applicable historical rate; do not use the whole bill's combined tax line.
