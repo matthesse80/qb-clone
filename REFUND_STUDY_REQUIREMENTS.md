@@ -2086,3 +2086,20 @@ Rules:
 - Preserve the original signed/initialed source pages and create completed derivatives under the standard source-versus-derivative rule.
 - The individual POA is additional to, not a replacement for, the LLC entity POA.
 - Confirm both POAs are present before an LLC refund package is considered filing-ready.
+
+
+## Energy-study date display format
+
+For all NEC electric and gas energy-study workbooks, the fields labeled **Period Start (for study)** and **Period End (for study)** must use the following display format:
+
+**MM/DD/YYYY**
+
+Rules:
+- Month must be two digits.
+- Day must be two digits.
+- Year must be four digits.
+- Use forward slashes as separators.
+- Example: July 21, 2025 must display as **07/21/2025**.
+- Apply this same format consistently to both electric and gas studies.
+- Preserve the underlying cell as a true Excel date value whenever possible; the workbook number format should display the date as **mm/dd/yyyy** rather than storing the date as plain text.
+- Do not use ISO format (YYYY-MM-DD), month-name formats, shortened years, or other date styles in these two study-period fields unless Matt explicitly directs otherwise for a specific case.
