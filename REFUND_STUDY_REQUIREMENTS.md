@@ -1835,3 +1835,41 @@ Track or estimate elapsed processing time by stage for real refunds so the workf
 - rendering / QA / packaging.
 
 The long-term objective is to make routine repeat refunds fast enough for the economics to work while maintaining filing-grade precision.
+
+## Claimant legal-entity rule for studies, IA 843, and POA
+
+Claimant identity must be based on the taxpayer's legal operating entity, not simply the individual owner's name.
+
+### Energy study and IA 843
+- When NEC knows the business operates under an LLC, corporation, or other legal entity, the claimant/legal name on the energy study and IA 843 must be that legal entity.
+- The trade/business name belongs in the Doing Business As field.
+- Do not use the individual owner's name as the claimant on the study or IA 843 merely because that person signed the contract or state forms.
+- Example: if the legal entity is Homestyle Cafe LLC and the trade name is Homestyle Cafe, use `Homestyle Cafe LLC` as Claimant/Legal Name and `Homestyle Cafe` as DBA.
+- Use an individual's personal name as claimant only when NEC has reliable support that the person operates as an individual/sole proprietor rather than through an LLC/corporation. Individual-name operations such as some personally owned agricultural/hog-barn operations may qualify, but do not assume this.
+
+### Ambiguous Iowa registration / dual-POA protection
+When NEC knows an LLC/legal entity exists but is uncertain whether Iowa has the taxpayer/refund account established under the entity or under the individual owner:
+- Prepare ONE IA 843 under the legal entity name using the entity FEIN.
+- Prepare TWO otherwise-matching IA 2848 POAs:
+  1. Entity POA: taxpayer/legal name = LLC/entity, taxpayer ID = FEIN.
+  2. Individual POA: taxpayer name = owner/individual, taxpayer ID = SSN/ITIN.
+- Keep the representative information, refund matter, tax period, and other case-specific authority fields consistent between the two POAs except for the taxpayer identity/address/ID fields that properly differ.
+- This dual-POA approach is intended to let Iowa match the authority whether the taxpayer is registered under the entity or the owner individually.
+- Do NOT put the individual owner on the energy study or IA 843 as a workaround for registration uncertainty; doing so can cause the refund claim itself to be denied.
+
+### Entity verification priority
+Before finalizing claimant identity, use the strongest available source in this order when practical:
+- current NEC contract / customer legal-name record;
+- confirmed legal entity / FEIN record in NEC Ledger;
+- prior accepted state filing;
+- current customer confirmation.
+If sources conflict, stop for NEC review rather than guessing.
+
+## Spreadsheet formula-result visibility
+
+For energy-study workbooks used for Matt's review:
+- Preserve the existing row-by-row formulas for annual kWh/CCF calculations.
+- Preserve or refresh visible calculated values so the equipment-line results are immediately visible when the workbook is opened.
+- Do not return a study where watts/volts/amps/load factor/hours/days are populated but the annual usage result cells appear blank.
+- Preserve formulas so Matt can edit load factors, hours, days, quantities, or ratings and have the study recalculate.
+- Set workbook calculation mode to automatic/full recalculation on open.
