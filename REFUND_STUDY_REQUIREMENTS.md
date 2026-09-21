@@ -1974,3 +1974,89 @@ Rules:
 - Maintain the rolling month calendar in all synchronized master sections together.
 - Changes to the master template should be deliberate template-maintenance changes, not incidental edits made while preparing a customer refund.
 
+
+
+## Canonical NEC manual calculation master - exact structure
+
+Matt's current manual workbook `calculations sheet.xlsx` is the canonical structural reference for future NEC calculation workbooks. Preserve its five-sheet structure and embedded formulas:
+
+1. `NEC calcs`
+2. `State Electric`
+3. `County Electric`
+4. `State Gas`
+5. `County Gas`
+
+### NEC calcs - upper audit calendar
+The upper monthly calendars are the primary visible audit trail from bills to filing-period totals.
+
+- Electric month column: C
+- Electric state-tax input: D
+- Electric LOST/local-option input: E
+- Electric state quarterly/period labels and rollups: F/G
+- Gas month column: H
+- Gas state-tax input: I
+- Gas LOST/local-option input: J
+- Gas state quarterly/period labels and rollups: K/L
+- G and L are formula rollups; they are not substitutes for the underlying monthly D/E/I/J entries.
+
+Where provider bills state tax separately, enter the actual bill tax directly into D/E/I/J by bill issue month and let the quarter/period formulas roll those values up.
+
+### Combined-tax split helper
+Columns M:O are retained as a helper for situations where tax must be split from a combined amount:
+- N uses 6/7
+- O uses 1/7
+Do not delete this block merely because a particular provider does not need it.
+
+### Gas-conversion helper
+Retain the existing gas-conversion block around rows 31-41, including therm/CCF, MCF/CCF, BTU, cubic-foot, and related conversion formulas. Leave it unused when not needed rather than deleting it.
+
+### Lower taxable-base calculation block
+Retain the lower helper section beginning around row 47.
+
+This section is used when NEC must calculate tax from a taxable charge/base rather than using provider-stated tax:
+- Electric taxable/base input: F
+- Electric calculated state tax: D at 6%
+- Electric calculated LOST: E at 1%
+- Electric combined tax: G at 7%
+- Gas taxable/base input: K
+- Gas calculated state tax: I at 6%
+- Gas calculated LOST: J at 1%
+- Gas combined tax: L at 7%
+
+For providers such as MidAmerican that already state the relevant tax, this lower block normally remains blank but MUST remain present in the workbook.
+
+### State/county breakout sheets
+Preserve the master formulas and structure:
+- State sheets apply the fuel-specific non-exempt percentage to original state tax and calculate the refundable difference.
+- County sheets mirror the calculation for local-option tax.
+- State totals link to county/local-option totals to produce the combined fuel refund.
+- Preserve hidden/template rows, formulas, formatting, and print structure unless Matt specifically changes the master.
+
+## Quarterly NEC-calcs calendar maintenance - exact rule
+
+The canonical NEC Calcs calendar is a rolling 42-month window maintained on quarter boundaries.
+
+At each quarter start (January 1, April 1, July 1, October 1):
+- Remove the three oldest months from BOTH upper month calendars and BOTH lower taxable-base helper calendars.
+- Append the next three months at the bottom of all synchronized calendars.
+- Update the state and LOST quarterly labels in F and K.
+- Preserve the existing relative SUM formulas so each quarter/partial period still rolls the correct three monthly rows.
+- Do not delete any calculation/helper blocks while rolling the calendar.
+
+The window is designed to keep approximately three years of backward filing capacity plus the forward months needed for ongoing work.
+
+Current master window through September 30, 2026:
+- July 2023 through December 2026.
+
+Required October 1, 2026 roll:
+- Remove July, August, and September 2023.
+- Add January, February, and March 2027.
+- New window: October 2023 through March 2027.
+
+General deterministic rule:
+- Oldest month = first month of the current quarter, three years earlier.
+- Newest month = last month of the quarter immediately following the current quarter.
+- Total calendar length remains 42 months.
+
+This quarterly roll applies to every synchronized month list in the NEC Calcs sheet, including the lower tax-calculation section. The canonical workbook should be copied first and then rolled/filled; never rebuild the sheet from scratch.
+
