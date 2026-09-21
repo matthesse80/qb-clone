@@ -1564,3 +1564,49 @@ The same formula-chain concept applies to State Gas and County Gas when gas is p
 Do not replace derived cells with hardcoded calculated results when the approved NEC template expects formulas. User-entered/source-derived inputs may be hardcoded, but corrected amounts, refunds, subtotals, cross-sheet links, and total-refund cells must remain formulas.
 
 Excel calculation mode should be set to automatic/full recalculation on open so the formulas update when Matt changes an input.
+
+### Visible NEC calculation roll-up mapping
+
+For the current NEC calculation-sheet layout, preserve the following visible roll-up behavior so Matt can audit the work directly in the workbook.
+
+Electric State roll-up on NEC calcs:
+- D15 contains Month 12 2023 State tax and G7 must equal D15.
+- D16:D18 are Q1 2024 monthly State tax and G8 must equal SUM(D16:D18).
+- D19:D21 are Q2 2024 monthly State tax and G9 must equal SUM(D19:D21).
+- D22:D23 are Months 7 and 8 2024 State tax and G10 must equal SUM(D22:D23).
+
+Electric Local Option roll-up on NEC calcs:
+- E15 contains Month 12 2023 local tax; F23 must read `Month 12 2023` and G23 must equal E15.
+- E16:E18 are Q1 2024 local tax and G24 must equal SUM(E16:E18).
+- E19:E21 are Q2 2024 local tax and G25 must equal SUM(E19:E21).
+- E22:E23 are Months 7 and 8 2024 local tax and G26 must equal SUM(E22:E23).
+
+The lower helper section remains the visible source calculation:
+- F60:F68 = monthly electric taxable base (Electric + Electric Demand only for Woodbine).
+- D60:D68 = F row x 6% State.
+- E60:E68 = F row x 1% Local Option.
+- G60:G68 = F row x 7% total electric tax.
+
+### Visible formula-result requirement
+
+Formula cells must not only contain formulas; their calculated numeric results must also be visible when the workbook is opened or previewed.
+
+For generated workbooks:
+- Preserve formulas in derived cells.
+- Save/recalculate so the workbook contains current displayed values for those formulas.
+- Validate that State Electric corrected amounts/refunds, County Electric corrected amounts/LOST, NEC calcs helper taxes, period roll-ups, subtotals, and total refund cells all display numeric results rather than blanks.
+- A workbook with correct formulas but blank visible results is not complete.
+
+For State Electric specifically:
+- C11:C31 calculate Original State Tax x C5 non-exempt percentage.
+- D11:D31 calculate B minus C.
+- D32 is total State refund.
+- D33 links the total County Electric local-option refund.
+- D34 equals D32 + D33 and is the total electric refund.
+
+For County Electric:
+- C5 links to State Electric C5.
+- C11:C31 calculate Original Local Tax x C5.
+- D11:D31 calculate B minus C.
+- D32 totals the local-option refund.
+- D33 equals D32 and feeds State Electric D33.
