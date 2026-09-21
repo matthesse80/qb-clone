@@ -1651,9 +1651,9 @@ This rolling-calendar rule is a template-maintenance task and should not require
 ### State Electric print-clean rule
 
 For all future NEC State Electric tax-breakout sheets:
-- The visible/printed breakout ends with column D (Tax to be Refunded).
-- Remove all legacy LOST, SILO, or other extra headers/values/formulas to the right of column D.
-- Columns E and beyond must not display or print any legacy tax helper labels or values on the State Electric sheet.
+- Preserve the approved workbook structure, formulas, helper columns, cross-sheet links, calculated values, formatting, and print settings.
+- Remove only the unwanted visible legacy header text such as LOST or SILO from the specific header cell where it appears.
+- Do NOT delete columns, clear helper formulas, move formulas, change the exempt percentage link, or otherwise restructure the sheet merely to hide that label.
+- In the current approved Woodbine template, the unwanted LOST label is in State Electric E10; clear that cell's text only.
 - Keep the local-option refund linked into State Electric D33 from County Electric, and D34 remains the total refund.
-- Set the State Electric print area so only the intended A:D breakout is printed.
-- Legacy helper logic, if ever needed for internal calculation, belongs on NEC calcs or a hidden support sheet, not on the state-facing State Electric sheet.
+- Any future cleanup request for a single label should be treated as a surgical cell edit unless Matt explicitly asks for a broader layout change.
