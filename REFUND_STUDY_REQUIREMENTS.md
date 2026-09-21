@@ -258,6 +258,17 @@ NEC's current Iowa filing masters are:
 
 NEC Ledger must check the official Iowa Department of Revenue source every three months to verify that these forms, page counts, form numbers, and revision dates are still current. If Iowa publishes a newer version, the NEC master must be replaced before new filing packets are assembled.
 
+
+### Signed older Iowa form usability window
+
+NEC may continue to file an older signed IA 843 and/or IA 2848 revision when the signed form is still within the applicable six-month post-signature acceptance window used by NEC.
+
+Rules:
+- Do not automatically reject a signed older Iowa form solely because a newer revision was published after the client signed.
+- Check the signature date first.
+- If the signed older form is still within six months of the signature date, NEC may use that signed form rather than requiring the customer to re-sign solely because of the newer revision.
+- Do not mix pages from different revisions unless NEC explicitly approves the assembly.
+- Once the six-month usability window has expired, obtain the appropriate current form/signature rather than assuming the older signed form remains acceptable.
 ### Client signature-page assembly rule
 
 Clients may return only the signature page(s), rather than the complete state form packet.
