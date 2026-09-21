@@ -1736,3 +1736,39 @@ For IA 843 page 2 specifically:
 - Populate the State Tax Refund Requested, LOST Refund Requested, and Total Refund Requested summary amounts when applicable.
 - Leave the detailed `County in which local option tax was paid` / `Local option tax requested` table blank unless Matt explicitly directs otherwise.
 - Do not enter the county name or local-option amount in that detail table merely because the LOST amount is known.
+
+## Final NEC refund packet delivery workflow
+
+### PDF review and download
+- For NEC-generated PDFs, provide inline page-image previews in chat for visual QA before finalization.
+- Once Matt confirms the rendered pages look correct, provide a downloadable final PDF immediately.
+- The final PDF should be the exact approved version that was rendered for review; do not regenerate or alter it after approval unless Matt asks for a change.
+
+### One-pass refund packet workflow
+Going forward, the preferred NEC workflow is for Matt to provide the complete source packet at the start of a refund cycle. That may include:
+- prior refund package / prior filing documents;
+- prior energy study / calculation workbook;
+- current utility bills or usage records;
+- signed blank state forms / POA pages;
+- any provider-specific or customer-specific supporting documents.
+
+From that packet, return the refund work product together in one coordinated delivery:
+1. Updated working energy study / calculation workbook (.xlsx), preserving NEC template structure and formulas.
+2. Updated tax-breakout sheets inside the workbook.
+3. Completed filing documents / state forms as a final PDF.
+4. Inline rendered page previews of the filing PDF for visual QA.
+5. After approval, a clearly named downloadable final PDF.
+
+When practical, also provide a single downloadable ZIP containing the final workbook and final filing PDF so the refund package stays together.
+
+### Packet consistency check
+Before delivery, cross-check the study, calculation workbook, and filing documents against one another for:
+- customer/legal name and service location;
+- FEIN / taxpayer identifiers carried from the approved source;
+- claim period;
+- electric and gas percentages;
+- state refund, local-option refund, and total refund;
+- prior filed-through dates / overlap exclusions;
+- representative information and POA period.
+
+The Excel and PDF deliverables should be treated as one refund package, not independent documents created in isolation.
