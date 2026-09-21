@@ -1458,3 +1458,18 @@ Example for a 7% combined rate consisting of 6% state + 1% local:
 This bill-level rounding convention reproduces the prior NEC Woodbine breakout more closely than applying 6% and 1% independently to an unrounded base.
 
 If the bill's Sales Tax line covers only the studied electric service, use the actual billed Sales Tax amount as the combined electric tax. If the bill combines tax from electric plus another taxable fuel/service, reconstruct only the studied electric portion from the electric taxable charges and applicable historical rate; do not use the whole bill's combined tax line.
+
+
+### Woodbine Municipal electric tax isolation rule
+
+For Woodbine Municipal Food Land-style bills, the displayed Sales Tax line can include tax attributable to electric, gas, and potentially other taxable items on the same invoice. Therefore the displayed whole-bill Sales Tax line must not be used as the electric tax amount.
+
+For electric refund calculations:
+- Electric taxable base = Electric charge + Demand charge.
+- Electric combined tax = ROUND(Electric taxable base x 7%, 2), for periods where the applicable historical combined rate is 7%.
+- State component = ROUND(Electric combined tax x 6/7, 2).
+- Local component = ROUND(Electric combined tax x 1/7, 2).
+- The whole-bill Sales Tax line is retained only as a reconciliation/cross-check field.
+- This rule applies even when the bill shows no gas usage, because other taxable line items may still be included in the bill-level Sales Tax total.
+
+The prior Woodbine filing provides a validation example: the October and November 2023 bill-level electric calculations aggregate to the same state and local original-tax amounts shown on NEC's prior tax-breakdown sheets.
