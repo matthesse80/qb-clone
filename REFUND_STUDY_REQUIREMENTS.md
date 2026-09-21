@@ -1959,3 +1959,18 @@ When provider bills state/local tax separately and NEC Calcs already contains th
 - Do not create a second monthly-input/helper section when the existing NEC Calcs calendar can show the bill-level tax trail directly.
 - Preserve cached formula results so Matt can see both monthly source amounts and quarterly totals immediately on open.
 
+
+
+## Canonical blank NEC calculation workbook
+
+NEC must maintain one canonical blank/master calculation workbook and create each customer calculation file by copying that master.
+
+Rules:
+- Never use a completed customer workbook as the long-term template.
+- Never delete template rows, helper sections, conversion blocks, calendar rows, formulas, or formatting simply because a particular customer does not need them.
+- Customer-specific work should populate or leave blank the applicable cells while preserving the complete master structure.
+- The approved NEC Calcs master includes the upper study/usage and monthly tax calendar, quarterly/partial-period rollups, gas-conversion block, and the lower tax-calculation/helper calendar.
+- For providers such as MidAmerican that already state tax by month, use the upper monthly D/E/I/J calendar for direct tax entry and rollups, but leave the lower helper/calculation block intact and unused rather than deleting it.
+- Maintain the rolling month calendar in all synchronized master sections together.
+- Changes to the master template should be deliberate template-maintenance changes, not incidental edits made while preparing a customer refund.
+
