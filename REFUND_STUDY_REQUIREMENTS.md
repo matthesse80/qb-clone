@@ -1253,3 +1253,78 @@ Rules:
 - Never add power-factor adjustments unless Matt explicitly changes NEC methodology in the future.
 - If a nameplate indicates three-phase equipment, preserve that fact only as source/reference information; it must not change the calculation.
 - Use the standard NEC watts, volts x amps, or horsepower formulas exactly as though the equipment were single-phase.
+
+
+## Iowa energy sales-tax exemption certificate engagements
+
+NEC occasionally prepares an Iowa Sales Tax Exemption Certificate for Energy Used in Processing or Agriculture instead of, or in addition to, a prior-period refund claim.
+
+The current NEC master supplied for this workflow is:
+- Iowa Sales Tax Exemption Certificate - Energy Used in Processing or Agriculture
+- Form 31-113a (06/19/19), with instructions 31-113b (06/14/16)
+
+This certificate is for FUTURE energy purchases. It is provided to the energy seller / utility, not filed with the Iowa Department of Revenue. Prior-period refunds continue to use IA 843. The certificate may be valid for up to three years and must be supported by documentation showing the exempt/taxable energy-use percentages when separate metering is impractical.
+
+### Ledger case type
+
+NEC Ledger must support a case type of:
+- Utility Refund
+- Energy Tax Exemption Certificate
+
+Exemption-certificate cases are uncommon but must remain searchable and linked to the same customer/location, utility provider, account, meter, energy study, documents, activity, and receivables history.
+
+### Exemption-certificate fields
+
+Track at minimum:
+- Customer/location
+- Utility seller/provider
+- Fuel: Electricity, Gas, or Other
+- Reason for exemption: Grain drying, Raising livestock, Generating electricity, Data center, Processing, Manufacturing, or Other
+- Effective date
+- Certificate expiration / renewal-due date
+- Meter number
+- Utility account number
+- Exempt percentage
+- Taxable percentage
+- Supporting energy-study status
+- Date certificate provided to seller
+- Date seller acceptance/confirmation was received, if available
+- Negotiated flat NEC fee
+- Status / next action / notes
+- Current certificate form version used
+
+Exempt % + Taxable % must equal 100% before the certificate is considered ready.
+
+### Fee treatment
+
+Exemption-certificate work is billed as a negotiated FLAT FEE rather than NEC's percentage-of-refund fee.
+
+NEC Ledger must:
+- store the negotiated flat fee on the case;
+- display it as the projected invoice amount;
+- carry that amount to Receivables when an invoice is created;
+- not calculate a percentage fee from a refund amount for an exemption-only case.
+
+### Renewal control
+
+Because the supplied Iowa certificate states that certificates are valid for up to three years:
+- store an explicit expiration / renewal-due date;
+- suggest a date three years after the effective date when no shorter date is known;
+- keep the suggested date editable;
+- surface an attention flag as renewal approaches or becomes overdue;
+- preserve prior certificates rather than overwriting them when a renewal is prepared.
+
+### Document-generation gate
+
+Before generating a final exemption certificate, confirm:
+- the correct customer/location;
+- seller/provider;
+- fuel;
+- reason for exemption;
+- effective date;
+- meter/account;
+- exempt/taxable percentages totaling 100%;
+- supporting energy study when required;
+- authorized signer information.
+
+The final certificate must be delivered to the utility/seller and retained in the NEC case file. Do not route it to Iowa DOR as though it were an IA 843 refund filing.
