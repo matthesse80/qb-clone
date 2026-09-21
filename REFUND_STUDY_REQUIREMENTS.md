@@ -1916,3 +1916,27 @@ For every NEC-generated or NEC-completed form, regardless of provider, agency, o
 - When creating a derivative filing packet from a signed source, distinguish between (a) pre-existing optional content already on the source, which is preserved, and (b) new optional content NEC would add, which stays blank unless Matt directs otherwise.
 - Required fields and non-optional case-specific fields should still be completed under the normal filing rules.
 
+
+
+## IA 2848 section-2 tax-period rule
+
+For every IA 2848 prepared by NEC, Section 2 must include the beginning and ending tax period for the refund matter.
+
+- This is mandatory even though the surrounding "Limitation of authority" area is labeled optional.
+- Enter the refund beginning period and ending period in MM/YY format.
+- Apply the same beginning/end period to every POA prepared for the same refund matter unless Matt specifically directs otherwise.
+- When using the dual-POA method, both the entity/FEIN POA and the individual/SSN POA must show the same refund beginning and ending periods.
+- This specific tax-period rule overrides the general optional-field rule for these two Section 2 period fields only.
+- Other fields explicitly labeled optional remain blank unless already present on the signed source or Matt specifically directs NEC to complete them.
+
+## Calculation workbook formula-visibility QA
+
+Before delivering an NEC calculation/tax-breakout workbook:
+
+- Every intended formula cell must contain a valid Excel formula; malformed ranges such as `SUM(D80:81)` are not acceptable. Use explicit ranges such as `SUM(D80:D81)`.
+- Formula results must be visible immediately when the workbook opens; do not deliver formula cells with blank cached results.
+- Preserve formulas so the workbook recalculates when Matt edits inputs.
+- Set workbook calculation mode to automatic/full recalculation on open.
+- As a QA check, open the workbook in both formula mode and data-only/cached-value mode. Formula cells required for the visible calculation chain must show formulas in formula mode and numeric results in data-only mode.
+- At minimum verify the NEC Calcs rollups, State/County Electric, State/County Gas, subtotals, and final refund totals before delivery.
+
