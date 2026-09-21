@@ -1610,3 +1610,40 @@ For County Electric:
 - D11:D31 calculate B minus C.
 - D32 totals the local-option refund.
 - D33 equals D32 and feeds State Electric D33.
+
+### Remove legacy SILO label from state breakout sheets
+
+The legacy SILO header must not be visible on printed State Electric breakout sheets.
+
+Rules:
+- Clear/remove the SILO header from the State Electric tax-breakout template.
+- Do not print or display SILO to the customer, utility provider, or state.
+- Preserve all other approved State Electric formatting and formula behavior.
+- When State Gas is built from the same legacy template logic, use the same clean state-facing presentation and do not surface an obsolete SILO label unless Matt explicitly requests it.
+
+### Gas calculation workflow mirrors electric
+
+The gas side should use the same general audit logic as the approved electric workflow:
+- isolate only the taxable gas/fuel charges relevant to the studied service;
+- calculate applicable historical state/local tax using visible helper formulas;
+- carry monthly values into the upper NEC-calcs period rollups;
+- feed those rollups into State Gas and County Gas breakout sheets;
+- apply the gas non-exempt percentage through formulas;
+- calculate corrected tax, refundable tax, subtotals, local-option totals, and total refund through linked formulas;
+- keep all derived results visible so Matt can independently audit the workbook.
+
+Do not combine electric, gas, or unrelated taxable charges when calculating the fuel-specific tax base.
+
+### Rolling NEC-calcs calendar template
+
+Maintain a reusable master NEC-calcs workbook instead of rebuilding the month/year calendar from scratch for each refund.
+
+Template maintenance rule:
+- Keep roughly 3 to 3.5 years of monthly rows available in the calculation sheet.
+- About every three months, remove the oldest three months that are clearly beyond any realistic refund lookback and append the next three months at the bottom.
+- Update every synchronized month/year area on the NEC-calcs sheet together so helper sections and rollup sections stay aligned.
+- Preserve formulas, formatting, print layout, and tax-breakout links when rolling the calendar forward.
+- If six or more obsolete months have accumulated, it is acceptable to roll six months at once.
+- Do not remove months that could still be needed for a pending refund, a representative 12-bill study, or an unresolved prior-period review.
+
+This rolling-calendar rule is a template-maintenance task and should not require rebuilding each customer workbook from scratch.
