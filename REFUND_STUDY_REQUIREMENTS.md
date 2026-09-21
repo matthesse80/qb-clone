@@ -1473,3 +1473,46 @@ For electric refund calculations:
 - This rule applies even when the bill shows no gas usage, because other taxable line items may still be included in the bill-level Sales Tax total.
 
 The prior Woodbine filing provides a validation example: the October and November 2023 bill-level electric calculations aggregate to the same state and local original-tax amounts shown on NEC's prior tax-breakdown sheets.
+
+
+## Exact NEC calculation-sheet and tax-breakout template fidelity
+
+For future refund workbooks, NEC Ledger / ChatGPT must use the approved NEC Excel workbook layout as a TEMPLATE, not redesign the visible calculation or tax-breakout sheets.
+
+### Visible-sheet rule
+
+The following sheets must remain visually and structurally the same as the approved NEC example workbook:
+- NEC calcs
+- State Electric
+- County Electric
+- State Gas
+- County Gas
+
+Only case-specific data should change, including:
+- Period / study dates
+- Monthly or quarterly period labels required by the claim
+- Electric or gas non-exempt percentage
+- Usage amounts
+- Original tax amounts
+- Corrected amounts
+- Refund / LOST amounts
+- Applicable formulas needed to calculate those values
+
+Do not add review banners, methodology notes, source-detail tables, explanatory paragraphs, or redesigned headers to these visible sheets.
+
+If audit/support detail is useful, place it on separate support sheets and hide those sheets in the clean/final working workbook unless Matt asks to see them.
+
+### Remove County # column
+
+The "County #" column is no longer part of NEC's working tax-breakout format.
+
+For all future State Electric, County Electric, State Gas, and County Gas sheets:
+- Remove the County # column.
+- Shift the remaining columns left while preserving the original NEC formatting, widths, formulas, totals, and print layout as closely as possible.
+- Do not reintroduce County # unless Matt explicitly requests it.
+
+### Template-first generation
+
+Whenever possible, generate a new calculation workbook by copying an approved NEC example/template workbook and changing only the case-specific cells rather than recreating the workbook design from scratch.
+
+This rule applies to both review copies and clean approved copies. Review highlighting may be used temporarily during training, but the underlying visible-sheet layout must still match the NEC template. Once approved, remove training highlighting from the clean copy without changing the template structure.
