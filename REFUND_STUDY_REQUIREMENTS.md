@@ -1890,8 +1890,9 @@ When the utility bill/provider gives the actual state tax and local-option/count
 
 For NEC Calcs:
 - Enter the provider-billed tax amounts directly into the monthly tax columns.
-- Standard direct-entry mapping: electric local-option/county tax in column D, electric state tax in column E; gas local-option/county tax in column I, gas state tax in column J.
-- If no local-option/county tax was billed, enter zero in the applicable D/I cells and use the exact provider-billed state tax in E/J.
+- Standard direct-entry mapping follows the approved NEC template labels exactly: electric STATE tax in column D, electric LOST/local-option tax in column E; gas STATE tax in column I, gas LOST/local-option tax in column J.
+- If no local-option/county tax was billed, enter the exact provider-billed state tax in D/I and enter zero in E/J.
+- Never infer column meaning from memory. Before writing tax data, read and honor the visible NEC Calcs column headers in the actual workbook being used.
 - Roll the monthly direct tax amounts into the NEC quarterly/monthly summary cells and link those rollups into State Electric, County Electric, State Gas, and County Gas.
 - Do not create an intermediate taxable-base calculation in F/K when the exact tax amounts are already supplied by the provider.
 - Retain taxable-base reconstruction only when the bill does not separately state the tax needed for the filing, or when a combined/ambiguous tax line must be decomposed under the applicable historical rate rules.
@@ -1903,3 +1904,15 @@ For State Electric, County Electric, State Gas, and County Gas sheets:
 - The objective is for every tax-period/total label to be fully visible when printed, without clipping or spillover.
 - Preserve the rest of the approved sheet structure, formulas, and print layout.
 - If a particular label still does not fit, widen column A further rather than allowing text to print outside its intended cell.
+
+
+## Global optional-field rule
+
+For every NEC-generated or NEC-completed form, regardless of provider, agency, or document type:
+
+- If a field, section, line, checkbox, or heading is explicitly labeled "optional," do NOT newly complete it unless Matt specifically instructs NEC to do so for that case.
+- This rule applies even when the information is known and even when completing the field might appear helpful.
+- Preserve optional information that was already completed or initialed on the client-supplied signed source; do not erase or alter the signed source merely because the field is optional.
+- When creating a derivative filing packet from a signed source, distinguish between (a) pre-existing optional content already on the source, which is preserved, and (b) new optional content NEC would add, which stays blank unless Matt directs otherwise.
+- Required fields and non-optional case-specific fields should still be completed under the normal filing rules.
+
