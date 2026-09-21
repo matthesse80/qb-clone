@@ -930,7 +930,7 @@ For each equipment row, calculate annual kWh from the first available rating met
 
 Round each equipment row to the nearest whole kWh, matching the existing NEC workbook.
 
-For three-phase motors, preserve NEC's current workbook convention: multiply nameplate volts by 1.732 before entering the volts value used in the volts x amps formula. Do not silently substitute a different three-phase or power-factor methodology unless Matt directs a change.
+NEC calculation rule: treat all electrical equipment as single-phase for study calculations. Do not apply three-phase multipliers, square-root-of-three (1.732) adjustments, phase corrections, or power-factor modifications. Use the entered/nameplate volts, amps, watts, or horsepower directly within the standard NEC formulas.
 
 ### Study totals
 
@@ -1240,3 +1240,16 @@ The clean approved workbook should not lose the training history. Preserve eithe
 Do not remove or overwrite the original study source.
 
 During initial training, default to highlighting more rather than less. Once NEC's standard rules are mature, routine formula-driven changes may be handled with lighter review while unusual assumptions, load-factor changes, equipment additions/removals, study-period changes, and manual bill corrections remain prominently flagged.
+
+
+### Single-phase-only calculation rule
+
+For NEC energy studies, all electrical calculations must be performed as though the equipment is single-phase.
+
+Rules:
+- Never apply a 1.732 / square-root-of-three multiplier.
+- Never convert or adjust voltage because equipment is three-phase.
+- Never apply phase correction factors.
+- Never add power-factor adjustments unless Matt explicitly changes NEC methodology in the future.
+- If a nameplate indicates three-phase equipment, preserve that fact only as source/reference information; it must not change the calculation.
+- Use the standard NEC watts, volts x amps, or horsepower formulas exactly as though the equipment were single-phase.
