@@ -1163,3 +1163,39 @@ When one legal entity operates fertilizer plants, grain dryers, grain elevators,
 - Link locations to the same parent/legal entity when useful.
 - Keep utility accounts, meters, filing history, study periods, equipment, and refund calculations at the location/account level.
 - Never carry one location's load factors, exempt percentage, or filed-through date into another location merely because the FEIN or owner is the same.
+
+
+### Grain-operation seasonal spike modeling
+
+For grain operations, the actual utility-usage profile should be used to identify the realistic operating window for major seasonal equipment before assigning annual hours/days.
+
+Grain dryers are the clearest example because they are often the dominant gas load and may also drive substantial electric use through dryer fans, legs, augers, conveyors, and related handling equipment.
+
+Rules:
+- Review the 12-bill actual-usage series before finalizing dryer and related grain-handling operating assumptions.
+- Identify the seasonal high-usage window and the lower off-season / baseload pattern.
+- If the bills show a concentrated spike (for example, roughly 45 days of materially elevated usage with only trivial usage during the rest of the year), the major seasonal drying/handling equipment should be modeled substantially within that observed spike window rather than spread evenly across the year.
+- Set days/year for the dryer and other harvest-related heavy-use equipment commensurate with the observed seasonal window.
+- Adjust hours/day within those seasonal days to represent the modeled equipment run time and to reconcile the study with actual usage.
+- Do not increase annual operating days for a dryer merely to force the model to match annual usage if the billing profile shows that the load was concentrated into a short harvest period.
+- Likewise, do not attribute off-season baseload to the dryer when other equipment, office loads, heaters, lighting, controls, or other continuous/occasional loads better explain it.
+- Where electric usage spikes during the same period as gas-dryer usage, evaluate associated electric equipment such as dryer fans, grain legs, augers, conveyors, bin fans, and handling motors for operation during the same seasonal window.
+- Equipment does not have to share identical hours/day or days/year merely because it participates in the same grain operation; use the observed usage shape plus the equipment's actual role.
+- Preserve a note identifying the observed high-usage period used to support the seasonal assumptions.
+
+### Seasonal-profile reconciliation
+
+The +/-5% annual usage test remains required, but grain-operation studies should also receive a reasonableness check against the shape of actual usage.
+
+A study can be within +/-5% annually and still be poorly modeled if it assigns heavy dryer usage throughout the year while the source bills show a narrow harvest spike.
+
+For seasonal grain studies, NEC Ledger should therefore display:
+- The selected 12 actual bill usage values in chronological order.
+- The apparent high-usage / harvest window.
+- Off-season baseline usage.
+- Modeled seasonal equipment days/year.
+- Modeled hours/day.
+- Annual modeled usage.
+- Annual actual-vs-modeled variance.
+
+If the modeled operating window materially conflicts with the bill pattern, flag the study for review even when total annual modeled usage is within +/-5%.
