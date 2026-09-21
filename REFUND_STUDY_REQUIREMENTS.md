@@ -2060,3 +2060,29 @@ General deterministic rule:
 
 This quarterly roll applies to every synchronized month list in the NEC Calcs sheet, including the lower tax-calculation section. The canonical workbook should be copied first and then rolled/filled; never rebuild the sheet from scratch.
 
+
+
+## NEC Iowa IA 843 page-2 local-option schedule convention
+
+For NEC Iowa utility-refund filings, the IA 843 page-2 **Local option tax schedule** table is intentionally left blank unless Matt explicitly directs otherwise.
+
+Rules:
+- Do not enter the county name in the lower Local option tax schedule table.
+- Do not enter the local-option refund amount in that lower schedule table.
+- The Local Option Sales Tax (LOST) refund may still be included in the main Iowa tax schedule at the top of page 2 and in the total refund requested.
+- The calculation workbook must continue to retain and reconcile the underlying County Electric / County Gas local-option tax calculation even though the lower IA 843 county schedule is blank.
+- Do not infer that a blank lower schedule means the local-option refund is zero.
+
+## LLC dual-POA rule for Iowa refund filings
+
+When the claimant is an LLC and NEC's verified client records identify an individual owner/authorized signer with an SSN, the Iowa filing package requires two IA 2848 derivatives unless Matt explicitly directs otherwise:
+
+1. **Entity POA** - taxpayer is the LLC under its exact legal name and FEIN.
+2. **Individual POA** - taxpayer is the verified owner/authorized signer under the individual's legal name and SSN.
+
+Rules:
+- Use only the individual's verified legal name, address, SSN, and signer information from existing NEC client records/source documents. Never guess or fabricate an SSN or identity information.
+- Use the same refund-claim matter and applicable tax period on both POAs unless the source documents or Matt require otherwise.
+- Preserve the original signed/initialed source pages and create completed derivatives under the standard source-versus-derivative rule.
+- The individual POA is additional to, not a replacement for, the LLC entity POA.
+- Confirm both POAs are present before an LLC refund package is considered filing-ready.
