@@ -1940,3 +1940,22 @@ Before delivering an NEC calculation/tax-breakout workbook:
 - As a QA check, open the workbook in both formula mode and data-only/cached-value mode. Formula cells required for the visible calculation chain must show formulas in formula mode and numeric results in data-only mode.
 - At minimum verify the NEC Calcs rollups, State/County Electric, State/County Gas, subtotals, and final refund totals before delivery.
 
+
+
+## NEC Calcs bill-to-quarter traceability rule
+
+When provider bills state/local tax separately and NEC Calcs already contains the rolling monthly calendar:
+
+- Put each bill's actual monthly tax directly into the existing NEC Calcs monthly calendar, not into a separate helper table.
+- Use the visible template columns exactly as labeled:
+  - D = electric STATE tax
+  - E = electric LOST/local-option tax
+  - I = gas STATE tax
+  - J = gas LOST/local-option tax
+- The month rows are the audit trail from the utility bills.
+- Quarterly/partial-period totals in G and L must be formulas that sum the applicable monthly D/E/I/J cells; G/L are rollups, not primary inputs.
+- For no-LOST cases, show zero in E/J rather than leaving the reasoning implicit.
+- If the current rolling calendar does not yet contain the final claim month, extend the calendar in the same style before calculating the rollup.
+- Do not create a second monthly-input/helper section when the existing NEC Calcs calendar can show the bill-level tax trail directly.
+- Preserve cached formula results so Matt can see both monthly source amounts and quarterly totals immediately on open.
+
