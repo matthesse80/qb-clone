@@ -1873,3 +1873,13 @@ For energy-study workbooks used for Matt's review:
 - Do not return a study where watts/volts/amps/load factor/hours/days are populated but the annual usage result cells appear blank.
 - Preserve formulas so Matt can edit load factors, hours, days, quantities, or ratings and have the study recalculate.
 - Set workbook calculation mode to automatic/full recalculation on open.
+
+## Ownership-change refund start rule
+
+When a business/location changes ownership and the prior owner's refund has already been completed:
+- Do not carry the prior owner's filed-through date forward as the new owner's claim start control.
+- The new claimant's refund begins with the new owner's first utility bill / first utility service period under the new ownership.
+- Treat the new owner as a new taxpayer/refund claimant for period eligibility, while retaining the same physical-location history for operational reference.
+- Keep prior-owner refund history separate from the new owner's filing period so there is no overlap or accidental exclusion caused by the prior owner's claim.
+- For tax-breakout purposes, include only bills attributable to the new owner's ownership period.
+- For the energy study, use the appropriate 12 consecutive bills for the new owner when available; if ownership begins mid-cycle, preserve the actual first service period rather than forcing alignment to the prior owner.
