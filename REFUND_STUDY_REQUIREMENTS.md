@@ -1883,3 +1883,23 @@ When a business/location changes ownership and the prior owner's refund has alre
 - Keep prior-owner refund history separate from the new owner's filing period so there is no overlap or accidental exclusion caused by the prior owner's claim.
 - For tax-breakout purposes, include only bills attributable to the new owner's ownership period.
 - For the energy study, use the appropriate 12 consecutive bills for the new owner when available; if ownership begins mid-cycle, preserve the actual first service period rather than forcing alignment to the prior owner.
+
+## Provider-billed tax direct-entry optimization
+
+When the utility bill/provider gives the actual state tax and local-option/county tax amounts by bill/month, do not reconstruct the taxable base merely to recalculate those same tax amounts.
+
+For NEC Calcs:
+- Enter the provider-billed tax amounts directly into the monthly tax columns.
+- Standard direct-entry mapping: electric local-option/county tax in column D, electric state tax in column E; gas local-option/county tax in column I, gas state tax in column J.
+- If no local-option/county tax was billed, enter zero in the applicable D/I cells and use the exact provider-billed state tax in E/J.
+- Roll the monthly direct tax amounts into the NEC quarterly/monthly summary cells and link those rollups into State Electric, County Electric, State Gas, and County Gas.
+- Do not create an intermediate taxable-base calculation in F/K when the exact tax amounts are already supplied by the provider.
+- Retain taxable-base reconstruction only when the bill does not separately state the tax needed for the filing, or when a combined/ambiguous tax line must be decomposed under the applicable historical rate rules.
+
+## State/county breakout column-A print-width standard
+
+For State Electric, County Electric, State Gas, and County Gas sheets:
+- Start column A approximately 20% wider than the prior NEC template baseline.
+- The objective is for every tax-period/total label to be fully visible when printed, without clipping or spillover.
+- Preserve the rest of the approved sheet structure, formulas, and print layout.
+- If a particular label still does not fit, widen column A further rather than allowing text to print outside its intended cell.
