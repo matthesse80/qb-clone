@@ -1772,3 +1772,55 @@ Before delivery, cross-check the study, calculation workbook, and filing documen
 - representative information and POA period.
 
 The Excel and PDF deliverables should be treated as one refund package, not independent documents created in isolation.
+
+## Refund production optimization standard
+
+NEC refund automation should continuously look for ways to reduce processing time while preserving filing-grade accuracy.
+
+### Primary operating target
+- Routine repeat refunds should trend toward approximately 10 minutes of ChatGPT/tool processing time once the relevant provider, workbook, form, and business-type rules are already established.
+- Optimization is a goal, not permission to skip validation.
+- The cost of a filing error is high because corrections can delay a client's refund by months; accuracy remains the hard constraint.
+
+### Optimization hierarchy
+Prefer improvements in this order:
+1. Reuse approved templates and prior-case mappings instead of rebuilding files.
+2. Batch-read and reconcile all source documents in one pass.
+3. Derive shared facts once (customer identity, service address, filed-through date, claim period, account/meter, exempt percentages, refund totals) and reuse those validated values across study, calculation workbook, and filing forms.
+4. Use deterministic formula/template mappings for recurring provider and state-form layouts.
+5. Run automated consistency checks before visual review.
+6. Reserve manual visual QA for fields where placement, signature integrity, or form layout matters.
+7. Ask Matt only for decisions that cannot be safely resolved from the documents and established rules.
+
+### No-speed-at-the-cost-of-accuracy rule
+Do not optimize by:
+- skipping bill continuity checks;
+- skipping prior-refund overlap checks;
+- skipping three-year lookback checks;
+- skipping service-address validation;
+- skipping workbook formula validation;
+- skipping cross-document total/period reconciliation;
+- skipping signature or state-form placement QA;
+- silently guessing at ambiguous fields.
+
+### Continuous improvement loop
+After each completed refund, identify whether any repeated manual step can be converted into:
+- a reusable provider rule;
+- a reusable business-type rule;
+- a reusable workbook/template mapping;
+- a reusable form-coordinate mapping;
+- an automated preflight/consistency check;
+- a batched document-extraction step.
+
+Only promote a shortcut into the standard workflow after it has been validated against a successful case or approved by Matt.
+
+### Production-time measurement
+Track or estimate elapsed processing time by stage for real refunds so the workflow can be optimized empirically. At minimum distinguish:
+- source-document intake / extraction;
+- bill and continuity review;
+- study/calculation workbook update;
+- tax breakout / reconciliation;
+- state-form preparation;
+- rendering / QA / packaging.
+
+The long-term objective is to make routine repeat refunds fast enough for the economics to work while maintaining filing-grade precision.
