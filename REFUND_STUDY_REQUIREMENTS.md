@@ -1657,3 +1657,38 @@ For all future NEC State Electric tax-breakout sheets:
 - In the current approved Woodbine template, the unwanted LOST label is in State Electric E10; clear that cell's text only.
 - Keep the local-option refund linked into State Electric D33 from County Electric, and D34 remains the total refund.
 - Any future cleanup request for a single label should be treated as a surgical cell edit unless Matt explicitly asks for a broader layout change.
+
+## Customer refund outreach cadence
+
+NEC Ledger must support proactive customer follow-up before the three-year refund lookback creates lost refund opportunity.
+
+### Scheduling anchor
+- Outreach timing is based on the LAST REFUND PERIOD COVERED-THROUGH DATE, not the filing date, refund receipt date, invoice date, payment date, or case-close date.
+- Example: if a refund covers through September 2026 and the cadence is 18 months, the next outreach target is 18 months after September 2026 even if the refund is not completed or paid until March 2027.
+
+### Customer-level cadence
+- Each customer/location profile must have a configurable refund outreach cadence in months.
+- Also allow a manual next-outreach date override for seasonal operations or one-off judgment.
+- Store the cadence on the customer/location profile so it persists across refund cycles.
+
+Suggested working presets from Matt's current business rules:
+- Small / low-fee client: approximately 30 months when NEC's portion of the prior refund is $300 or less.
+- Large / multi-location client: approximately 18 months where repeated work across multiple locations justifies a shorter cycle.
+- Seasonal grain/agriculture client: timing may be based on accumulating two meaningful fall-use periods rather than a simple generic interval. Use custom/manual outreach timing when needed.
+- These are business defaults, not automatic immutable classifications; Matt can override any customer's cadence.
+
+### Monthly outreach list
+- Reports must provide a recurring operational list of customers whose refund outreach date is due or past due.
+- Show at minimum: customer/location, last refund covered-through date, outreach cadence, outreach due date, and prior NEC fee or other useful refund-value context.
+- The list should be usable as a monthly call/email work queue.
+- Do not derive outreach from when NEC received the prior refund or when the case was closed.
+
+### Multi-location / parent organizations
+- Individual locations remain separate customer records and refund units.
+- A parent organization may contain multiple locations with the same owner/contact.
+- The system should support recognizing that several locations belonging to the same organization are due around the same time so outreach can be coordinated rather than generating unnecessary separate contacts.
+- Do not merge the underlying location refund histories, utility accounts, study periods, or filed-through dates.
+
+### Three-year protection
+- The purpose of the outreach schedule is to begin work early enough that NEC does not lose refundable periods to the three-year lookback.
+- If a configured outreach cadence would place the customer uncomfortably close to the three-year boundary, surface the approaching lookback risk rather than silently waiting.
