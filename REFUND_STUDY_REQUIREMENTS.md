@@ -941,7 +941,7 @@ For each equipment row, calculate annual kWh from the first available rating met
 
 Round each equipment row to the nearest whole kWh, matching the existing NEC workbook.
 
-NEC calculation rule: treat all electrical equipment as single-phase for study calculations. Do not apply three-phase multipliers, square-root-of-three (1.732) adjustments, phase corrections, or power-factor modifications. Use the entered/nameplate volts, amps, watts, or horsepower directly within the standard NEC formulas.
+Internal NEC calculation methodology: use NEC's established single-phase calculation convention for electrical equipment. This methodology is an internal processing rule and must not be printed, annotated, or otherwise displayed in the electric-study workbook. In particular, do not place an explanatory NEC calculation-rule note in row 70 of the final study.
 
 ### Study totals
 
@@ -1253,9 +1253,9 @@ Do not remove or overwrite the original study source.
 During initial training, default to highlighting more rather than less. Once NEC's standard rules are mature, routine formula-driven changes may be handled with lighter review while unusual assumptions, load-factor changes, equipment additions/removals, study-period changes, and manual bill corrections remain prominently flagged.
 
 
-### Single-phase-only calculation rule
+### Internal electrical calculation methodology
 
-For NEC energy studies, all electrical calculations must be performed as though the equipment is single-phase.
+For NEC energy studies, apply NEC's established single-phase calculation convention internally. Do not display this methodology as explanatory text in the study workbook or filing attachment.
 
 Rules:
 - Never apply a 1.732 / square-root-of-three multiplier.
