@@ -2103,3 +2103,18 @@ Rules:
 - Apply this same format consistently to both electric and gas studies.
 - Preserve the underlying cell as a true Excel date value whenever possible; the workbook number format should display the date as **mm/dd/yyyy** rather than storing the date as plain text.
 - Do not use ISO format (YYYY-MM-DD), month-name formats, shortened years, or other date styles in these two study-period fields unless Matt explicitly directs otherwise for a specific case.
+
+
+## IA 843 signature date is not a refund-period cutoff
+
+The date the taxpayer signs IA 843 does **not** establish the ending date of the refund claim and does **not** automatically exclude utility bills issued after the signature date.
+
+Rules:
+- Do not use the IA 843 signature date as a claim-period cutoff.
+- Do not exclude an otherwise eligible electric or gas bill merely because its bill date, service-period end date, tax payment date, or other billing date falls after the IA 843 signature date.
+- Determine the refundable claim period from the applicable Iowa refund lookback rules, prior filed-through dates, available utility records, and the filing strategy approved by Matt.
+- The signature date is an execution/document-control date only unless Iowa law or the specific form expressly requires a different treatment.
+- When additional eligible bills are available after the signature date but before the claim is actually filed, they may be included in the refund calculation and filing package if they otherwise belong in the approved claim period.
+- Do not create a "deferred bill" solely because the bill postdates the IA 843 signature.
+- If there is uncertainty about whether a later bill can be included for a reason other than the signature date, flag that separate issue for Matt rather than excluding it automatically.
+- The final IA 843 claim-period end date must reflect the actual latest period included in the filed refund, not the form-signature date.
