@@ -1,4 +1,4 @@
-import { packetPanel, packetSources } from './packet.mjs';
+import { packetPanel, packetSources, packetStudy } from './packet.mjs';
 import {reviewState} from './review.mjs';
 const stages=['Customer','Utility Accounts','Source Docs','Study','Bills','Validation','Calculations','State Forms','Filing','Follow-up','Refund','Invoice'];
 const $=id=>document.getElementById(id);
@@ -60,11 +60,12 @@ function render(){
   if(stage==='Refund')html=empty('No verified refund receipt has been recorded. Receipt entry will connect after filing and refund reconciliation.');
   if(stage==='Invoice')html=empty('No NEC invoice has been created for this case. Invoicing and payment allocation require verified refund amounts and approved fee terms.');
   if(packet){
-    $('metrics').innerHTML=metric('Source statements',packet.bills.length)+metric('Study selection','Pending')+metric('Verified refund','Pending')+metric('Filing','Locked for review');
+    $('metrics').innerHTML=metric('Source statements',packet.bills.length)+metric('Study selection',packet.studyReview?'12 source bills · draft':'Pending')+metric('Verified refund','Pending')+metric('Filing','Locked for review');
     $('mode').textContent='Local source review · draft';
-    $('notice').textContent='Real bill drafts are connected in Bills. Study and claim settings remain sample data. Draft bills are not approved for refund calculations.';
+    $('notice').textContent='Real bill drafts are connected in Bills. Study shows the confirmed carry-forward draft; claim settings still require reconciliation. Draft bills are not approved for refund calculations.';
     if(stage==='Review')html='<h3>Your 12 statements are ready for review</h3>'+action('Bills','Review source bills')+'<p>Review dates and usage, then reconcile tax allocation and history.</p>';
     if(stage==='Source Docs')html=packetSources(packet,data.id);
+    if(stage==='Study' && packet.studyReview)html=packetStudy(packet);
     if(stage==='Calculations'||stage==='Validation')html=empty('Source drafts await tax allocation, correction-history reconciliation and study selection. No verified refund or validation result is available for these drafts.');
   }
   $('panel').innerHTML=html;
