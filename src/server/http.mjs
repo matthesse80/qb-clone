@@ -6,6 +6,7 @@ const root = new URL('../../',import.meta.url);
 const routes = new Map([
   ['/', ['workspace.html','text/html']], ['/workspace.html',['workspace.html','text/html']],
   ['/assets/workspace.mjs',['assets/workspace.mjs','text/javascript']],
+  ['/assets/packet.mjs',['assets/packet.mjs','text/javascript']],
   ['/assets/review.mjs',['assets/review.mjs','text/javascript']],
   ['/assets/workspace.css',['assets/workspace.css','text/css']],
   ['/assets/app-shell.css',['assets/app-shell.css','text/css']],
@@ -13,7 +14,7 @@ const routes = new Map([
   ...['index','customers','refunds','receivables','checking','reports','company'].map(n=>[`/${n}.html`,[`${n}.html`,'text/html']])
 ]);
 const uuid = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
-export function createWorkspaceServer({workspace,authenticate,preview=false}) {
+export function createWorkspaceServer({workspace,authenticate,preview=false,packet=null}) {
   if (typeof authenticate!=='function') throw new Error('Trusted server-side authentication is required');
   return createServer(async (req,res)=>{
     const send=(status,value)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(value));};
@@ -26,6 +27,16 @@ export function createWorkspaceServer({workspace,authenticate,preview=false}) {
         if (!['GET','POST','PATCH'].includes(req.method)) throw new WorkspaceError(405,'Method not allowed');
         const subject=await authenticate(req);
         if (!subject) throw new WorkspaceError(401,'Sign in to continue.');
+        const packetMatch=url.pathname.match(new RegExp(`^/api/cases/(${uuid})/packet(?:/(original|pages/([0-9]+)))?$`));
+        if(packetMatch && req.method==='GET') {
+          const current=await workspace.read(subject,packetMatch[1]);
+          if(!packet || !preview || packet.metadata.caseId!==current.id || !current.accounts.some(a=>a.account.accountNumber===packet.metadata.accountNumber)) throw new WorkspaceError(404,'No source packet connected.');
+          if(!packetMatch[2]) return send(200,packet.metadata);
+          const bytes=packetMatch[2]==='original'?packet.pdf:await packet.page(Number(packetMatch[3]));
+          if(!bytes) throw new WorkspaceError(404,'Source page not found');
+          res.writeHead(200,{'Content-Type':packetMatch[2]==='original'?'application/pdf':'image/png','Cache-Control':'no-store','Content-Disposition':packetMatch[2]==='original'?'inline; filename="source-bills.pdf"':'inline'});
+          return res.end(bytes);
+        }
         let body;
         if (req.method!=='GET') {
           if (req.headers.origin!==`http://${req.headers.host}` && (preview || req.headers.origin!==`https://${req.headers.host}`))

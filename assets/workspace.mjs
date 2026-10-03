@@ -1,8 +1,10 @@
+import { packetPanel, packetSources } from './packet.mjs';
 import {reviewState} from './review.mjs';
 const stages=['Customer','Utility Accounts','Source Docs','Study','Bills','Validation','Calculations','State Forms','Filing','Follow-up','Refund','Invoice'];
 const $=id=>document.getElementById(id);
 const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money=n=>n===null||n===undefined?'Pending':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n/100);
+let packet=null;
 let data,stage='Review',validation=null,dirty=false,accountId=null,billId=null;
 async function api(path,method='GET',body){const r=await fetch(path,{method,headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined});const result=await r.json();if(!r.ok)throw new Error(result.error);return result;}
 function message(text){$('message').textContent=text;}
@@ -16,6 +18,7 @@ ${review.issues.map(f=>`<div class="attention-item urgent"><div><strong>${escape
 ${review.tasks.map(t=>`<div class="attention-item"><div><strong>${escape(t.title)}</strong><p>${escape(t.description)}</p></div>${action(t.target,t.action)}</div>`).join('')}
 <div class="review-summary"><div><h3>Study result</h3><p>${a?.validation.study?.valid?'Sample usage checks pass':'Study needs review'}</p><small>Passing checks does not verify the source records.</small></div><div><h3>Proposed claim period</h3><p>${escape(a?.claim.approvedStart??'Pending')} – ${escape(a?.claim.approvedEnd??'Pending')}</p>${action('Study','Review dates')}</div></div>`;}
 function billReview(a){
+ if(packet && a?.account.accountNumber===packet.accountNumber)return packetPanel(packet,data.id,billId);
  const bills=a?.bills??[];const bill=bills.find(b=>b.id===billId)??bills[0];if(!bill)return '<p>No bills received.</p>';billId=bill.id;
  const excluded=a.validation.claim?.excluded.find(e=>e.billId===bill.id);
  const treatment=excluded?.reason??(a.validation.claim?.included.some(b=>b.id===bill.id)?'Included in proposed claim':'Needs review');
@@ -37,7 +40,7 @@ function render(){
   $('mode').textContent=data.preview?'Sample records · local preview':`Signed in as ${data.actor}`;
   $('notice').textContent=data.preview?'Customer identity is supplied by Matt. Bills, dates, usage and taxes are synthetic examples. No real documents are stored here.':'Draft workspace. Filing remains locked until all evidence and reviews are complete.';
   const flags=data.accounts.flatMap(x=>x.validation.flags);
-  const review=reviewState(data);
+  const review=reviewState(data);if(packet){review.status['Source Docs']='Packet connected';review.status.Bills='Drafts to review';}
   $('metrics').innerHTML=metric('Open review items',review.issues.length+review.tasks.length)+metric('Study coverage',a?.study?`${a.study.billIds.length} selected bills`:'Not started')+metric('Verified refund','Pending')+metric('Filing','Locked for review');
   $('stages').innerHTML=`<button data-stage="Review" ${stage==='Review'?'aria-current="page"':''}><span class="stage-number">◎</span><span>Review overview<small>Start here</small></span></button>`+stages.map((s,i)=>`<button data-stage="${s}" ${s===stage?'aria-current="page"':''}><span class="stage-number">${i+1}</span><span>${s}<small>${review.status[s]}${['Source Docs','Calculations','State Forms','Filing','Refund','Invoice'].includes(s)?' · Preview only':''}</small></span></button>`).join('');
   $('panel-title').textContent=stage==='Review'?'Case review':stage;
@@ -56,12 +59,20 @@ function render(){
   if(stage==='Follow-up')html=data.followups.map(f=>detail(f.due_date,f.next_action)).join('')+'<p class="muted">Add the next action and due date when saving a draft in Study. These records do not send messages or schedule notifications.</p>';
   if(stage==='Refund')html=empty('No verified refund receipt has been recorded. Receipt entry will connect after filing and refund reconciliation.');
   if(stage==='Invoice')html=empty('No NEC invoice has been created for this case. Invoicing and payment allocation require verified refund amounts and approved fee terms.');
+  if(packet){
+    $('metrics').innerHTML=metric('Source statements',packet.bills.length)+metric('Study selection','Pending')+metric('Verified refund','Pending')+metric('Filing','Locked for review');
+    $('mode').textContent='Local source review · draft';
+    $('notice').textContent='Real bill drafts are connected in Bills. Study and claim settings remain sample data. Draft bills are not approved for refund calculations.';
+    if(stage==='Review')html='<h3>Your 12 statements are ready for review</h3>'+action('Bills','Review source bills')+'<p>Review dates and usage, then reconcile tax allocation and history.</p>';
+    if(stage==='Source Docs')html=packetSources(packet,data.id);
+    if(stage==='Calculations'||stage==='Validation')html=empty('Source drafts await tax allocation, correction-history reconciliation and study selection. No verified refund or validation result is available for these drafts.');
+  }
   $('panel').innerHTML=html;
   $('activity').innerHTML=data.activity.map(e=>`<div class="activity-line">${escape(e.seat)} · ${escape(e.operation.toLowerCase())} · ${escape(e.table_name.replaceAll('_',' '))}<span>${escape(new Date(e.occurred_at).toLocaleString())}</span></div>`).join('');
   const form=$('edit');if(form){form.addEventListener('input',()=>dirty=true);form.addEventListener('submit',save);}
   const picker=$('bill-picker');if(picker)picker.addEventListener('change',e=>{billId=e.target.value;render();});
 }
-async function load(id){data=await api(`/api/cases/${id}`);validation=null;dirty=false;render();}
+async function load(id){data=await api(`/api/cases/${id}`);const response=await fetch(`/api/cases/${id}/packet`);if(!response.ok&&response.status!==404)throw new Error('Unable to load source packet');packet=response.ok?await response.json():null;validation=null;dirty=false;render();}
 async function busy(work){for(const id of ['reload','validate','case-picker'])$(id).disabled=true;try{await work();}catch(e){message(e.message);}finally{for(const id of ['reload','validate','case-picker'])$(id).disabled=false;}}
 async function save(event){event.preventDefault();const button=event.target.querySelector('button');button.disabled=true;await busy(async()=>{const values=Object.fromEntries(new FormData(event.target));for(const k of ['modeledExemptUsage','modeledNonexemptUsage'])values[k]=Number(values[k]);data=await api(`/api/cases/${data.id}`,'PATCH',{...values,version:data.version,accountId});validation=null;dirty=false;render();message('Draft saved. Changes are in the audit history.');});button.disabled=false;}
 $('account-picker').addEventListener('change',e=>{if(dirty&&!confirm('Discard unsaved changes?')){e.target.value=accountId;return;}accountId=e.target.value;dirty=false;render();});
@@ -69,6 +80,6 @@ $('stages').addEventListener('click',e=>{const b=e.target.closest('button');if(!
 $('panel').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b)return;if(dirty&&!confirm('Discard unsaved changes?'))return;dirty=false;stage=b.dataset.go;if(b.dataset.account)accountId=b.dataset.account;render();});
 $('reload').addEventListener('click',()=>{if(dirty&&!confirm('Discard unsaved changes?'))return;busy(()=>load(data.id));});
 $('case-picker').addEventListener('change',e=>{if(dirty&&!confirm('Discard unsaved changes?')){e.target.value=data.id;return;}busy(()=>load(e.target.value));});
-$('validate').addEventListener('click',()=>busy(async()=>{if(dirty){message('Save your draft before running validation.');return;}validation=await api(`/api/cases/${data.id}/validate`,'POST',{version:data.version});const run=validation;data=await api(`/api/cases/${data.id}`);validation=run;stage='Validation';render();message('Validation saved. Filing review is still required.');}));
+$('validate').addEventListener('click',()=>busy(async()=>{if(packet){stage='Validation';render();message('Source drafts require reconciliation before validation.');return;}if(dirty){message('Save your draft before running validation.');return;}validation=await api(`/api/cases/${data.id}/validate`,'POST',{version:data.version});const run=validation;data=await api(`/api/cases/${data.id}`);validation=run;stage='Validation';render();message('Validation saved. Filing review is still required.');}));
 window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
 await busy(async()=>{const cases=await api('/api/cases');$('case-picker').innerHTML=cases.map(c=>`<option value="${c.id}">${escape(c.label)}</option>`).join('');if(!cases.length){message('No refund cases found.');return;}await load(cases[0].id);});
