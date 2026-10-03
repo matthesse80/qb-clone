@@ -59,9 +59,21 @@ future work; these limitations are visible in the corresponding sections.
 
 ## Verification
 
-`pnpm test` runs 18 tests, including real SQL migration/constraints, the six Dairy Queen
+`pnpm test` runs 20 tests, including real SQL migration/constraints, the six Dairy Queen
 regressions, atomic edit rollback, unauthorized/stale update rejection, audit capture,
 saved validations, HTTP identity/origin checks and private-file route exclusion.
 The pool adapter's connection/rollback behavior is unit-tested; hosted Postgres is
 not available in this environment. Browser verification exercised a wrong study date,
 saved the draft, observed the study-date warning and restored the sample date.
+
+## Review layout refinement
+
+The workspace opens on a review overview with the next action, required source and
+signer/calculation reviews, and direct navigation from each issue. Section statuses
+describe missing review or unavailable features; visiting a section never completes
+it. The bill review places recorded values beside an explicit missing-original
+placeholder until private PDF storage is connected. Audit history is collapsed.
+
+The supplied JPEG logo contains a gray block in the image itself. All app sidebars
+now use a clean HTML/CSS NEC Ledger wordmark; the damaged image file is retained.
+This is a temporary wordmark replacement, not a restoration of the original artwork.

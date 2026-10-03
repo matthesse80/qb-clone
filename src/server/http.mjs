@@ -6,6 +6,7 @@ const root = new URL('../../',import.meta.url);
 const routes = new Map([
   ['/', ['workspace.html','text/html']], ['/workspace.html',['workspace.html','text/html']],
   ['/assets/workspace.mjs',['assets/workspace.mjs','text/javascript']],
+  ['/assets/review.mjs',['assets/review.mjs','text/javascript']],
   ['/assets/workspace.css',['assets/workspace.css','text/css']],
   ['/assets/app-shell.css',['assets/app-shell.css','text/css']],
   ['/assets/nec-ledger-logo.jpg',['assets/nec-ledger-logo.jpg','image/jpeg']],
