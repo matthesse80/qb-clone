@@ -1,4 +1,4 @@
-import { packetPanel, packetSources, packetStudy } from './packet.mjs';
+import { packetPanel, packetSources, packetStudy, packetCalculations } from './packet.mjs';
 import {reviewState} from './review.mjs';
 const stages=['Customer','Utility Accounts','Source Docs','Study','Bills','Validation','Calculations','State Forms','Filing','Follow-up','Refund','Invoice'];
 const $=id=>document.getElementById(id);
@@ -68,6 +68,7 @@ function render(){
     if(stage==='Study' && packet.studyReview)html=packetStudy(packet);
     if(stage==='Calculations'||stage==='Validation')html=empty('Source drafts await tax allocation, correction-history reconciliation and study selection. No verified refund or validation result is available for these drafts.');
   }
+  if(packet && stage==='Calculations' && packet.historicalCalculationDraft)html=packetCalculations(packet);
   $('panel').innerHTML=html;
   $('activity').innerHTML=data.activity.map(e=>`<div class="activity-line">${escape(e.seat)} · ${escape(e.operation.toLowerCase())} · ${escape(e.table_name.replaceAll('_',' '))}<span>${escape(new Date(e.occurred_at).toLocaleString())}</span></div>`).join('');
   const form=$('edit');if(form){form.addEventListener('input',()=>dirty=true);form.addEventListener('submit',save);}
