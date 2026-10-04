@@ -14,8 +14,9 @@ const routes = new Map([
   ...['index','customers','refunds','receivables','checking','reports','company'].map(n=>[`/${n}.html`,[`${n}.html`,'text/html']])
 ]);
 const uuid = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
-export function createWorkspaceServer({workspace,authenticate,preview=false,packet=null}) {
+export function createWorkspaceServer({workspace,authenticate,preview=false,packet=null,publicOrigin=null}) {
   if (typeof authenticate!=='function') throw new Error('Trusted server-side authentication is required');
+  if(!preview && (!publicOrigin || new URL(publicOrigin).protocol!=='https:' || new URL(publicOrigin).origin!==publicOrigin)) throw new Error('Production requires a canonical HTTPS publicOrigin');
   return createServer(async (req,res)=>{
     const send=(status,value)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(value));};
     res.setHeader('X-Content-Type-Options','nosniff');
@@ -23,9 +24,15 @@ export function createWorkspaceServer({workspace,authenticate,preview=false,pack
     try {
       if (preview && !/^127\.0\.0\.1:\d+$/.test(req.headers.host??'')) throw new WorkspaceError(403,'Preview accepts only its loopback address.');
       const url=new URL(req.url,'http://localhost');
+      let productionSubject;
+      if(!preview){
+        productionSubject=await authenticate(req);
+        if(!productionSubject)throw new WorkspaceError(401,'Sign in to continue.');
+        await workspace.actor(productionSubject);
+      }
       if (url.pathname.startsWith('/api/')) {
         if (!['GET','POST','PATCH'].includes(req.method)) throw new WorkspaceError(405,'Method not allowed');
-        const subject=await authenticate(req);
+        const subject=preview?await authenticate(req):productionSubject;
         if (!subject) throw new WorkspaceError(401,'Sign in to continue.');
         const packetMatch=url.pathname.match(new RegExp(`^/api/cases/(${uuid})/packet(?:/(original|pages/([0-9]+)))?$`));
         if(packetMatch && req.method==='GET') {
@@ -39,7 +46,7 @@ export function createWorkspaceServer({workspace,authenticate,preview=false,pack
         }
         let body;
         if (req.method!=='GET') {
-          if (req.headers.origin!==`http://${req.headers.host}` && (preview || req.headers.origin!==`https://${req.headers.host}`))
+          if (req.headers.origin!==(preview?`http://${req.headers.host}`:publicOrigin))
             throw new WorkspaceError(403,'Same-origin request required.');
           if (req.headers['content-type']!=='application/json') throw new WorkspaceError(415,'JSON required.');
           let raw=''; for await (const part of req) {raw+=part; if(Buffer.byteLength(raw)>16000) throw new WorkspaceError(413,'Request too large');}
@@ -55,6 +62,7 @@ export function createWorkspaceServer({workspace,authenticate,preview=false,pack
       }
       if(req.method!=='GET' || !routes.has(url.pathname)) throw new WorkspaceError(404,'Page not found');
       const [path,type]=routes.get(url.pathname);
+      if(!preview && path.endsWith('.html') && path!=='workspace.html')throw new WorkspaceError(404,'Legacy prototype is available only in local preview.');
       // Only the new workspace uses external scripts; legacy prototype inline scripts remain untouched.
       if(path==='workspace.html') res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'");
       res.writeHead(200,{'Content-Type':type,'Cache-Control':'no-store'});
