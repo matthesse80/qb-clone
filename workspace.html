@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEC Ledger — Refund workspace</title><link rel="stylesheet" href="assets/app-shell.css"><link rel="stylesheet" href="assets/workspace.css"></head>
+<body><div class="shell">
+<aside class="side"><a class="brand-wordmark" href="index.html" aria-label="NEC Ledger home"><span class="brand-nec">NEC<span class="brand-dot">.</span></span><span class="brand-ledger">LEDGER</span><span class="brand-caption">National Energy Consultants</span></a>
+<nav class="nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="customers.html">Customers</a><a href="refunds.html">Refunds</a><a href="workspace.html" class="active">Refund workspace</a><a href="receivables.html">Receivables</a><a href="checking.html">Banking</a><a href="reports.html">Reports</a></nav>
+<div class="sidefoot">Records. Refunds. Results.</div></aside>
+<main class="page-main"><div class="app-top"><div><div class="eyebrow">NEC LEDGER / REFUND CASE</div><h1 id="title">Refund workspace</h1><p id="subtitle" class="muted">Loading case records…</p></div><span id="mode" class="app-badge">Connecting</span></div>
+<p id="notice" class="notice">Working preview. Do not enter sensitive customer information.</p>
+<div class="toolbar case-toolbar"><label for="case-picker">Refund case <select id="case-picker"></select></label><label class="account-label" for="account-picker">Utility account <select id="account-picker"></select></label><div><button id="reload">Reload</button> <button id="validate" class="primary">Run validation</button></div></div>
+<p id="message" role="status" aria-live="polite"></p>
+<section class="grid-4" id="metrics" aria-label="Case summary"></section>
+<div class="workspace-layout"><nav id="stages" class="card stages" aria-label="Workflow stages"></nav>
+<section class="card content-panel"><h2 id="panel-title">Case overview</h2><div id="panel"></div></section></div>
+<details class="card history"><summary>Recent activity &amp; audit history</summary><p class="muted">Changes are recorded with who made them and when.</p><div id="activity"></div></details>
+</main></div><script type="module" src="assets/workspace.mjs"></script></body></html>

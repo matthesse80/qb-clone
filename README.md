@@ -7,3 +7,18 @@ Current working features: customer list/search; add, edit and delete customer; p
 Important: prototype data is stored in browser localStorage. Do not enter real FEINs, SSNs, utility account numbers, or client financial data.
 
 Next build: Refund case -> Invoice preview -> FIFO payment allocation -> A/R detail.
+
+## Production refund foundation (Phase 1)
+
+The additive Postgres data model, private document-storage contract and Dairy Queen
+regression fixtures are in place. See [Phase 1 implementation and setup](docs/PHASE_1_REFUND_FOUNDATION.md).
+Run `pnpm install --frozen-lockfile` then `pnpm test` with Node 22+.
+The existing browser app is unchanged and remains a prototype; production UI/API
+integration and verified source-data acceptance are subsequent phases.
+
+## Refund workspace preview (Phase 2)
+
+Run `pnpm preview` and open http://127.0.0.1:4173/workspace.html to try the Dairy Queen
+workspace. Study/claim edits, validation runs and audit history persist in a local
+sample database. All billing data is synthetic. See [Phase 2 scope and setup](docs/PHASE_2_WORKSPACE.md)
+for the working features and remaining production connections.
