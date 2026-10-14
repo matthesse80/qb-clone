@@ -22,3 +22,13 @@ Run `pnpm preview` and open http://127.0.0.1:4173/workspace.html to try the Dair
 workspace. Study/claim edits, validation runs and audit history persist in a local
 sample database. All billing data is synthetic. See [Phase 2 scope and setup](docs/PHASE_2_WORKSPACE.md)
 for the working features and remaining production connections.
+
+## Production foundation sprint
+
+The approved production-foundation work adds the database migration and tested service
+contracts for separate Matt/Janna credentials, recovery, audited emergency co-owner
+reset, 30-minute inactivity sessions and checksummed atomic backups. Login and recovery
+are connected to a production-only access boundary; database backup still requires the
+selected deployment's consistent snapshot adapter. See
+[Production foundation sprint](docs/PRODUCTION_FOUNDATION_SPRINT.md). Real client data
+remains prohibited until the full acceptance gate passes.

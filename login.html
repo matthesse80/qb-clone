@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign in — NEC Ledger</title><link rel="stylesheet" href="assets/login.css"></head>
+<body><main class="login-shell">
+  <section class="login-card" aria-labelledby="login-title">
+    <div class="wordmark">NEC<span>.</span> <small>LEDGER</small></div>
+    <h1 id="login-title">Owner sign in</h1>
+    <p>Authorized for Matt and Janna only.</p>
+    <form id="login-form">
+      <label>Owner<select name="seat" required><option>Matt</option><option>Janna</option></select></label>
+      <label>Passphrase<input name="password" type="password" minlength="14" maxlength="256" autocomplete="current-password" required></label>
+      <button>Sign in</button><p id="login-message" role="status"></p>
+    </form>
+    <details><summary>Use a recovery code</summary>
+      <form id="recovery-form">
+        <label>Owner<select name="seat" required><option>Matt</option><option>Janna</option></select></label>
+        <label>Recovery code<input name="recoveryCode" autocomplete="off" required></label>
+        <label>New passphrase<input name="newPassword" type="password" minlength="14" maxlength="256" autocomplete="new-password" required></label>
+        <button>Reset access</button><p id="recovery-message" role="status"></p>
+      </form>
+    </details>
+  </section>
+</main><script type="module" src="assets/login.mjs"></script></body></html>

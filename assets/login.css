@@ -1,0 +1,7 @@
+:root{font-family:Inter,system-ui,sans-serif;color:#182536;background:#e8edf2}*{box-sizing:border-box}
+body{margin:0;min-height:100vh}.login-shell{min-height:100vh;display:grid;place-items:center;padding:24px}
+.login-card{width:min(440px,100%);background:white;border:1px solid #cbd5df;border-radius:16px;padding:32px;box-shadow:0 18px 48px #17283b20}
+.wordmark{font-size:2rem;font-weight:800;letter-spacing:.02em}.wordmark span{color:#0f78c8}.wordmark small{font-size:.72rem;letter-spacing:.16em;color:#526477}
+h1{margin-bottom:8px}p{color:#526477}form{display:grid;gap:16px;margin-top:24px}label{display:grid;gap:6px;font-weight:650}
+input,select,button{font:inherit;border-radius:8px;padding:11px 12px;border:1px solid #9fb0c0}button{background:#075a96;color:white;border:0;font-weight:750;cursor:pointer}
+details{margin-top:24px;border-top:1px solid #dbe3ea;padding-top:18px}summary{cursor:pointer;font-weight:700}form p{margin:0;min-height:1.4em;color:#8a2d21;overflow-wrap:anywhere}
