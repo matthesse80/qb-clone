@@ -10,7 +10,9 @@ class MemoryStore {
   async enroll(id,password_hash,recovery_code_hash) { const u=[...this.users.values()].find(x=>x.id===id); if(u.password_hash)return false;
     Object.assign(u,{password_hash,recovery_code_hash,credential_version:1});this.events.push(['enroll',id]);return true; }
   async loginSucceeded(id){const u=this.#u(id);u.failed_attempts=0;u.locked_until=null;this.events.push(['login-success',id]);}
-  async loginFailed(id,value){Object.assign(this.#u(id),{failed_attempts:value.failedAttempts,locked_until:value.lockedUntil});this.events.push(['login-failed',id]);}
+  async loginFailed(id,value){const u=this.#u(id);u.failed_attempts+=1;
+    u.locked_until=u.failed_attempts>=value.maxFailures?new Date(new Date(value.now).getTime()+value.lockMs).toISOString():null;
+    this.events.push(['login-failed',id]);}
   async replaceCredential({actorUserId,targetUserId,passwordHash,recoveryCodeHash,eventType}){const u=this.#u(targetUserId);
     Object.assign(u,{password_hash:passwordHash,recovery_code_hash:recoveryCodeHash,credential_version:u.credential_version+1,failed_attempts:0,locked_until:null});this.events.push([eventType,actorUserId,targetUserId]);}
   async record(id,type){this.events.push([type,id]);}
@@ -42,7 +44,9 @@ test('Janna can perform an audited emergency reset for Matt, but not reset herse
   const store=new MemoryStore();const auth=new LocalAccountService(store);
   await auth.enroll('Matt','Matt has a long passphrase');await auth.enroll('Janna','Janna has a long passphrase');
   const janna=await auth.login('Janna','Janna has a long passphrase');
-  const result=await auth.resetByCoOwner(janna.token,'Matt','Emergency replacement passphrase');
+  await assert.rejects(auth.resetByCoOwner(janna.token,'Matt','Emergency replacement passphrase'),/Re-enter/);
+  await assert.rejects(auth.resetByCoOwner(janna.token,'Matt','Emergency replacement passphrase','wrong passphrase'),/Re-enter/);
+  const result=await auth.resetByCoOwner(janna.token,'Matt','Emergency replacement passphrase','Janna has a long passphrase');
   assert.equal(result.seat,'Matt');
   assert.ok(store.events.some(e=>e[0]==='co-owner-reset'&&e[1]==='user-1'&&e[2]==='user-0'));
   await assert.rejects(auth.resetByCoOwner(janna.token,'Janna','Another long passphrase'),/own account/);

@@ -51,7 +51,7 @@ export function createWorkspaceServer({workspace,authenticate,accounts=null,prev
           await accounts.logout(token);res.setHeader('Set-Cookie',sessionCookie(null,{secure:true}));return send(200,{signedOut:true});
         }
         if(url.pathname==='/api/auth/co-owner-reset'){
-          const result=await accounts.resetByCoOwner(token,input?.targetSeat,input?.newPassword);
+          const result=await accounts.resetByCoOwner(token,input?.targetSeat,input?.newPassword,input?.actorPassword);
           return send(200,{seat:result.seat,recoveryCode:result.recoveryCode,notice:'Give the replacement recovery code directly to the other owner.'});
         }
         throw new WorkspaceError(404,'Endpoint not found');

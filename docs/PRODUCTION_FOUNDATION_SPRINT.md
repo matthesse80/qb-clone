@@ -64,3 +64,31 @@ the two-day maximum interval, retention, and a quarterly restore-test record.
 - Complete invoice, payment, FIFO allocation, A/R and checking services and tests.
 - Pass the real-data acceptance gate before entering FEINs, SSNs, utility account
   numbers or customer financial records.
+
+## October 19 hardening increment
+
+The original 33-test foundation was not production certification. Adversarial
+regressions reproduced three defects before fixing them: an empty derived-key hash
+could verify, concurrent requests could reuse one recovery code, and two backup
+operations with the same timestamp could share temporary/final paths.
+
+The increment now rejects malformed/noncanonical salt and derived-key encodings,
+uses a credential-version compare-and-swap in the database for password resets,
+requires the acting co-owner's passphrase for emergency reset, and counts failed
+logins atomically in SQL. A stale login result cannot clear a lock or a newer
+credential version. A malformed session cookie is treated as signed out.
+
+Backups now use unique names and isolated staging, stream checksums rather than
+loading the database snapshot into memory, flush files before publication, and
+publish using non-overwriting same-volume hard links. The manifest is the completion
+marker; an orphan snapshot after a process crash is not a valid backup. Hard-link
+support must be verified on Matt's Windows/Carbonite backup volume; do not silently
+fall back to overwriting copy/rename. Directory durability on power loss, filesystem
+permissions/ACLs, encryption, retention and a real database restore remain deployment
+gates. SHA-256 detects accidental corruption or an altered snapshot with an unchanged
+manifest; it does not authenticate an attacker who can rewrite both files.
+
+The full local suite now has 37 passing tests. SQL concurrency regressions run against
+PGlite using the actual migrations; hosted Postgres and Windows tests are still needed.
+No owners were enrolled, no real identifiers were entered, and no database or site
+was deployed or migrated during this increment.

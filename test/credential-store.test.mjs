@@ -15,7 +15,9 @@ test('production credential migration preserves two explicit owners and immutabl
     const store=new PostgresCredentialStore(embeddedDatabase(db));
     assert.equal(await store.enroll(matt.id,'scrypt$1','scrypt$2'),true);
     assert.equal(await store.enroll(matt.id,'scrypt$3','scrypt$4'),false);
-    await store.loginFailed(matt.id,{failedAttempts:1,lockedUntil:null});await store.loginSucceeded(matt.id);
+    const now=new Date().toISOString();
+    await store.loginFailed(matt.id,{maxFailures:5,lockMs:900000,now,expectedCredentialVersion:1});
+    await store.loginSucceeded(matt.id,{now,expectedCredentialVersion:1});
     assert.equal((await store.findSeat('matt')).seat,'Matt');
     assert.equal((await db.query('SELECT count(*) FROM ledger.security_event')).rows[0].count,3);
     await assert.rejects(db.query('DELETE FROM ledger.security_event'),/append-only/);
